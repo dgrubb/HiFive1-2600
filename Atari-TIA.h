@@ -102,7 +102,7 @@ typedef struct {
     uint8_t data_bus;
     uint8_t write_regs[WRITABLE_REG_LEN];
     uint8_t read_regs[READABLE_REG_LEN];
-    tia_databus_direction databus_direction;
+    tia_databus_direction_t databus_direction;
     uint8_t chip_select;
 } atari_tia;
 
