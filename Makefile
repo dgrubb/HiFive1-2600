@@ -7,6 +7,7 @@ BSP_BASE = ../../bsp
 C_SRCS += main.c
 # IC emulation
 C_SRCS += mos6507.c
+C_SRCS += mos6507-opcodes.c
 C_SRCS += mos6532.c
 C_SRCS += Atari-TIA.c
 
