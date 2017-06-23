@@ -98,12 +98,14 @@ typedef enum {
 
 /* Define a structure type to represent the entire state of a TIA chip */
 typedef struct {
+    // I/O interfaces
     uint8_t address_bus;
     uint8_t data_bus;
-    uint8_t write_regs[WRITABLE_REG_LEN];
-    uint8_t read_regs[READABLE_REG_LEN];
     tia_databus_direction_t databus_direction;
     uint8_t chip_select;
+    // Data registers
+    uint8_t write_regs[WRITABLE_REG_LEN];
+    uint8_t read_regs[READABLE_REG_LEN];
 } atari_tia;
 
 /* This is the single instance of atari_tia type to represent
