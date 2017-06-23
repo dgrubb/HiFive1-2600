@@ -89,14 +89,27 @@ typedef enum {
     READABLE_REG_LEN
 } tia_readable_register_t;
 
+/* Allow us to define whether the TIA chip databus is
+ * readable or writable */
+typedef enum {
+    READ = 0,
+    WRITE
+} tia_databus_direction_t;
+
 /* Define a structure type to represent the entire state of a TIA chip */
 typedef struct {
     uint8_t write_regs[WRITABLE_REG_LEN],
-    uint8_t read_regs[READABLE_REG_LEN]
+    uint8_t read_regs[READABLE_REG_LEN],
+    tia_databus_direction databus_direction
 } atari_tia;
 
 /* This is the single instance of atari_tia type to represent
  * the TIA in this application */
 extern atari_tia tia;
+
+/* Interfacing functions */
+void TIA_read_register(tia_readable_register_t reg, uint8_t *value);
+void TIA_set_databus_direction(tia_databus_direction direction);
+void TIA_write_register(tia_writable_register_t reg, uint8_t value);
 
 #endif /* _TIA_H */
