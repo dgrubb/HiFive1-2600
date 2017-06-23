@@ -16,6 +16,9 @@
 
 #include "Atari-TIA.h"
 
+/* Singleton representation of a TIA chip */
+atari_tia tia;
+
 /* Resets the TIA instance to default conditions with no state set.
  */
 void TIA_init()
