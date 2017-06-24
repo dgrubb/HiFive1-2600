@@ -27,13 +27,13 @@ void TIA_init()
     // I/O interfaces
     tia.address_bus = 0;
     tia.data_bus = 0;
-    tia.databus_direction = WRITE;
+    tia.databus_direction = TIA_REG_WRITE;
     tia.chip_select = 0;
     // Data registers
-    for (i=0; i<WRITABLE_REG_LEN; i++) {
+    for (i=0; i<TIA_WRITE_REG_LEN; i++) {
         tia.write_regs[i] = 0;
     }
-    for (i=0; i<READABLE_REG_LEN; i++) {
+    for (i=0; i<TIA_READ_REG_LEN; i++) {
         tia.read_regs[i] = 0;
     }
 

@@ -3,7 +3,7 @@
  * Author: dgrubb
  * Date: 06/23/2017
  *
- * Provides implementations of the 6507's op-codes.
+ * Provides implementations of the 6507 model.
  */
 
 #ifndef _MOS6507_H
