@@ -1,13 +1,13 @@
 /*
- * File: opcodes.h
+ * File: mos6507-opcodes.h
  * Author: dgrubb
  * Date: 12/20/2016
  *
  * Provides implementations of the 6507's op-codes.
  */
 
-#ifndef __OP_CODES__
-#define __OP_CODES__
+#ifndef _MOS6507_OPCODES_H
+#define _MOS6507_OPCODES_H
 
 /* Opcodes are 8-bit, allowing for 255 unique permutations.
  * However, many bit selections don't represent valid operations.
@@ -142,4 +142,4 @@ void opcode_BRK(); /* BReaK */
  */
 void opcode_ILL(); /* Illegal */
 
-#endif /* __OP_CODES__ */
+#endif /* _MOS6507_OPCODES_H */

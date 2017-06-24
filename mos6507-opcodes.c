@@ -1,12 +1,12 @@
 /*
- * File: opcodes.c
+ * File: mos6507-opcodes.c
  * Author: dgrubb
  * Date: 12/20/2016
  *
  * Provides implementations of the 6507's op-codes.
  */
 
-#include "opcodes.h"
+#include "mos6507-opcodes.h"
 
 /* Looks up an instruction from the instruction table and
  * executes the corresponding function, passing along cycle
