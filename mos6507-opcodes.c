@@ -8,6 +8,8 @@
 
 #include "mos6507-opcodes.h"
 
+instruction_t ISA_table[ISA_LENGTH];
+
 /* Looks up an instruction from the instruction table and
  * executes the corresponding function, passing along cycle
  * time and addressing mode.
@@ -116,3 +118,37 @@ void opcode_populate_ISA_table()
     ISA_table[0x19].cycles = 4;
     ISA_table[0x19].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED;
 }
+
+/******************************************************************************
+ * Instruction set implementation
+ *****************************************************************************/
+
+void opcode_ILL(int cycles, addressing_mode_t address_mode)
+{
+    
+}
+
+void opcode_ASL(int cycle, addressing_mode_t address_mode)
+{
+}
+
+void opcode_BPL(int cycle, addressing_mode_t address_mode)
+{
+}
+
+void opcode_BRK(int cycles, addressing_mode_t address_mode)
+{
+}
+
+void opcode_CLC(int cycle, addressing_mode_t address_mode)
+{
+}
+
+void opcode_ORA(int cycle, addressing_mode_t address_mode)
+{
+}
+
+void opcode_PHP(int cycles, addressing_mode_t address_mode)
+{
+}
+

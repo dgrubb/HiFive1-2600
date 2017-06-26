@@ -77,7 +77,7 @@ void opcode_DEY(); /* DEcrement Y by one */
 
 /* Logical */
 void opcode_AND(); /* AND memowry with accumulator */
-void opcode_ORA(); /* OR memory with Accumulator */
+void opcode_ORA(int cycle, addressing_mode_t address_mode); /* OR memory with Accumulator */
 void opcode_EOR(); /* Exclusive-OR memory with accumulator */
 
 /* Jump, branch, compare and test */
@@ -87,7 +87,7 @@ void opcode_BCS(); /* Branch on Carry Set */
 void opcode_BEQ(); /* Branch on EQual to zero */
 void opcode_BNE(); /* Branch on Not Equal to zero */
 void opcode_BMI(); /* Branch on MInus */
-void opcode_BPL(); /* Branch on PLus */
+void opcode_BPL(int cycle, addressing_mode_t address_mode); /* Branch on PLus */
 void opcode_BVS(); /* Branch on oVerflow Set */
 void opcode_BVC(); /* Branch on oVerflow clear */
 void opcode_CMP(); /* CoMPare memory and accumulator */
@@ -96,7 +96,7 @@ void opcode_CPY(); /* ComPare memory and Y*/
 void opcode_BIT(); /* Test BITs */
 
 /* Shift and rotate */
-void opcode_ASL(); /* Accumulator Shift Left */
+void opcode_ASL(int cycle, addressing_mode_t address_mode); /* Accumulator Shift Left */
 void opcode_LSR(); /* Logical Shift Right */
 void opcode_ROL(); /* ROtate Left */
 void opcode_ROR(); /* ROtate Right */
@@ -111,7 +111,7 @@ void opcode_TYA(); /* Transfer Y to Accumulator */
 void opcode_TSX(); /* Transfer Stack pointer to X */
 void opcode_TXS(); /* Transfer X to Stack pointer */
 void opcode_PHA(); /* PusH Accumulator on stack */
-void opcode_PHP(); /* PusH Processor status on stack */
+void opcode_PHP(int cycle, addressing_mode_t address_mode); /* PusH Processor status on stack */
 void opcode_PLA(); /* PulL Accumulator from stack */
 void opcode_PLP(); /* PulL Processor status from stack */
 
@@ -121,7 +121,7 @@ void opcode_RTS(); /* ReTurn from Subroutine */
 void opcode_RTI(); /* ReTurn from Interrupt */
 
 /* Set and reset */
-void opcode_CLC(); /* CLear Carry flag */
+void opcode_CLC(int cycle, addressing_mode_t address_mode); /* CLear Carry flag */
 void opcode_CLD(); /* CLear Decimal mode */
 void opcode_CLI(); /* CLear Interrupt disable */
 void opcode_CLV(); /* CLear oVerflow flag */
@@ -132,7 +132,7 @@ void opcode_SEI(); /* SEt Interrupt disable */
 
 /* Miscellaneous */
 void opcode_NOP(); /* No OPeration */
-void opcode_BRK(); /* BReaK */
+void opcode_BRK(int cycles, addressing_mode_t address_mode); /* BReaK */
 
 /* This is part of the program logic rather than the 6507 model. It
  * provides a sink when illegal opcodes are invoked. Further work
@@ -140,6 +140,6 @@ void opcode_BRK(); /* BReaK */
  * actions depending on which specific 6507 implementation is being
  * emulated?
  */
-void opcode_ILL(); /* Illegal */
+void opcode_ILL(int cycles, addressing_mode_t address_mode); /* Illegal */
 
 #endif /* _MOS6507_OPCODES_H */
