@@ -6,7 +6,9 @@
  * Provides implementations of the 6507's op-codes.
  */
 
+#include "mos6507.h"
 #include "mos6507-opcodes.h"
+#include "mos6532.h"
 
 instruction_t ISA_table[ISA_LENGTH];
 
@@ -150,5 +152,6 @@ void opcode_ORA(int cycle, addressing_mode_t address_mode)
 
 void opcode_PHP(int cycles, addressing_mode_t address_mode)
 {
+    mos6532_write(cpu.S, cpu.P);
 }
 
