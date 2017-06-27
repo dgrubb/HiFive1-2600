@@ -65,7 +65,7 @@ void opcode_populate_ISA_table()
 
     /* 0x01: ORA, X indexed indirect */
     ISA_table[0x01].opcode = opcode_ORA;
-    ISA_table[0x01].addressing_mode = OPCODE_ADDRESSING_MODE_X_INDEXED_INDIRECT;
+    ISA_table[0x01].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED;
 
     /* 0x05: ORA, Zero-page */
     ISA_table[0x05].opcode = opcode_ORA;
@@ -137,7 +137,8 @@ int opcode_ILL(int cycle, addressing_mode_t address_mode)
 
 int opcode_ADC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t zp_adl, data = 0;
+    static uint8_t adl, adh, zp_adl, zp_adh, bal, bah, data = 0;
+    uint8_t X = 0;
 
     if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
         switch(cycle) {
@@ -146,6 +147,7 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
                 return -1;
             case 1:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 mos6532_read(&data);
                 mos6507_ADC(data);
                 /* Intentional fall-through */
@@ -157,18 +159,62 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
         switch(cycle) {
             case 0:
                 /* Consume clock cycle for fetching op-code */
-                data = 0;
                 return -1;
             case 1:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 mos6532_read(&zp_adl);
                 return -1;
             case 2:
                 mos6507_set_address_bus_hl(0, zp_adl);
                 mos6532_read(&data);
+                mos6507_ADC(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                mos6532_read(&zp_adl);
+                return -1;
+            case 2:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                mos6532_read(&zp_adh);
                 return -1;
             case 3:
+                mos6507_set_address_bus_hl(zp_adh, zp_adl);
+                mos6532_read(&data);
                 mos6507_ADC(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6532_read(&bal);
+                return -1;
+            case 2:
+                mos6507_set_address_bus_hl(0, bal);
+                return -1;
+            case 3:
+                mos6507_get_register(MOS6507_REG_X, &X);
+                mos6507_set_address_bus_hl(0, (bal + X));
+                /* TODO: complete this call */
+                return -1;
                 /* Intentional fall-through */
             default:
                 /* End of op-code execution */
