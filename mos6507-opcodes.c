@@ -19,11 +19,9 @@
  * address busses for the next op-code
  */
 #define END_OPCODE() \
-    cycle = 0; \
     mos6507_increment_PC(); \
     mos6507_set_address_bus(mos6507_get_PC());
 
-unsigned int cycle = 0;
 instruction_t ISA_table[ISA_LENGTH];
 
 /* Looks up an instruction from the instruction table and
@@ -32,11 +30,15 @@ instruction_t ISA_table[ISA_LENGTH];
  *
  * opcode: value of the instruction, e.g., 0x00 for BRK
  */
-void opcode_execute(uint8_t opcode)
+int opcode_execute(uint8_t opcode)
 {
-    ISA_table[opcode].opcode(
-        ISA_table[opcode].addressing_mode
-    );
+    static int cycle = 0;
+    if (-1 == ISA_table[opcode].opcode(cycle, ISA_table[opcode].addressing_mode)) {
+        cycle++;
+    } else {
+        cycle = 0;
+    }
+    return cycle;
 }
 
 /* Loads an array with function pointers to the corresponding
@@ -128,12 +130,12 @@ void opcode_populate_ISA_table()
  * actually present in the CPU itself.
  *****************************************************************************/
 
-void opcode_ILL(addressing_mode_t address_mode)
+int opcode_ILL(int cycle, addressing_mode_t address_mode)
 {
     
 }
 
-void opcode_ADC(addressing_mode_t address_mode)
+int opcode_ADC(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t zp_adl, data = 0;
 
@@ -141,9 +143,7 @@ void opcode_ADC(addressing_mode_t address_mode)
         switch(cycle) {
             case 0:
                 /* Consume clock cycle for fetching op-code */
-                data = 0;
-                cycle++;
-                return;
+                return -1;
             case 1:
                 mos6507_increment_PC();
                 mos6532_read(&data);
@@ -158,15 +158,15 @@ void opcode_ADC(addressing_mode_t address_mode)
             case 0:
                 /* Consume clock cycle for fetching op-code */
                 data = 0;
-                cycle++;
-                return;
+                return -1;
             case 1:
                 mos6507_increment_PC();
                 mos6532_read(&zp_adl);
-                return;
+                return -1;
             case 2:
                 mos6507_set_address_bus_hl(0, zp_adl);
                 mos6532_read(&data);
+                return -1;
             case 3:
                 mos6507_ADC(data);
                 /* Intentional fall-through */
@@ -176,34 +176,33 @@ void opcode_ADC(addressing_mode_t address_mode)
         }
     };
     END_OPCODE();
+    return 0;
 }
 
-void opcode_ASL(addressing_mode_t address_mode)
+int opcode_ASL(int cycle, addressing_mode_t address_mode)
 {
 }
 
-void opcode_BPL(addressing_mode_t address_mode)
+int opcode_BPL(int cycle, addressing_mode_t address_mode)
 {
 }
 
-void opcode_BRK(addressing_mode_t address_mode)
+int opcode_BRK(int cycle, addressing_mode_t address_mode)
 {
 }
 
-void opcode_CLC(addressing_mode_t address_mode)
+int opcode_CLC(int cycle, addressing_mode_t address_mode)
 {
 }
 
-void opcode_ORA(addressing_mode_t address_mode)
+int opcode_ORA(int cycle, addressing_mode_t address_mode)
 {
     uint8_t accumulator, data, result, status = 0;
-
     if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
         switch(cycle) {
             case 0:
                 /* Consume clock cycle for fetching op-code */
-                cycle++;
-                return;
+                return -1;
             case 1: ;
                 /* Intentional fall-through */
             default:
@@ -213,21 +212,21 @@ void opcode_ORA(addressing_mode_t address_mode)
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
     };
     END_OPCODE();
+    return 0;
 }
 
-void opcode_PHP(addressing_mode_t address_mode)
+int opcode_PHP(int cycle, addressing_mode_t address_mode)
 {
     uint8_t value, destination = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
-            cycle++;
-            return;
+            return -1;
         case 1:
             /* Consume another clock cycle incrementing PC */
             mos6507_increment_PC();
             cycle++;
-            return;
+            return -1;
         case 2:
             /* Fetch value of status register and stack pointer */
             mos6507_get_register(MOS6507_REG_P, &value);
@@ -242,5 +241,6 @@ void opcode_PHP(addressing_mode_t address_mode)
             break;
     }
     END_OPCODE();
+    return 0;
 }
 
