@@ -137,16 +137,9 @@ void opcode_ADC(addressing_mode_t address_mode)
                 mos6507_set_register(MOS6507_REG_P, status);
                 mos6507_set_register(MOS6507_REG_A, result);
                 /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                goto end_adc;
         }
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
     };
-
-end_adc:
-    /* Reset cycle count for next invocation of this op-code */
-    cycle = 0;
 }
 
 void opcode_ASL(addressing_mode_t address_mode)
@@ -167,6 +160,20 @@ void opcode_CLC(addressing_mode_t address_mode)
 
 void opcode_ORA(addressing_mode_t address_mode)
 {
+    static int cycle = 0;
+    uint8_t accumulator, data, result, status = 0;
+
+    if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                cycle++;
+                return;
+            case 1: ;
+                /* Intentional fall-through */
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
+    };
 }
 
 void opcode_PHP(addressing_mode_t address_mode)
