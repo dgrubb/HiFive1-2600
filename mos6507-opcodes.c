@@ -18,7 +18,7 @@ instruction_t ISA_table[ISA_LENGTH];
  *
  * opcode: value of the instruction, e.g., 0x00 for BRK
  */
-void opcode_execute(char opcode)
+void opcode_execute(uint8_t opcode)
 {
     ISA_table[opcode].opcode(
         ISA_table[opcode].addressing_mode
@@ -135,6 +135,30 @@ void opcode_ORA(addressing_mode_t address_mode)
 
 void opcode_PHP(addressing_mode_t address_mode)
 {
-    mos6532_write(cpu.S, cpu.P);
+    static int cycle = 0;
+    uint8_t value = 0;
+    uint8_t destination = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            cycle++;
+            return;
+        case 1:
+            /* Consume another clock cycle incrementing PC */
+            mos6507_increment_PC();
+            cycle++;
+            return;
+        case 2:
+            /* Fetch value of status register and stack pointer */
+            mos6507_get_register(MOS6507_REG_P, &value);
+            mos6507_get_register(MOS6507_REG_S, &destination);
+            /* Write status register value to stack address */
+            mos6532_write(value, destination);
+        default:
+            /* End of op-code execution */
+            break;
+    }
+    /* Reset cycle count for next invocation of this op-code */
+    cycle = 0;
 }
 

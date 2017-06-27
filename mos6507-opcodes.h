@@ -41,7 +41,7 @@ typedef struct {
 extern instruction_t ISA_table[ISA_LENGTH];
 
 void opcode_populate_ISA_table();
-void opcode_execute(char opcode);
+void opcode_execute(uint8_t opcode);
 
 /* The following function prototypes define each possible opcodes from a
  * 6507 with nmemonic annotation in commens. An additional opcode ILL is
