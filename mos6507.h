@@ -52,5 +52,6 @@ void mos6507_get_address_bus(uint16_t *address);
 void mos6507_set_data_bus(uint8_t data);
 void mos6507_get_data_bus(uint8_t *data);
 void mos6507_increment_PC();
+uint16_t mos6507_get_PC();
 
 #endif /* _MOS6507_H */

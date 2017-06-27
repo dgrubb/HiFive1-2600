@@ -14,6 +14,16 @@
 #include "mos6507-microcode.h"
 #include "mos6532.h"
 
+/* Invoked at the end of each op-code. Resets the
+ * clock cycle counter and increments the PC and 
+ * address busses for the next op-code
+ */
+#define END_OPCODE() \
+    cycle = 0; \
+    mos6507_increment_PC(); \
+    mos6507_set_address_bus(mos6507_get_PC());
+
+unsigned int cycle = 0;
 instruction_t ISA_table[ISA_LENGTH];
 
 /* Looks up an instruction from the instruction table and
@@ -110,6 +120,12 @@ void opcode_populate_ISA_table()
 
 /******************************************************************************
  * Instruction set implementation
+ *
+ * These functions exist to wrapper the logical instruction (e.g., ADD, ROR,
+ * MOV etc) with the necessary clock steps and memory access methods to make
+ * the emulation cycle accurate. Actual op-code logic is implemented in
+ * mos6507-microcode.c which has no knowledge of the memory map beyond what is
+ * actually present in the CPU itself.
  *****************************************************************************/
 
 void opcode_ILL(addressing_mode_t address_mode)
@@ -119,27 +135,47 @@ void opcode_ILL(addressing_mode_t address_mode)
 
 void opcode_ADC(addressing_mode_t address_mode)
 {
-    static int cycle = 0;
-    uint8_t accumulator, data, result, status = 0;
+    static uint8_t zp_adl, data = 0;
 
     if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
         switch(cycle) {
             case 0:
                 /* Consume clock cycle for fetching op-code */
+                data = 0;
                 cycle++;
                 return;
             case 1:
                 mos6507_increment_PC();
                 mos6532_read(&data);
-                mos6507_get_register(MOS6507_REG_A, &accumulator);
-                mos6507_get_register(MOS6507_REG_P, &status);
-                mos6507_ADC(accumulator, data, &result, &status);
-                mos6507_set_register(MOS6507_REG_P, status);
-                mos6507_set_register(MOS6507_REG_A, result);
+                mos6507_ADC(data);
                 /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
         }
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                data = 0;
+                cycle++;
+                return;
+            case 1:
+                mos6507_increment_PC();
+                mos6532_read(&zp_adl);
+                return;
+            case 2:
+                mos6507_set_address_bus_hl(0, zp_adl);
+                mos6532_read(&data);
+            case 3:
+                mos6507_ADC(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
     };
+    END_OPCODE();
 }
 
 void opcode_ASL(addressing_mode_t address_mode)
@@ -160,7 +196,6 @@ void opcode_CLC(addressing_mode_t address_mode)
 
 void opcode_ORA(addressing_mode_t address_mode)
 {
-    static int cycle = 0;
     uint8_t accumulator, data, result, status = 0;
 
     if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
@@ -171,16 +206,18 @@ void opcode_ORA(addressing_mode_t address_mode)
                 return;
             case 1: ;
                 /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
         }
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
     };
+    END_OPCODE();
 }
 
 void opcode_PHP(addressing_mode_t address_mode)
 {
-    static int cycle = 0;
-    uint8_t value = 0;
-    uint8_t destination = 0;
+    uint8_t value, destination = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -204,7 +241,6 @@ void opcode_PHP(addressing_mode_t address_mode)
             /* End of op-code execution */
             break;
     }
-    /* Reset cycle count for next invocation of this op-code */
-    cycle = 0;
+    END_OPCODE();
 }
 

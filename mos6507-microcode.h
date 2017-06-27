@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-void mos6507_ADC(uint8_t accumulator, uint8_t data, uint8_t *result, uint8_t *status);
+void mos6507_ADC(uint8_t data);
 
 #endif /* _MOS6507_MICROCODE_H */
 

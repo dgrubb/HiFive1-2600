@@ -8,9 +8,15 @@
  */
 
 #include "mos6507-microcode.h"
+#include "mos6507.h"
 
-void mos6507_ADC(uint8_t accumulator, uint8_t data, uint8_t *result, uint8_t *status)
+
+
+void mos6507_ADC(uint8_t data)
 {
-    uint16_t temp = 0;
+    uint8_t accumulator, status = 0;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+    mos6507_get_register(MOS6507_REG_P, &status);
+
     
 }
