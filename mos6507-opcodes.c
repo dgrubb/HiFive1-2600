@@ -11,6 +11,7 @@
 
 #include "mos6507.h"
 #include "mos6507-opcodes.h"
+#include "mos6507-microcode.h"
 #include "mos6532.h"
 
 instruction_t ISA_table[ISA_LENGTH];
@@ -119,30 +120,27 @@ void opcode_ILL(addressing_mode_t address_mode)
 void opcode_ADC(addressing_mode_t address_mode)
 {
     static int cycle = 0;
-    uint8_t accumulator;
-    uint8_t data;
-    switch(address_mode) {
-        case OPCODE_ADDRESSING_MODE_IMMEDIATE:
-            goto adc_immediate;
-    }
+    uint8_t accumulator, data, result, status = 0;
 
-adc_immediate: ;
-    switch(cycle) {
-        case 0:
-            /* Consume clock cycle for fetching op-code */
-            cycle++;
-            return;
-        case 1:
-            mos6507_increment_PC();
-            mos6532_read(&data);
-            mos6507_get_register(MOS6507_REG_A, &accumulator);
-            /* TODO: Add data and accumulator */
-            /* TODO: set conditions in status register */
-            mos6507_set_register(MOS6507_REG_A, data);
-            /* Intentional fall-through */
-        default:
-            /* End of op-code execution */
-            goto end_adc;
+    if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                cycle++;
+                return;
+            case 1:
+                mos6507_increment_PC();
+                mos6532_read(&data);
+                mos6507_get_register(MOS6507_REG_A, &accumulator);
+                mos6507_ADC(accumulator, data, &result, &status);
+                mos6507_set_register(MOS6507_REG_P, status);
+                mos6507_set_register(MOS6507_REG_A, result);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                goto end_adc;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
     };
 
 end_adc:
