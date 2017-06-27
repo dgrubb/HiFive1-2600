@@ -4,6 +4,9 @@
  * Date: 12/20/2016
  *
  * Provides implementations of the 6507's op-codes.
+ *
+ * Useful information about cycle execution times:
+ * http://users.telenet.be/kim1-6502/6502/hwman.html##AA
  */
 
 #include "mos6507.h"
@@ -113,6 +116,40 @@ void opcode_ILL(addressing_mode_t address_mode)
     
 }
 
+void opcode_ADC(addressing_mode_t address_mode)
+{
+    static int cycle = 0;
+    uint8_t accumulator;
+    uint8_t data;
+    switch(address_mode) {
+        case OPCODE_ADDRESSING_MODE_IMMEDIATE:
+            goto adc_immediate;
+    }
+
+adc_immediate: ;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            cycle++;
+            return;
+        case 1:
+            mos6507_increment_PC();
+            mos6532_read(&data);
+            mos6507_get_register(MOS6507_REG_A, &accumulator);
+            /* TODO: Add data and accumulator */
+            /* TODO: set conditions in status register */
+            mos6507_set_register(MOS6507_REG_A, data);
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            goto end_adc;
+    };
+
+end_adc:
+    /* Reset cycle count for next invocation of this op-code */
+    cycle = 0;
+}
+
 void opcode_ASL(addressing_mode_t address_mode)
 {
 }
@@ -153,9 +190,10 @@ void opcode_PHP(addressing_mode_t address_mode)
             mos6507_get_register(MOS6507_REG_P, &value);
             mos6507_get_register(MOS6507_REG_S, &destination);
             /* Write status register value to stack address */
-            mos6507_set_address_bus(0, destination);
+            mos6507_set_address_bus_hl(0, destination);
             mos6507_set_data_bus(value);
             mos6532_write();
+            /* Intentional fall-through */
         default:
             /* End of op-code execution */
             break;

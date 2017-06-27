@@ -46,7 +46,8 @@ typedef struct {
 void mos6507_reset();
 void mos6507_set_register(mos6507_register_t reg, uint8_t value);
 void mos6507_get_register(mos6507_register_t reg, uint8_t *value);
-void mos6507_set_address_bus(uint8_t adh, uint8_t adl);
+void mos6507_set_address_bus_hl(uint8_t adh, uint8_t adl);
+void mos6507_set_address_bus(uint16_t address);
 void mos6507_get_address_bus(uint16_t *address);
 void mos6507_set_data_bus(uint8_t data);
 void mos6507_get_data_bus(uint8_t *data);
