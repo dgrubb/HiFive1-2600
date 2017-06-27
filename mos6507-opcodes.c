@@ -132,6 +132,7 @@ void opcode_ADC(addressing_mode_t address_mode)
                 mos6507_increment_PC();
                 mos6532_read(&data);
                 mos6507_get_register(MOS6507_REG_A, &accumulator);
+                mos6507_get_register(MOS6507_REG_P, &status);
                 mos6507_ADC(accumulator, data, &result, &status);
                 mos6507_set_register(MOS6507_REG_P, status);
                 mos6507_set_register(MOS6507_REG_A, result);
