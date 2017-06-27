@@ -47,3 +47,25 @@ void mos6507_increment_PC()
 {
     cpu.PC++;
 }
+
+void mos6507_set_address_bus(uint8_t adh, uint8_t adl)
+{
+    cpu.address_bus = 0;
+    cpu.address_bus |= (adh << 8);
+    cpu.address_bus |= adl;
+}
+
+void mos6507_get_address_bus(uint16_t *address)
+{
+    *address = cpu.address_bus;
+}
+
+void mos6507_set_data_bus(uint8_t data)
+{
+    cpu.data_bus = data;
+}
+
+void mos6507_get_data_bus(uint8_t *data)
+{
+    *data = cpu.data_bus;
+}

@@ -30,25 +30,26 @@ typedef enum {
 } mos6507_register_t;
 
 typedef struct {
-    /* Accumulator */
-    uint8_t A;
-    /* Y index */
-    uint8_t Y;
-    /* X index */
-    uint8_t X;
-    /* Program counter */
-    uint16_t PC;
-    /* Stack pointer */
-    uint8_t S;
-    /* Status register */
-    uint8_t P;
-    /* Currently executing op-code and addressing mode */
-    instruction_t current_instruction;
+    /* Internal registers */
+    uint8_t A;   /* Accumulator */
+    uint8_t Y;   /* Y register */
+    uint8_t X;   /* X register */
+    uint16_t PC; /* Program counter */
+    uint8_t S;   /* Stack pointer */
+    uint8_t P;   /* Status register */
+    /* State description */
+    instruction_t current_instruction; /* Current op-code and addressing mode */
+    uint16_t address_bus;              /* Address bus */
+    uint8_t data_bus;                  /* Data bus */
 } mos6507;
 
 void mos6507_reset();
 void mos6507_set_register(mos6507_register_t reg, uint8_t value);
 void mos6507_get_register(mos6507_register_t reg, uint8_t *value);
+void mos6507_set_address_bus(uint8_t adh, uint8_t adl);
+void mos6507_get_address_bus(uint16_t *address);
+void mos6507_set_data_bus(uint8_t data);
+void mos6507_get_data_bus(uint8_t *data);
 void mos6507_increment_PC();
 
 #endif /* _MOS6507_H */

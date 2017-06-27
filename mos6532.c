@@ -9,6 +9,7 @@
 
 #include <string.h>
 #include "mos6532.h"
+#include "mos6507.h"
 
 /* Checks that a requested memory address is within the 
  * RAM space.
@@ -36,34 +37,34 @@ void mos6532_clear_memory()
 /* Loads a value from within RAM and places it into 
  * a variable given by pointer.
  *
- * address: address to read.
- * *value: location to put value into.
- *
  * Returns 0 on success, -1 on error.
  */
-int mos6532_read(uint8_t address, uint8_t *value)
+int mos6532_read(uint8_t *data)
 {
+    uint16_t address = 0;
+    mos6507_get_address_bus(&address);
     if (-1 == mos6532_bounds_check(address)) {
         /* Error, attempting to write outside memory */
         return -1;
     }
-    *value = memory[address];
+    *data = memory[address];
     return 0;
 }
 
 /* Writes to a RAM address.
  *
- * address: address to write to.
- * value: value to write into memory.
- *
  * Returns 0 on success, -1 on error.
  */
-int mos6532_write(uint8_t address, uint8_t value)
+int mos6532_write()
 {
+    uint16_t address = 0;
+    uint8_t data = 0;
+    mos6507_get_address_bus(&address);
+    mos6507_get_data_bus(&data);
     if (-1 == mos6532_bounds_check(address)) {
         /* Error, attempting to write outside memory */
         return -1;
     }
-    memory[address] = value;
+    memory[address] = data;
     return 0;
 }

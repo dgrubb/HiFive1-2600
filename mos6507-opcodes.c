@@ -153,7 +153,9 @@ void opcode_PHP(addressing_mode_t address_mode)
             mos6507_get_register(MOS6507_REG_P, &value);
             mos6507_get_register(MOS6507_REG_S, &destination);
             /* Write status register value to stack address */
-            mos6532_write(value, destination);
+            mos6507_set_address_bus(0, destination);
+            mos6507_set_data_bus(value);
+            mos6532_write();
         default:
             /* End of op-code execution */
             break;
