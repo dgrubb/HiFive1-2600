@@ -213,8 +213,17 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
             case 3:
                 mos6507_get_register(MOS6507_REG_X, &X);
                 mos6507_set_address_bus_hl(0, (bal + X));
-                /* TODO: complete this call */
+                mos6532_read(&adl);
                 return -1;
+            case 4:
+                mos6507_get_register(MOS6507_REG_X, &X);
+                mos6507_set_address_bus_hl(0, ((bal + X) + 1));
+                mos6532_read(&adh);
+                return -1;
+            case 5:
+                mos6507_set_address_bus_hl(adh, adl);
+                mos6532_read(&data);
+                mos6507_ADC(data);
                 /* Intentional fall-through */
             default:
                 /* End of op-code execution */
