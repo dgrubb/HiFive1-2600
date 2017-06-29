@@ -34,7 +34,11 @@ void memmap_write()
 
 void memmap_read(uint8_t *data)
 {
+    // Fetch address from CPU
     uint16_t address;
+    mos6507_get_address_bus(&address);
+
+    // Access particular device
     if (address >= MEMMAP_TIA_START && address <= MEMMAP_TIA_END) {
     } else if (address >= MEMMAP_RIOT_START && address <= MEMMAP_RIOT_END) {
         mos6532_read(address - MEMMAP_RIOT_START, data);

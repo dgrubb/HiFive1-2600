@@ -55,7 +55,7 @@ uint16_t mos6507_get_PC()
 
 void mos6507_set_address_bus_hl(uint8_t adh, uint8_t adl)
 {
-    cpu.address_bus = 0;
+    cpu.address_bus  = 0;
     cpu.address_bus |= (adh << 8);
     cpu.address_bus |= adl;
 }
