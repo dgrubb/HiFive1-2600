@@ -6,3 +6,5 @@
  * Delegates access to memory mapped devices.
  */
 
+#include "Atari-memmap.h"
+#include "mos6532.h"

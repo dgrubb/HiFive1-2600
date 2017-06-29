@@ -12,7 +12,6 @@
 #include "mos6507.h"
 #include "mos6507-opcodes.h"
 #include "mos6507-microcode.h"
-#include "mos6532.h"
 
 /* Invoked at the end of each op-code. Resets the
  * clock cycle counter and increments the PC and 
