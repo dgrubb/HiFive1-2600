@@ -137,7 +137,7 @@ int opcode_ILL(int cycle, addressing_mode_t address_mode)
 
 int opcode_ADC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, zp_adl, zp_adh, bal, bah, data = 0;
+    static uint8_t adl, adh, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
@@ -371,6 +371,252 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
                 mos6507_set_address_bus_hl(0, bal + Y);
                 memmap_read(&data);
                 mos6507_ADC(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    }
+    END_OPCODE();
+    return 0;
+}
+
+int opcode_AND(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bal, bah, data = 0;
+    uint8_t X, Y, c = 0;
+
+    if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&data);
+                mos6507_AND(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&adl);
+                return -1;
+            case 2:
+                mos6507_set_address_bus_hl(0, adl);
+                memmap_read(&data);
+                mos6507_AND(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&adl);
+                return -1;
+            case 2:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&adh);
+                return -1;
+            case 3:
+                mos6507_set_address_bus_hl(adh, adl);
+                memmap_read(&data);
+                mos6507_AND(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&bal);
+                return -1;
+            case 2:
+                mos6507_set_address_bus_hl(0, bal);
+                return -1;
+            case 3:
+                mos6507_get_register(MOS6507_REG_X, &X);
+                mos6507_set_address_bus_hl(0, (bal + X));
+                memmap_read(&adl);
+                return -1;
+            case 4:
+                mos6507_get_register(MOS6507_REG_X, &X);
+                mos6507_set_address_bus_hl(0, ((bal + X) + 1));
+                memmap_read(&adh);
+                return -1;
+            case 5:
+                mos6507_set_address_bus_hl(adh, adl);
+                memmap_read(&data);
+                mos6507_AND(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&bal);
+                return -1;
+            case 2:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&bah);
+                return -1;
+            case 3:
+                mos6507_get_register(MOS6507_REG_X, &X);
+                adl = bal + X;
+                // Check is this operation resulted in a carry
+                if ((bal + X) & 0x0100) {
+                    c = 1;
+                }
+                adh = bah + c;
+                mos6507_set_address_bus_hl(adh, adl);
+                memmap_read(&data);
+                // If a memory page boundary was crossed then 
+                // data is discarded and a new fetch occurs. Otherwise,
+                // continue with the computation as expected and complete 
+                // the operation.
+                if (c) {
+                    return -1;
+                }
+                mos6507_AND(data);
+                break;
+            case 4:
+                mos6507_get_register(MOS6507_REG_X, &X);
+                adl = bal + X;
+                // Check is this operation resulted in a carry
+                if ((bal + X) & 0x0100) {
+                    c = 1;
+                }
+                adh = bah + c;
+                mos6507_set_address_bus_hl(adh, adl);
+                memmap_read(&data);
+                mos6507_AND(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&bal);
+                return -1;
+            case 2:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&bah);
+                return -1;
+            case 3:
+                mos6507_get_register(MOS6507_REG_Y, &Y);
+                adl = bal + Y;
+                // Check is this operation resulted in a carry
+                if ((bal + Y) & 0x0100) {
+                    c = 1;
+                }
+                adh = bah + c;
+                mos6507_set_address_bus_hl(adh, adl);
+                memmap_read(&data);
+                // If a memory page boundary was crossed then 
+                // data is discarded and a new fetch occurs. Otherwise,
+                // continue with the computation as expected and complete 
+                // the operation.
+                if (c) {
+                    return -1;
+                }
+                mos6507_AND(data);
+                break;
+            case 4:
+                mos6507_get_register(MOS6507_REG_Y, &Y);
+                adl = bal + Y;
+                // Check is this operation resulted in a carry
+                if ((bal + Y) & 0x0100) {
+                    c = 1;
+                }
+                adh = bah + c;
+                mos6507_set_address_bus_hl(adh, adl);
+                memmap_read(&data);
+                mos6507_AND(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&bal);
+                return -1;
+            case 2:
+                mos6507_set_address_bus_hl(0, bal);
+                return -1;
+            case 3:
+                mos6507_get_register(MOS6507_REG_X, &X);
+                mos6507_set_address_bus_hl(0, bal + X);
+                memmap_read(&data);
+                mos6507_AND(data);
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1:
+                mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
+                memmap_read(&bal);
+                return -1;
+            case 2:
+                mos6507_set_address_bus_hl(0, bal);
+                return -1;
+            case 3:
+                mos6507_get_register(MOS6507_REG_Y, &Y);
+                mos6507_set_address_bus_hl(0, bal + Y);
+                memmap_read(&data);
+                mos6507_AND(data);
                 /* Intentional fall-through */
             default:
                 /* End of op-code execution */

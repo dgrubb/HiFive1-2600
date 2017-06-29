@@ -75,7 +75,7 @@ int opcode_DEY(); /* DEcrement Y by one */
 int opcode_DEY(); /* DEcrement Y by one */
 
 /* Logical */
-int opcode_AND(); /* AND memowry with accumulator */
+int opcode_AND(int cycle, addressing_mode_t address_mode); /* AND memowry with accumulator */
 int opcode_ORA(int cycle, addressing_mode_t address_mode); /* OR memory with Accumulator */
 int opcode_EOR(); /* Exclusive-OR memory with accumulator */
 
