@@ -12,6 +12,7 @@
 #include "mos6507.h"
 #include "mos6507-opcodes.h"
 #include "mos6507-microcode.h"
+#include "mos6507-addressing-macros.h"
 #include "Atari-memmap.h"
 
 /* Invoked at the end of each op-code. Resets the
@@ -421,29 +422,7 @@ int opcode_AND(int cycle, addressing_mode_t address_mode)
                 break;
         }
     } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
-        switch(cycle) {
-            case 0:
-                /* Consume clock cycle for fetching op-code */
-                return -1;
-            case 1:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&adl);
-                return -1;
-            case 2:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&adh);
-                return -1;
-            case 3:
-                mos6507_set_address_bus_hl(adh, adl);
-                memmap_read(&data);
-                mos6507_AND(data);
-                /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                break;
-        }
+        ADDRESSING_MODE_ABSOLUTE()
     } else if (OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED == address_mode) {
         switch(cycle) {
             case 0:
@@ -600,29 +579,9 @@ int opcode_AND(int cycle, addressing_mode_t address_mode)
                 break;
         }
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED == address_mode) {
-        switch(cycle) {
-            case 0:
-                /* Consume clock cycle for fetching op-code */
-                return -1;
-            case 1:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&bal);
-                return -1;
-            case 2:
-                mos6507_set_address_bus_hl(0, bal);
-                return -1;
-            case 3:
-                mos6507_get_register(MOS6507_REG_Y, &Y);
-                mos6507_set_address_bus_hl(0, bal + Y);
-                memmap_read(&data);
-                mos6507_AND(data);
-                /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                break;
-        }
+        ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED()
     }
+    mos6507_AND(data);
     END_OPCODE();
     return 0;
 }
