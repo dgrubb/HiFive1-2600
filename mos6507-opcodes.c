@@ -163,10 +163,10 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
             case 1:
                 mos6507_increment_PC();
                 mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&zp_adl);
+                memmap_read(&adl);
                 return -1;
             case 2:
-                mos6507_set_address_bus_hl(0, zp_adl);
+                mos6507_set_address_bus_hl(0, adl);
                 memmap_read(&data);
                 mos6507_ADC(data);
                 /* Intentional fall-through */
@@ -182,15 +182,15 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
             case 1:
                 mos6507_increment_PC();
                 mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&zp_adl);
+                memmap_read(&adl);
                 return -1;
             case 2:
                 mos6507_increment_PC();
                 mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&zp_adh);
+                memmap_read(&adh);
                 return -1;
             case 3:
-                mos6507_set_address_bus_hl(zp_adh, zp_adl);
+                mos6507_set_address_bus_hl(adh, adl);
                 memmap_read(&data);
                 mos6507_ADC(data);
                 /* Intentional fall-through */
@@ -205,6 +205,7 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
                 return -1;
             case 1:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 memmap_read(&bal);
                 return -1;
             case 2:
@@ -236,10 +237,12 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
                 return -1;
             case 1:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 memmap_read(&bal);
                 return -1;
             case 2:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 memmap_read(&bah);
                 return -1;
             case 3:
@@ -284,10 +287,12 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
                 return -1;
             case 1:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 memmap_read(&bal);
                 return -1;
             case 2:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 memmap_read(&bah);
                 return -1;
             case 3:
@@ -332,6 +337,7 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
                 return -1;
             case 1:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 memmap_read(&bal);
                 return -1;
             case 2:
@@ -354,6 +360,7 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
                 return -1;
             case 1:
                 mos6507_increment_PC();
+                mos6507_set_address_bus(mos6507_get_PC());
                 memmap_read(&bal);
                 return -1;
             case 2:
