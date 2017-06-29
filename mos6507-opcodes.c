@@ -12,6 +12,7 @@
 #include "mos6507.h"
 #include "mos6507-opcodes.h"
 #include "mos6507-microcode.h"
+#include "Atari-memmap.h"
 
 /* Invoked at the end of each op-code. Resets the
  * clock cycle counter and increments the PC and 
@@ -147,7 +148,7 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
             case 1:
                 mos6507_increment_PC();
                 mos6507_set_address_bus(mos6507_get_PC());
-                mos6532_read(&data);
+                memmap_read(&data);
                 mos6507_ADC(data);
                 /* Intentional fall-through */
             default:
@@ -162,11 +163,11 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
             case 1:
                 mos6507_increment_PC();
                 mos6507_set_address_bus(mos6507_get_PC());
-                mos6532_read(&zp_adl);
+                memmap_read(&zp_adl);
                 return -1;
             case 2:
                 mos6507_set_address_bus_hl(0, zp_adl);
-                mos6532_read(&data);
+                memmap_read(&data);
                 mos6507_ADC(data);
                 /* Intentional fall-through */
             default:
@@ -181,16 +182,16 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
             case 1:
                 mos6507_increment_PC();
                 mos6507_set_address_bus(mos6507_get_PC());
-                mos6532_read(&zp_adl);
+                memmap_read(&zp_adl);
                 return -1;
             case 2:
                 mos6507_increment_PC();
                 mos6507_set_address_bus(mos6507_get_PC());
-                mos6532_read(&zp_adh);
+                memmap_read(&zp_adh);
                 return -1;
             case 3:
                 mos6507_set_address_bus_hl(zp_adh, zp_adl);
-                mos6532_read(&data);
+                memmap_read(&data);
                 mos6507_ADC(data);
                 /* Intentional fall-through */
             default:
@@ -204,7 +205,7 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
                 return -1;
             case 1:
                 mos6507_increment_PC();
-                mos6532_read(&bal);
+                memmap_read(&bal);
                 return -1;
             case 2:
                 mos6507_set_address_bus_hl(0, bal);
@@ -212,16 +213,16 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
             case 3:
                 mos6507_get_register(MOS6507_REG_X, &X);
                 mos6507_set_address_bus_hl(0, (bal + X));
-                mos6532_read(&adl);
+                memmap_read(&adl);
                 return -1;
             case 4:
                 mos6507_get_register(MOS6507_REG_X, &X);
                 mos6507_set_address_bus_hl(0, ((bal + X) + 1));
-                mos6532_read(&adh);
+                memmap_read(&adh);
                 return -1;
             case 5:
                 mos6507_set_address_bus_hl(adh, adl);
-                mos6532_read(&data);
+                memmap_read(&data);
                 mos6507_ADC(data);
                 /* Intentional fall-through */
             default:
@@ -288,7 +289,7 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
             /* Write status register value to stack address */
             mos6507_set_address_bus_hl(0, destination);
             mos6507_set_data_bus(value);
-            mos6532_write();
+            memmap_write();
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
