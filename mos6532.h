@@ -20,8 +20,8 @@ uint8_t memory[MEM_SIZE];
 int mos6532_bounds_check(uint8_t address);
 void mos6532_clear_memory();
 /* External memory access */
-int mos6532_read(uint8_t *data);
-int mos6532_write();
+int mos6532_read(uint16_t address, uint8_t *data);
+int mos6532_write(uint16_t address, uint8_t data);
 
 #endif /* _MOS6532_H */
 

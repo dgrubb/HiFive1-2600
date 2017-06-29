@@ -20,7 +20,7 @@
  */
 int mos6532_bounds_check(uint8_t address)
 {
-    if (address > MEM_SIZE || address < 0) {
+    if (address > MEM_SIZE) {
         return -1;
     }
     /* Flag an error */
@@ -39,10 +39,8 @@ void mos6532_clear_memory()
  *
  * Returns 0 on success, -1 on error.
  */
-int mos6532_read(uint8_t *data)
+int mos6532_read(uint16_t address, uint8_t *data)
 {
-    uint16_t address = 0;
-    mos6507_get_address_bus(&address);
     if (-1 == mos6532_bounds_check(address)) {
         /* Error, attempting to write outside memory */
         return -1;
@@ -55,12 +53,8 @@ int mos6532_read(uint8_t *data)
  *
  * Returns 0 on success, -1 on error.
  */
-int mos6532_write()
+int mos6532_write(uint16_t address,uint8_t data)
 {
-    uint16_t address = 0;
-    uint8_t data = 0;
-    mos6507_get_address_bus(&address);
-    mos6507_get_data_bus(&data);
     if (-1 == mos6532_bounds_check(address)) {
         /* Error, attempting to write outside memory */
         return -1;
