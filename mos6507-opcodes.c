@@ -160,19 +160,318 @@ int opcode_AND(int cycle, addressing_mode_t address_mode)
 
 int opcode_ASL(int cycle, addressing_mode_t address_mode)
 {
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    if (OPCODE_ADDRESSING_MODE_ACCUMULATOR == address_mode) {
+        switch(cycle) {
+            case 0:
+                /* Consume clock cycle for fetching op-code */
+                return -1;
+            case 1: ;
+                /* Intentional fall-through */
+            default:
+                /* End of op-code execution */
+                break;
+        }
+        END_OPCODE()
+        return 0;
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
+        ADDRESSING_MODE_ZERO_PAGE()
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED == address_mode) {
+        ADDRESSING_MODE_ZERO_PAGE_X_INDEXED()
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
+        ADDRESSING_MODE_ABSOLUTE()
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED == address_mode) {
+        ADDRESSING_MODE_ABSOLUTE_X_INDEXED()
+    }
+
+    mos6507_ASL(data);
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_BCC(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_BCS(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_BEQ(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_BIT(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
+        ADDRESSING_MODE_ZERO_PAGE()
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
+        ADDRESSING_MODE_ABSOLUTE()
+    }
+
+    mos6507_BIT(data);
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_BMI(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_BNE(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
 }
 
 int opcode_BPL(int cycle, addressing_mode_t address_mode)
 {
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
 }
 
 int opcode_BRK(int cycle, addressing_mode_t address_mode)
 {
 }
 
+int opcode_BVC(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_BVS(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
 int opcode_CLC(int cycle, addressing_mode_t address_mode)
 {
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
 }
+
+int opcode_CLD(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_CLI(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_CLV(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_CMP(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_CPX(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_CPY(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_DEC(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_DEX(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_DEY(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_EOR(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_INC(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_INX(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_INY(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_JMP(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_JSR(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_LDA(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_LDX(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_LDY(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_LSR(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_NOP(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
 
 int opcode_ORA(int cycle, addressing_mode_t address_mode)
 {
@@ -191,6 +490,15 @@ int opcode_ORA(int cycle, addressing_mode_t address_mode)
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
     };
     END_OPCODE();
+    return 0;
+}
+
+int opcode_PHA(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
     return 0;
 }
 
@@ -220,6 +528,168 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
             break;
     }
     END_OPCODE();
+    return 0;
+}
+
+int opcode_PLA(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_ROL(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_ROR(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_RTI(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_RTS(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_SBC(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_SEC(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_SED(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_SEI(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_STA(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_STX(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_STY(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_TAX(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_TAY(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_TSX(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_TXA(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_TXS(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_TYA(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
     return 0;
 }
 

@@ -14,6 +14,8 @@
 
 void mos6507_ADC(uint8_t data);
 void mos6507_AND(uint8_t data);
+void mos6507_ASL(uint8_t data);
+void mos6507_BIT(uint8_t data);
 
 #endif /* _MOS6507_MICROCODE_H */
 
