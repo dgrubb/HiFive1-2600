@@ -176,16 +176,9 @@ int opcode_ASL(int cycle, addressing_mode_t address_mode)
         }
         END_OPCODE()
         return 0;
-    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
-        ADDRESSING_MODE_ZERO_PAGE()
-    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED == address_mode) {
-        ADDRESSING_MODE_ZERO_PAGE_X_INDEXED()
-    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
-        ADDRESSING_MODE_ABSOLUTE()
-    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED == address_mode) {
-        ADDRESSING_MODE_ABSOLUTE_X_INDEXED()
     }
 
+    FETCH_DATA()
     mos6507_ASL(data);
     END_OPCODE()
     return 0;
@@ -223,12 +216,7 @@ int opcode_BIT(int cycle, addressing_mode_t address_mode)
     static uint8_t adl, adh, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
-    if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
-        ADDRESSING_MODE_ZERO_PAGE()
-    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
-        ADDRESSING_MODE_ABSOLUTE()
-    }
-
+    FETCH_DATA()
     mos6507_BIT(data);
     END_OPCODE()
     return 0;
@@ -383,14 +371,7 @@ int opcode_CPX(int cycle, addressing_mode_t address_mode)
     static uint8_t adl, adh, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
-    if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
-        ADDRESSING_MODE_IMMEDIATE()
-    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
-        ADDRESSING_MODE_ZERO_PAGE()
-    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
-        ADDRESSING_MODE_ABSOLUTE()
-    }
-
+    FETCH_DATA()
     mos6507_CPX(data);
     END_OPCODE()
     return 0;
@@ -401,14 +382,7 @@ int opcode_CPY(int cycle, addressing_mode_t address_mode)
     static uint8_t adl, adh, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
-    if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
-        ADDRESSING_MODE_IMMEDIATE()
-    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
-        ADDRESSING_MODE_ZERO_PAGE()
-    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
-        ADDRESSING_MODE_ABSOLUTE()
-    }
-
+    FETCH_DATA()
     mos6507_CPY(data);
     END_OPCODE()
     return 0;
