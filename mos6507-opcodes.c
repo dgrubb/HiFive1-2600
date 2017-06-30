@@ -741,8 +741,19 @@ int opcode_TAY(int cycle, addressing_mode_t address_mode)
 
 int opcode_TSX(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    uint8_t value = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            mos6507_get_register(MOS6507_REG_P, &value);
+            mos6507_set_register(MOS6507_REG_X, value);
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
 
     END_OPCODE()
     return 0;
@@ -770,8 +781,19 @@ int opcode_TXA(int cycle, addressing_mode_t address_mode)
 
 int opcode_TXS(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    uint8_t value = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            mos6507_get_register(MOS6507_REG_X, &value);
+            mos6507_set_register(MOS6507_REG_P, value);
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
 
     END_OPCODE()
     return 0;
