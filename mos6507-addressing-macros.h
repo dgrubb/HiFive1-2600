@@ -219,3 +219,22 @@
             break; \
     } \
 
+#define FETCH_DATA() \
+    if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) { \
+        ADDRESSING_MODE_IMMEDIATE() \
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) { \
+        ADDRESSING_MODE_ZERO_PAGE() \
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) { \
+        ADDRESSING_MODE_ABSOLUTE() \
+    } else if (OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED == address_mode) { \
+        ADDRESSING_MODE_INDIRECT_X_INDEXED() \
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED == address_mode) { \
+        ADDRESSING_MODE_ABSOLUTE_X_INDEXED() \
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED == address_mode) { \
+        ADDRESSING_MODE_ABSOLUTE_Y_INDEXED() \
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED == address_mode) { \
+        ADDRESSING_MODE_ZERO_PAGE_X_INDEXED() \
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED == address_mode) { \
+        ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED() \
+    } \
+
