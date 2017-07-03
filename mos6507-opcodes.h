@@ -62,7 +62,7 @@ int opcode_STY(int cycle, addressing_mode_t address_mode); /* STore the Y regist
 
 /* Arithmetic */
 int opcode_ADC(int cycle, addressing_mode_t address_mode); /* ADd to Accumulator with Carry */
-int opcode_SDC(int cycle, addressing_mode_t address_mode); /* SuBtract from accumulator with Carry*/
+int opcode_SBC(int cycle, addressing_mode_t address_mode); /* SuBtract from accumulator with Carry*/
 
 /* Increment and decrement */
 int opcode_INC(int cycle, addressing_mode_t address_mode); /* INCrement memory by one */

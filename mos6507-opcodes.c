@@ -55,70 +55,123 @@ void opcode_populate_ISA_table()
         ISA_table[i].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
     }
 
-    /* Now fill out the actual codes supported by a real 6507.
-     * Annotation format:
-     * [Hex code]:[Instruction], [Addressing mode]
-     */
+    /* Now fill out the actual codes supported by a real 6507 */
 
-    /* 0x00: BRK, Implied*/
+    /* 0x00: BRK, Implied */
     ISA_table[0x00].opcode = opcode_BRK;
     ISA_table[0x00].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
 
-    /* 0x01: ORA, X indexed indirect */
-    ISA_table[0x01].opcode = opcode_ORA;
-    ISA_table[0x01].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED;
+    /* Load accumulator with memory */
+    ISA_table[0xA9].opcode = opcode_LDA;
+    ISA_table[0xA9].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    ISA_table[0xA5].opcode = opcode_LDA;
+    ISA_table[0xA5].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xB5].opcode = opcode_LDA;
+    ISA_table[0xB5].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0xAD].opcode = opcode_LDA;
+    ISA_table[0xAD].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0xBD].opcode = opcode_LDA;
+    ISA_table[0xBD].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+    ISA_table[0xB9].opcode = opcode_LDA;
+    ISA_table[0xB9].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED;
+    ISA_table[0xA1].opcode = opcode_LDA;
+    ISA_table[0xA1].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED;
+    ISA_table[0xB1].opcode = opcode_LDA;
+    ISA_table[0xB1].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_Y_INDEXED;
 
-    /* 0x05: ORA, Zero-page */
-    ISA_table[0x05].opcode = opcode_ORA;
-    ISA_table[0x05].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    /* Load Index X with memory */
+    ISA_table[0xA2].opcode = opcode_LDX;
+    ISA_table[0xA2].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    ISA_table[0xA6].opcode = opcode_LDX;
+    ISA_table[0xA6].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xB6].opcode = opcode_LDX;
+    ISA_table[0xB6].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED;
+    ISA_table[0xAE].opcode = opcode_LDX;
+    ISA_table[0xAE].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0xBE].opcode = opcode_LDX;
+    ISA_table[0xBE].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED;
 
-    /* 0x06: ASL, Zero-page */
-    ISA_table[0x06].opcode = opcode_ASL;
-    ISA_table[0x06].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    /* Load Index Y with memory */
+    ISA_table[0xA0].opcode = opcode_LDY;
+    ISA_table[0xA0].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    ISA_table[0xA4].opcode = opcode_LDY;
+    ISA_table[0xA4].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xB4].opcode = opcode_LDY;
+    ISA_table[0xB4].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0xAC].opcode = opcode_LDY;
+    ISA_table[0xAC].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0xBC].opcode = opcode_LDY;
+    ISA_table[0xBB].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
 
-    /* 0x08: PHP, Implied */
-    ISA_table[0x08].opcode = opcode_PHP;
-    ISA_table[0x08].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+    /* Store Accumulator in memory */
+    ISA_table[0x85].opcode = opcode_STA;
+    ISA_table[0x85].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x95].opcode = opcode_STA;
+    ISA_table[0x95].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0x8D].opcode = opcode_STA;
+    ISA_table[0x8D].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0x9D].opcode = opcode_STA;
+    ISA_table[0x9D].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+    ISA_table[0x99].opcode = opcode_STA;
+    ISA_table[0x99].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED;
+    ISA_table[0x81].opcode = opcode_STA;
+    ISA_table[0x81].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED;
+    ISA_table[0x91].opcode = opcode_STA;
+    ISA_table[0x91].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_Y_INDEXED;
 
-    /* 0x09: ORA, Immediate */
-    ISA_table[0x09].opcode = opcode_ORA;
-    ISA_table[0x09].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    /* Store Index X in memory */
+    ISA_table[0x86].opcode = opcode_STX;
+    ISA_table[0x86].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x96].opcode = opcode_STX;
+    ISA_table[0x96].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED;
+    ISA_table[0x8E].opcode = opcode_STX;
+    ISA_table[0x8E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
 
-    /* 0x0A: ASL, Accumulator */
-    ISA_table[0x0A].opcode = opcode_ASL;
-    ISA_table[0x0A].addressing_mode = OPCODE_ADDRESSING_MODE_ACCUMULATOR;
+    /* Store Index Y in memory */
+    ISA_table[0x84].opcode = opcode_STY;
+    ISA_table[0x84].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x94].opcode = opcode_STY;
+    ISA_table[0x94].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0x8C].opcode = opcode_STY;
+    ISA_table[0x8C].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
 
-    /* 0x0D: ORA, Absolute */
-    ISA_table[0x0D].opcode = opcode_ORA;
-    ISA_table[0x0D].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    /* Add memory to Accumulator with carry */
+    ISA_table[0x69].opcode = opcode_ADC;
+    ISA_table[0x69].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    ISA_table[0x65].opcode = opcode_ADC;
+    ISA_table[0x65].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x75].opcode = opcode_ADC;
+    ISA_table[0x75].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0x6D].opcode = opcode_ADC;
+    ISA_table[0x6D].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0x7D].opcode = opcode_ADC;
+    ISA_table[0x7D].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+    ISA_table[0x79].opcode = opcode_ADC;
+    ISA_table[0x79].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED;
+    ISA_table[0x61].opcode = opcode_ADC;
+    ISA_table[0x61].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED;
+    ISA_table[0x71].opcode = opcode_ADC;
+    ISA_table[0x71].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_Y_INDEXED;
 
-    /* 0x0E: ASL, Absolute */
-    ISA_table[0x0E].opcode = opcode_ASL;
-    ISA_table[0x0E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    /* Subtract memory from Accumulator with borrow */
+    ISA_table[0xE9].opcode = opcode_SBC;
+    ISA_table[0xE9].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    ISA_table[0xE5].opcode = opcode_SBC;
+    ISA_table[0xE5].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xF5].opcode = opcode_SBC;
+    ISA_table[0xF5].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0xED].opcode = opcode_SBC;
+    ISA_table[0xED].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0xFD].opcode = opcode_SBC;
+    ISA_table[0xFD].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+    ISA_table[0xF9].opcode = opcode_SBC;
+    ISA_table[0xF9].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED;
+    ISA_table[0xE1].opcode = opcode_SBC;
+    ISA_table[0xE1].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED;
+    ISA_table[0xF1].opcode = opcode_SBC;
+    ISA_table[0xF1].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_Y_INDEXED;
 
-    /* 0x10: BPL, Relative */
-    ISA_table[0x10].opcode = opcode_BPL;
-    ISA_table[0x10].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
 
-    /* 0x11: ORA, Indirect Y indexed */
-    ISA_table[0x11].opcode = opcode_ORA;
-    ISA_table[0x11].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_Y_INDEXED;
-
-    /* 0x15: ORA, Zero-page X indexed */
-    ISA_table[0x15].opcode = opcode_ORA;
-    ISA_table[0x15].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
-
-    /* 0x16: ASL, Zero-page X indexed */
-    ISA_table[0x16].opcode = opcode_ASL;
-    ISA_table[0x16].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
-
-    /* 0x18: CLC, Implied */
-    ISA_table[0x18].opcode = opcode_CLC;
-    ISA_table[0x18].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
-
-    /* 0x19: ORA, Absolute Y indexed */
-    ISA_table[0x19].opcode = opcode_ORA;
-    ISA_table[0x19].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED;
 }
 
 /******************************************************************************
