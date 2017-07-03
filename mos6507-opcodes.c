@@ -333,6 +333,85 @@ void opcode_populate_ISA_table()
     ISA_table[0x7E].opcode = opcode_ROR;
     ISA_table[0x7E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
 
+    /* Transfer Accumulator to Index X */
+    ISA_table[0xAA].opcode = opcode_TAX;
+    ISA_table[0xAA].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Transfer Accumulator to Index Y */
+    ISA_table[0xA8].opcode = opcode_TAY;
+    ISA_table[0xA8].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Transfer Index X to Accumulator */
+    ISA_table[0x8A].opcode = opcode_TXA;
+    ISA_table[0x8A].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Transfer Index Y to Accumulator */
+    ISA_table[0x98].opcode = opcode_TYA;
+    ISA_table[0x98].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Transfer stack pointer to Index X */
+    ISA_table[0xBA].opcode = opcode_TSX;
+    ISA_table[0xBA].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Transfer Index X to stack register */
+    ISA_table[0x9A].opcode = opcode_TXS;
+    ISA_table[0x9A].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Push Accumulator onto stack */
+    ISA_table[0x48].opcode = opcode_PHA;
+    ISA_table[0x48].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Push processor status onto stack */
+    ISA_table[0x08].opcode = opcode_PHP;
+    ISA_table[0x08].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Pull Accumulator from stack */
+    ISA_table[0x68].opcode = opcode_PLA;
+    ISA_table[0x68].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Pull processor status from stack */
+    ISA_table[0x28].opcode = opcode_PLP;
+    ISA_table[0x28].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Jump to new location saving return address */
+    ISA_table[0x20].opcode = opcode_JSR;
+    ISA_table[0x20].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+
+    /* Return from subroutine */
+    ISA_table[0x60].opcode = opcode_RTS;
+    ISA_table[0x60].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Return from interrupt */
+    ISA_table[0x40].opcode = opcode_RTI;
+    ISA_table[0x40].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Clear carry flag */
+    ISA_table[0x18].opcode = opcode_CLC;
+    ISA_table[0x18].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Clear decimal mode */
+    ISA_table[0xD8].opcode = opcode_CLD;
+    ISA_table[0xD8].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Clear interrupt disable bit */
+    ISA_table[0x58].opcode = opcode_CLI;
+    ISA_table[0x58].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Clear overflow bit */
+    ISA_table[0xB8].opcode = opcode_CLV;
+    ISA_table[0xB8].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Set carry flag */
+    ISA_table[0x38].opcode = opcode_SEC;
+    ISA_table[0x38].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Set decimal flag */
+    ISA_table[0xF8].opcode = opcode_SED;
+    ISA_table[0xF8].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Set interrupt disable status */
+    ISA_table[0x78].opcode = opcode_SEI;
+    ISA_table[0x78].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
 
 }
 
