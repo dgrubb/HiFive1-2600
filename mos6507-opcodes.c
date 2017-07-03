@@ -171,7 +171,41 @@ void opcode_populate_ISA_table()
     ISA_table[0xF1].opcode = opcode_SBC;
     ISA_table[0xF1].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_Y_INDEXED;
 
+    /* Increment memory by one */
+    ISA_table[0xE6].opcode = opcode_INC;
+    ISA_table[0xE6].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xF6].opcode = opcode_INC;
+    ISA_table[0xF6].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0xEE].opcode = opcode_INC;
+    ISA_table[0xEE].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0xFE].opcode = opcode_INC;
+    ISA_table[0xFE].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
 
+    /* Increment Index X by one */
+    ISA_table[0xE8].opcode = opcode_INX;
+    ISA_table[0xE8].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Increment Index Y by one */
+    ISA_table[0xC8].opcode = opcode_INY;
+    ISA_table[0xC8].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Decrement memory by one */
+    ISA_table[0xC6].opcode = opcode_DEC;
+    ISA_table[0xC6].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xD6].opcode = opcode_DEC;
+    ISA_table[0xD6].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0xCE].opcode = opcode_DEC;
+    ISA_table[0xCE].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0xDE].opcode = opcode_DEC;
+    ISA_table[0xDE].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+
+    /* Decrement Index X by one */
+    ISA_table[0xCA].opcode = opcode_DEX;
+    ISA_table[0xCA].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Decrement Index Y by one */
+    ISA_table[0x88].opcode = opcode_DEY;
+    ISA_table[0x88].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
 }
 
 /******************************************************************************

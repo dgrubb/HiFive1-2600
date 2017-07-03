@@ -70,8 +70,6 @@ int opcode_INX(int cycle, addressing_mode_t address_mode); /* INcrement X by one
 int opcode_INY(int cycle, addressing_mode_t address_mode); /* INcrement Y by one */
 int opcode_DEC(int cycle, addressing_mode_t address_mode); /* DECrement memory by one */
 int opcode_DEX(int cycle, addressing_mode_t address_mode); /* DEcrement X by one */
-int opcode_DEX(int cycle, addressing_mode_t address_mode); /* DEcrement X by one */
-int opcode_DEY(int cycle, addressing_mode_t address_mode); /* DEcrement Y by one */
 int opcode_DEY(int cycle, addressing_mode_t address_mode); /* DEcrement Y by one */
 
 /* Logical */
