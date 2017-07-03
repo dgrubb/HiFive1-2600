@@ -206,6 +206,85 @@ void opcode_populate_ISA_table()
     /* Decrement Index Y by one */
     ISA_table[0x88].opcode = opcode_DEY;
     ISA_table[0x88].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
+
+    /* Jump to new location */
+    ISA_table[0x4C].opcode = opcode_JMP;
+    ISA_table[0x4c].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0x6C].opcode = opcode_JMP;
+    ISA_table[0x6C].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT;
+
+    /* Branch on carry clear */
+    ISA_table[0x90].opcode = opcode_BCC;
+    ISA_table[0x90].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
+
+    /* Branch on carry set */
+    ISA_table[0xB0].opcode = opcode_BCS;
+    ISA_table[0xB0].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
+
+    /* Branch on result zero */
+    ISA_table[0xF0].opcode = opcode_BEQ;
+    ISA_table[0xF0].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
+
+    /* Branch on result not zero */
+    ISA_table[0xD0].opcode = opcode_BNE;
+    ISA_table[0xD0].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
+
+    /* Branch on result not zero */
+    ISA_table[0x30].opcode = opcode_BMI;
+    ISA_table[0x30].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
+
+    /* Branch on result plus */
+    ISA_table[0x10].opcode = opcode_BPL;
+    ISA_table[0x10].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
+
+    /* Branch on overflow set */
+    ISA_table[0x70].opcode = opcode_BVS;
+    ISA_table[0x70].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
+
+    /* Branch on overflow clear */
+    ISA_table[0x50].opcode = opcode_BVC;
+    ISA_table[0x50].addressing_mode = OPCODE_ADDRESSING_MODE_RELATIVE;
+
+    /* Compare with Accumulator*/
+    ISA_table[0xC9].opcode = opcode_CMP;
+    ISA_table[0xC9].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    ISA_table[0xC5].opcode = opcode_CMP;
+    ISA_table[0xC5].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xD5].opcode = opcode_CMP;
+    ISA_table[0xD5].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0xCD].opcode = opcode_CMP;
+    ISA_table[0xCD].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0xDD].opcode = opcode_CMP;
+    ISA_table[0xDD].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+    ISA_table[0xD9].opcode = opcode_CMP;
+    ISA_table[0xD9].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED;
+    ISA_table[0xC1].opcode = opcode_CMP;
+    ISA_table[0xC1].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED;
+    ISA_table[0xD1].opcode = opcode_CMP;
+    ISA_table[0xD1].addressing_mode = OPCODE_ADDRESSING_MODE_INDIRECT_Y_INDEXED;
+
+    /* Compare memory with Index X */
+    ISA_table[0xE0].opcode = opcode_CPX;
+    ISA_table[0xE0].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    ISA_table[0xE4].opcode = opcode_CPX;
+    ISA_table[0xE4].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xEC].opcode = opcode_CPX;
+    ISA_table[0xEC].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+
+    /* Compare memory with Index Y */
+    ISA_table[0xC0].opcode = opcode_CPY;
+    ISA_table[0xC0].addressing_mode = OPCODE_ADDRESSING_MODE_IMMEDIATE;
+    ISA_table[0xC4].opcode = opcode_CPY;
+    ISA_table[0xC4].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0xCC].opcode = opcode_CPY;
+    ISA_table[0xCC].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+
+    /* Test bits in memory with Accumulator */
+    ISA_table[0x24].opcode = opcode_BIT;
+    ISA_table[0x24].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x2C].opcode = opcode_BIT;
+    ISA_table[0x2C].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+
 }
 
 /******************************************************************************
