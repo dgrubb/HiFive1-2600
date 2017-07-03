@@ -25,7 +25,7 @@ void mos6507_AND(uint8_t data)
 {
 }
 
-void mos6507_ASL(uint8_t data)
+void mos6507_ASL(uint8_t data, addressing_destination_t destination, uint16_t address)
 {
 }
 

@@ -1,4 +1,4 @@
-#define ADDRESSING_MODE_ABSOLUTE() \
+#define FETCH_ADDRESS_ABSOLUTE() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -19,7 +19,28 @@
             break; \
     } \
 
-#define ADDRESSING_MODE_IMMEDIATE() \
+#define FETCH_DATA_ABSOLUTE() \
+    switch(cycle) { \
+        case 0: \
+            return -1; \
+        case 1: \
+            mos6507_increment_PC(); \
+            mos6507_set_address_bus(mos6507_get_PC()); \
+            memmap_read(&adl); \
+            return -1; \
+        case 2: \
+            mos6507_increment_PC(); \
+            mos6507_set_address_bus(mos6507_get_PC()); \
+            memmap_read(&adh); \
+            return -1; \
+        case 3: \
+            mos6507_set_address_bus_hl(adh, adl); \
+            memmap_read(&data); \
+        default: \
+            break; \
+    } \
+
+#define FETCH_DATA_IMMEDIATE() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -31,7 +52,7 @@
             break; \
     } \
 
-#define ADDRESSING_MODE_ZERO_PAGE() \
+#define FETCH_DATA_ZERO_PAGE() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -47,7 +68,7 @@
             break; \
     } \
 
-#define ADDRESSING_MODE_ABSOLUTE() \
+#define FETCH_DATA_ABSOLUTE() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -68,7 +89,7 @@
             break; \
     } \
 
-#define ADDRESSING_MODE_INDIRECT_X_INDEXED() \
+#define FETCH_DATA_INDIRECT_X_INDEXED() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -97,7 +118,7 @@
             break; \
     } \
 
-#define ADDRESSING_MODE_ABSOLUTE_X_INDEXED() \
+#define FETCH_DATA_ABSOLUTE_X_INDEXED() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -137,7 +158,7 @@
             break; \
     } \
 
-#define ADDRESSING_MODE_ABSOLUTE_Y_INDEXED() \
+#define FETCH_DATA_ABSOLUTE_Y_INDEXED() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -177,7 +198,7 @@
             break; \
     } \
 
-#define ADDRESSING_MODE_ZERO_PAGE_X_INDEXED() \
+#define FETCH_DATA_ZERO_PAGE_X_INDEXED() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -198,7 +219,7 @@
             break; \
     } \
 
-#define ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED() \
+#define FETCH_DATA_ZERO_PAGE_Y_INDEXED() \
     switch(cycle) { \
         case 0: \
             return -1; \
@@ -221,20 +242,39 @@
 
 #define FETCH_DATA() \
     if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) { \
-        ADDRESSING_MODE_IMMEDIATE() \
+        FETCH_DATA_IMMEDIATE() \
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) { \
-        ADDRESSING_MODE_ZERO_PAGE() \
+        FETCH_DATA_ZERO_PAGE() \
     } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) { \
-        ADDRESSING_MODE_ABSOLUTE() \
+        FETCH_DATA_ABSOLUTE() \
     } else if (OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED == address_mode) { \
-        ADDRESSING_MODE_INDIRECT_X_INDEXED() \
+        FETCH_DATA_INDIRECT_X_INDEXED() \
     } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED == address_mode) { \
-        ADDRESSING_MODE_ABSOLUTE_X_INDEXED() \
+        FETCH_DATA_ABSOLUTE_X_INDEXED() \
     } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED == address_mode) { \
-        ADDRESSING_MODE_ABSOLUTE_Y_INDEXED() \
+        FETCH_DATA_ABSOLUTE_Y_INDEXED() \
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED == address_mode) { \
-        ADDRESSING_MODE_ZERO_PAGE_X_INDEXED() \
+        FETCH_DATA_ZERO_PAGE_X_INDEXED() \
     } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED == address_mode) { \
-        ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED() \
+        FETCH_DATA_ZERO_PAGE_Y_INDEXED() \
+    } \
+
+#define FETCH_ADDRESS() \
+    if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) { \
+        FETCH_ADDRESS_IMMEDIATE() \
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) { \
+        FETCH_ADDRESS_ZERO_PAGE() \
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) { \
+        FETCH_ADDRESS_ABSOLUTE() \
+    } else if (OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED == address_mode) { \
+        FETCH_ADDRESS_INDIRECT_X_INDEXED() \
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED == address_mode) { \
+        FETCH_ADDRESS_ABSOLUTE_X_INDEXED() \
+    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED == address_mode) { \
+        FETCH_ADDRESS_ABSOLUTE_Y_INDEXED() \
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED == address_mode) { \
+        FETCH_ADDRESS_ZERO_PAGE_X_INDEXED() \
+    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED == address_mode) { \
+        FETCH_ADDRESS_ZERO_PAGE_Y_INDEXED() \
     } \
 
