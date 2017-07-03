@@ -413,6 +413,9 @@ void opcode_populate_ISA_table()
     ISA_table[0x78].opcode = opcode_SEI;
     ISA_table[0x78].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
 
+    /* No operation */
+    ISA_table[0xEA].opcode = opcode_NOP;
+    ISA_table[0xEA].addressing_mode = OPCODE_ADDRESSING_MODE_IMPLIED;
 }
 
 /******************************************************************************
@@ -801,9 +804,16 @@ int opcode_LSR(int cycle, addressing_mode_t address_mode)
 
 int opcode_NOP(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
-
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1: ;
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
     END_OPCODE()
     return 0;
 }
@@ -886,6 +896,15 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
 }
 
 int opcode_PLA(int cycle, addressing_mode_t address_mode)
+{
+    static uint8_t adl, adh, bah, bal, data = 0;
+    uint8_t X, Y, c = 0;
+
+    END_OPCODE()
+    return 0;
+}
+
+int opcode_PLP(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t adl, adh, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
