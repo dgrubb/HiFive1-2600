@@ -285,6 +285,55 @@ void opcode_populate_ISA_table()
     ISA_table[0x2C].opcode = opcode_BIT;
     ISA_table[0x2C].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
 
+    /* Shift left one bit */
+    ISA_table[0x0A].opcode = opcode_ASL;
+    ISA_table[0x0A].addressing_mode = OPCODE_ADDRESSING_MODE_ACCUMULATOR;
+    ISA_table[0x06].opcode = opcode_ASL;
+    ISA_table[0x06].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x16].opcode = opcode_ASL;
+    ISA_table[0x16].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0x0E].opcode = opcode_ASL;
+    ISA_table[0x0E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0x1E].opcode = opcode_ASL;
+    ISA_table[0x1E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+
+    /* Right shift one bit */
+    ISA_table[0x4A].opcode = opcode_LSR;
+    ISA_table[0x4A].addressing_mode = OPCODE_ADDRESSING_MODE_ACCUMULATOR;
+    ISA_table[0x46].opcode = opcode_LSR;
+    ISA_table[0x46].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x56].opcode = opcode_LSR;
+    ISA_table[0x56].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0x4E].opcode = opcode_LSR;
+    ISA_table[0x4E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0x5E].opcode = opcode_LSR;
+    ISA_table[0x5E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+
+    /* Rotate one bit left */
+    ISA_table[0x2A].opcode = opcode_ROL;
+    ISA_table[0x2A].addressing_mode = OPCODE_ADDRESSING_MODE_ACCUMULATOR;
+    ISA_table[0x26].opcode = opcode_ROL;
+    ISA_table[0x26].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x36].opcode = opcode_ROL;
+    ISA_table[0x36].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0x2E].opcode = opcode_ROL;
+    ISA_table[0x2E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0x3E].opcode = opcode_ROL;
+    ISA_table[0x3E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+
+    /* Rotate one bit right */
+    ISA_table[0x6A].opcode = opcode_ROR;
+    ISA_table[0x6A].addressing_mode = OPCODE_ADDRESSING_MODE_ACCUMULATOR;
+    ISA_table[0x66].opcode = opcode_ROR;
+    ISA_table[0x66].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE;
+    ISA_table[0x76].opcode = opcode_ROR;
+    ISA_table[0x76].addressing_mode = OPCODE_ADDRESSING_MODE_ZERO_PAGE_X_INDEXED;
+    ISA_table[0x6E].opcode = opcode_ROR;
+    ISA_table[0x6E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
+    ISA_table[0x7E].opcode = opcode_ROR;
+    ISA_table[0x7E].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+
+
 }
 
 /******************************************************************************
