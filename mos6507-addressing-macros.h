@@ -1,24 +1,3 @@
-#define FETCH_ADDRESS_ABSOLUTE() \
-    switch(cycle) { \
-        case 0: \
-            return -1; \
-        case 1: \
-            mos6507_increment_PC(); \
-            mos6507_set_address_bus(mos6507_get_PC()); \
-            memmap_read(&adl); \
-            return -1; \
-        case 2: \
-            mos6507_increment_PC(); \
-            mos6507_set_address_bus(mos6507_get_PC()); \
-            memmap_read(&adh); \
-            return -1; \
-        case 3: \
-            mos6507_set_address_bus_hl(adh, adl); \
-            memmap_read(&data); \
-        default: \
-            break; \
-    } \
-
 #define FETCH_DATA_ABSOLUTE() \
     switch(cycle) { \
         case 0: \
