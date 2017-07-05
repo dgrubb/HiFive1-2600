@@ -7,6 +7,9 @@
  *
  * Useful information about cycle execution times:
  * http://users.telenet.be/kim1-6502/6502/hwman.html##AA
+ *
+ * Useful information about opcode logic and status flags:
+ * http://www.obelisk.me.uk/6502/reference.html
  */
 
 #include "mos6507.h"
@@ -841,10 +844,35 @@ int opcode_JMP(int cycle, addressing_mode_t address_mode)
 
 int opcode_JSR(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t adl, adh, pcl, pch, data, sp = 0;
+    uint16_t PC = 0;
 
-    END_OPCODE()
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
+            memmap_read(&adl);
+            return -1;
+        case 2:
+            mos6507_get_register(MOS6507_REG_S, &sp);
+            mos6507_set_address_bus_hl(0, sp);
+            return -1;
+        case 3:
+            /* TODO: Finish this special opcode */
+            return -1;
+        case 4:
+            return -1;
+        case 5:
+
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
+
     return 0;
 }
 
