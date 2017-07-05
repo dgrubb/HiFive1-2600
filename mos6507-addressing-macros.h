@@ -1,3 +1,11 @@
+
+
+/*
+ * These macros apply when reading from a memory location prior
+ * to perfroming an operation where the result is placed into, 
+ * or occurs, entirely within the CPU (e.g., compare a value to 
+ * the accumulator, or an index register etc.).
+ */
 #define FETCH_DATA_ABSOLUTE() \
     switch(cycle) { \
         case 0: \
