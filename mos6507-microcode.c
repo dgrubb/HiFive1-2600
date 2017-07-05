@@ -53,10 +53,18 @@ void mos6507_LSR(uint8_t data)
 {
 }
 
+void mos6507_ORA(uint8_t data)
+{
+}
+
 void mos6507_ROL(uint8_t data)
 {
 }
 
 void mos6507_ROR(uint8_t data)
+{
+}
+
+void mos6507_SBC(uint8_t data)
 {
 }

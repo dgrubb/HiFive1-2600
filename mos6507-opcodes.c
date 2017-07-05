@@ -774,8 +774,28 @@ int opcode_INC(int cycle, addressing_mode_t address_mode)
 
 int opcode_INX(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    uint8_t value, status = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            mos6507_get_register(MOS6507_REG_P, &status);
+            mos6507_get_register(MOS6507_REG_X, &value);
+            value++;
+            if (0 == value) {
+                status &= ~(MOS6507_STATUS_FLAG_ZERO);
+            }
+            if (0x80 | value) {
+                status &= ~(MOS6507_STATUS_FLAG_NEGATIVE);
+            }
+            mos6507_set_register(MOS6507_REG_X, value);
+            mos6507_set_register(MOS6507_REG_P, status);
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
 
     END_OPCODE()
     return 0;
@@ -783,8 +803,28 @@ int opcode_INX(int cycle, addressing_mode_t address_mode)
 
 int opcode_INY(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    uint8_t value, status = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            mos6507_get_register(MOS6507_REG_P, &status);
+            mos6507_get_register(MOS6507_REG_Y, &value);
+            value++;
+            if (0 == value) {
+                status &= ~(MOS6507_STATUS_FLAG_ZERO);
+            }
+            if (0x80 | value) {
+                status &= ~(MOS6507_STATUS_FLAG_NEGATIVE);
+            }
+            mos6507_set_register(MOS6507_REG_Y, value);
+            mos6507_set_register(MOS6507_REG_P, status);
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
 
     END_OPCODE()
     return 0;
@@ -885,21 +925,12 @@ int opcode_NOP(int cycle, addressing_mode_t address_mode)
 
 int opcode_ORA(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t accumulator, data, result, status = 0;
-    if (OPCODE_ADDRESSING_MODE_IMMEDIATE == address_mode) {
-        switch(cycle) {
-            case 0:
-                /* Consume clock cycle for fetching op-code */
-                return -1;
-            case 1: ;
-                /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                break;
-        }
-    } else if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
-    };
-    END_OPCODE();
+    static uint8_t adl, adh, bal, bah, data = 0;
+    uint8_t X, Y, c = 0;
+
+    FETCH_DATA()
+    mos6507_ORA(data);
+    END_OPCODE()
     return 0;
 }
 
@@ -1031,9 +1062,11 @@ int opcode_RTS(int cycle, addressing_mode_t address_mode)
 
 int opcode_SBC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
+    static uint8_t adl, adh, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
+    FETCH_DATA()
+    mos6507_SBC(data);
     END_OPCODE()
     return 0;
 }
@@ -1106,6 +1139,10 @@ int opcode_STA(int cycle, addressing_mode_t address_mode)
     static uint8_t adl, adh, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
+    FETCH_STORE_ADDRESS()
+    mos6507_get_register(MOS6507_REG_A, &data);
+    mos6507_set_data_bus(data);
+    memmap_write();
     END_OPCODE()
     return 0;
 }
@@ -1115,6 +1152,10 @@ int opcode_STX(int cycle, addressing_mode_t address_mode)
     static uint8_t adl, adh, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
+    FETCH_STORE_ADDRESS()
+    mos6507_get_register(MOS6507_REG_X, &data);
+    mos6507_set_data_bus(data);
+    memmap_write();
     END_OPCODE()
     return 0;
 }
@@ -1124,159 +1165,10 @@ int opcode_STY(int cycle, addressing_mode_t address_mode)
     static uint8_t adl, adh, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
-    if (OPCODE_ADDRESSING_MODE_ZERO_PAGE == address_mode) {
-        switch(cycle) {
-            case 0:
-                /* Consume clock cycle for fetching op-code */
-                return -1;
-            case 1:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&adl);
-                return -1;
-            case 2:
-                mos6507_set_address_bus_hl(0, adl);
-                mos6507_get_register(MOS6507_REG_Y, &Y);
-                mos6507_set_data_bus(Y);
-                /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                break;
-        }
-    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE == address_mode) {
-         switch(cycle) {
-            case 0:
-                /* Consume clock cycle for fetching op-code */
-                return -1;
-            case 1:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&adl);
-                return -1;
-            case 2:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&adh);
-                return -1;
-            case 3:
-                mos6507_set_address_bus_hl(adh, adl);
-                mos6507_get_register(MOS6507_REG_Y, &Y);
-                mos6507_set_data_bus(Y);
-                memmap_write();
-                /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                break;
-        }
-    } else if (OPCODE_ADDRESSING_MODE_INDIRECT_X_INDEXED == address_mode) {
-        switch(cycle) {
-            case 0:
-                /* Consume clock cycle for fetching op-code */
-                return -1;
-            case 1:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&bal);
-                return -1;
-            case 2:
-                mos6507_set_address_bus_hl(0, bal);
-                return -1;
-            case 3:
-                mos6507_set_address_bus_hl(0, bal + X);
-                memmap_read(&adl);
-                return -1;
-            case 4:
-                mos6507_set_address_bus_hl(0, bal + X + 1);
-                memmap_read(&adh);
-                return -1;
-            case 5:
-                mos6507_set_address_bus_hl(adh, adl);
-                mos6507_get_register(MOS6507_REG_Y, &Y);
-                mos6507_set_data_bus(Y);
-                memmap_write();
-                /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                break;
-        }
-    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED == address_mode) {
-        switch(cycle) {
-            case 0:
-                /* Consume clock cycle for fetching op-code */
-                return -1;
-            case 1:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&bal);
-                return -1;
-            case 2:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&bah);
-                return -1;
-            case 3:
-                mos6507_get_register(MOS6507_REG_X, &X);
-                adl = bal + X;
-                if ((bal + X) & 0x0100) {
-                    c = 1;
-                }
-                adh = bah + c;
-                mos6507_set_address_bus_hl(adh, adl);
-                return -1;
-            case 4:
-                mos6507_set_address_bus_hl(adh, adl);
-                memmap_read(&adh);
-                return -1;
-            case 5:
-                mos6507_set_address_bus_hl(adh, adl);
-                mos6507_get_register(MOS6507_REG_Y, &Y);
-                mos6507_set_data_bus(Y);
-                memmap_write();
-                /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                break;
-        }
-    } else if (OPCODE_ADDRESSING_MODE_ABSOLUTE_Y_INDEXED == address_mode) {
-        switch(cycle) {
-            case 0:
-                /* Consume clock cycle for fetching op-code */
-                return -1;
-            case 1:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&bal);
-                return -1;
-            case 2:
-                mos6507_increment_PC();
-                mos6507_set_address_bus(mos6507_get_PC());
-                memmap_read(&bah);
-                return -1;
-            case 3:
-                mos6507_get_register(MOS6507_REG_Y, &Y);
-                adl = bal + Y;
-                if ((bal + Y) & 0x0100) {
-                    c = 1;
-                }
-                adh = bah + c;
-                mos6507_set_address_bus_hl(adh, adl);
-                return -1;
-            case 4:
-                mos6507_set_address_bus_hl(adh, adl);
-                memmap_read(&adh);
-                return -1;
-            case 5:
-                mos6507_set_address_bus_hl(adh, adl);
-                mos6507_get_register(MOS6507_REG_Y, &Y);
-                mos6507_set_data_bus(Y);
-                memmap_write();
-                /* Intentional fall-through */
-            default:
-                /* End of op-code execution */
-                break;
-        }
-    }
-
+    FETCH_STORE_ADDRESS()
+    mos6507_get_register(MOS6507_REG_Y, &data);
+    mos6507_set_data_bus(data);
+    memmap_write();
     END_OPCODE()
     return 0;
 }
