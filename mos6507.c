@@ -53,6 +53,11 @@ uint16_t mos6507_get_PC()
     return cpu.PC;
 }
 
+void mos6507_set_PC(uint16_t pc)
+{
+    cpu.PC = pc;
+}
+
 void mos6507_set_address_bus_hl(uint8_t adh, uint8_t adl)
 {
     cpu.address_bus  = 0;

@@ -486,28 +486,49 @@ int opcode_ASL(int cycle, addressing_mode_t address_mode)
 
 int opcode_BCC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t condition, offset, P = 0;
+    static uint16_t addr = 0;
 
-    END_OPCODE()
+    mos6507_get_register(MOS6507_REG_P, &P);
+    if ((P & MOS6507_STATUS_FLAG_CARRY) == 0) {
+        condition = 1;
+    }
+
+    CALC_BRANCH()
+
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
 int opcode_BCS(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t condition, offset, P = 0;
+    static uint16_t addr = 0;
 
-    END_OPCODE()
+    mos6507_get_register(MOS6507_REG_P, &P);
+    if ((P & MOS6507_STATUS_FLAG_CARRY) != 0) {
+        condition = 1;
+    }
+
+    CALC_BRANCH()
+
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
 int opcode_BEQ(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t condition, offset, P = 0;
+    static uint16_t addr = 0;
 
-    END_OPCODE()
+    mos6507_get_register(MOS6507_REG_P, &P);
+    if ((P & MOS6507_STATUS_FLAG_ZERO) != 0) {
+        condition = 1;
+    }
+
+    CALC_BRANCH()
+
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
@@ -524,28 +545,49 @@ int opcode_BIT(int cycle, addressing_mode_t address_mode)
 
 int opcode_BMI(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t condition, offset, P = 0;
+    static uint16_t addr = 0;
 
-    END_OPCODE()
+    mos6507_get_register(MOS6507_REG_P, &P);
+    if ((P & MOS6507_STATUS_FLAG_NEGATIVE) == 0) {
+        condition = 1;
+    }
+
+    CALC_BRANCH()
+
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
 int opcode_BNE(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t condition, offset, P = 0;
+    static uint16_t addr = 0;
 
-    END_OPCODE()
+    mos6507_get_register(MOS6507_REG_P, &P);
+    if ((P & MOS6507_STATUS_FLAG_NEGATIVE) != 0) {
+        condition = 1;
+    }
+
+    CALC_BRANCH()
+
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
 int opcode_BPL(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t condition, offset, P = 0;
+    static uint16_t addr = 0;
 
-    END_OPCODE()
+    mos6507_get_register(MOS6507_REG_P, &P);
+    if ((P & MOS6507_STATUS_FLAG_NEGATIVE) == 0) {
+        condition = 1;
+    }
+
+    CALC_BRANCH()
+
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
@@ -555,10 +597,17 @@ int opcode_BRK(int cycle, addressing_mode_t address_mode)
 
 int opcode_BVC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t condition, offset, P = 0;
+    static uint16_t addr = 0;
 
-    END_OPCODE()
+    mos6507_get_register(MOS6507_REG_P, &P);
+    if ((P & MOS6507_STATUS_FLAG_OVERFLOW) == 0) {
+        condition = 1;
+    }
+
+    CALC_BRANCH()
+
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 

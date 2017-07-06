@@ -1,3 +1,33 @@
+/* Bitwise calculation of whether two addresses
+ * are on the same page. Courtesy of stella, emucode/MOS6502.m4:28
+ */
+#define NOT_SAME_PAGE(_addr1, _addr2) (((_addr1) ^ (_addr2)) & 0xFF00)
+
+#define CALC_BRANCH() \
+    switch(cycle) { \
+        case 0: \
+            return -1; \
+        case 1: \
+            mos6507_increment_PC(); \
+            mos6507_set_address_bus(mos6507_get_PC()); \
+            memmap_read(&offset); \
+            if (!condition) { \
+                return 0; \
+            } \
+            return -1; \
+        case 2: \
+            mos6507_increment_PC(); \
+            addr = mos6507_get_PC() + offset; \
+            if (NOT_SAME_PAGE(mos6507_get_PC(), addr)) { \
+                return -1; \
+            } \
+            mos6507_set_PC(addr); \
+            break; \
+        case 3: \
+        default: \
+            break; \
+    } \
+
 /*
  */
 #define FETCH_STORE_ADDRESS_ABSOLUTE() \

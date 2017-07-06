@@ -53,5 +53,6 @@ void mos6507_set_data_bus(uint8_t data);
 void mos6507_get_data_bus(uint8_t *data);
 void mos6507_increment_PC();
 uint16_t mos6507_get_PC();
+void mos6507_set_PC(uint16_t pc);
 
 #endif /* _MOS6507_H */
