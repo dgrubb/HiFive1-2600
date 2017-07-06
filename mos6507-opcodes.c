@@ -699,7 +699,7 @@ int opcode_DEC(int cycle, addressing_mode_t address_mode)
 
 int opcode_DEX(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value, status = 0;
+    static uint8_t value, status = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -728,7 +728,7 @@ int opcode_DEX(int cycle, addressing_mode_t address_mode)
 
 int opcode_DEY(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value, status = 0;
+    static int8_t value, status = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -777,7 +777,7 @@ int opcode_INC(int cycle, addressing_mode_t address_mode)
 
 int opcode_INX(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value, status = 0;
+    static int8_t value, status = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -806,7 +806,7 @@ int opcode_INX(int cycle, addressing_mode_t address_mode)
 
 int opcode_INY(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value, status = 0;
+    static uint8_t value, status = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -835,9 +835,28 @@ int opcode_INY(int cycle, addressing_mode_t address_mode)
 
 int opcode_JMP(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    static uint8_t adl, adh = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
+            memmap_read(&adl);
+            return -1;
+        case 2:
+            mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
+            memmap_read(&adh);
+            return -1;
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
 
+    mos6507_set_address_bus_hl(adh, adl);
     return 0;
 }
 
@@ -971,7 +990,7 @@ int opcode_ORA(int cycle, addressing_mode_t address_mode)
 
 int opcode_PHA(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value, destination = 0;
+    static uint8_t value, destination = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1000,7 +1019,7 @@ int opcode_PHA(int cycle, addressing_mode_t address_mode)
 
 int opcode_PHP(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value, destination = 0;
+    static uint8_t value, destination = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1029,7 +1048,7 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
 
 int opcode_PLA(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value, source = 0;
+    static uint8_t value, source = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1060,7 +1079,7 @@ int opcode_PLA(int cycle, addressing_mode_t address_mode)
 
 int opcode_PLP(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value, source = 0;
+    static uint8_t value, source = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
