@@ -979,6 +979,7 @@ int opcode_PHA(int cycle, addressing_mode_t address_mode)
         case 1:
             /* Consume another clock cycle incrementing PC */
             mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
             return -1;
         case 2:
             /* Fetch value of status register and stack pointer */
@@ -1007,6 +1008,7 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
         case 1:
             /* Consume another clock cycle incrementing PC */
             mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
             return -1;
         case 2:
             /* Fetch value of status register and stack pointer */
@@ -1027,8 +1029,30 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
 
 int opcode_PLA(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    uint8_t value, source = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            /* Consume another clock cycle incrementing PC */
+            mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
+            return -1;
+        case 2:
+            mos6507_get_register(MOS6507_REG_S, &source);
+            mos6507_set_address_bus(source);
+            return -1;
+        case 3:
+            source++;
+            mos6507_set_address_bus(source);
+            memmap_read(&value);
+            mos6507_set_register(MOS6507_REG_A, value);
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
 
     END_OPCODE()
     return 0;
@@ -1036,8 +1060,30 @@ int opcode_PLA(int cycle, addressing_mode_t address_mode)
 
 int opcode_PLP(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
-    uint8_t X, Y, c = 0;
+    uint8_t value, source = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            /* Consume another clock cycle incrementing PC */
+            mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
+            return -1;
+        case 2:
+            mos6507_get_register(MOS6507_REG_S, &source);
+            mos6507_set_address_bus(source);
+            return -1;
+        case 3:
+            source++;
+            mos6507_set_address_bus(source);
+            memmap_read(&value);
+            mos6507_set_register(MOS6507_REG_P, value);
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
 
     END_OPCODE()
     return 0;
