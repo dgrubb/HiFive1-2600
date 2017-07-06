@@ -838,7 +838,6 @@ int opcode_JMP(int cycle, addressing_mode_t address_mode)
     static uint8_t adl, adh, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
-    END_OPCODE()
     return 0;
 }
 
@@ -861,18 +860,26 @@ int opcode_JSR(int cycle, addressing_mode_t address_mode)
             mos6507_set_address_bus_hl(0, sp);
             return -1;
         case 3:
-            /* TODO: Finish this special opcode */
+            pcl = (uint8_t)mos6507_get_PC();
+            pch = (uint8_t)(mos6507_get_PC() >> 8);
+            mos6507_set_data_bus(pch);
+            memmap_write();
             return -1;
         case 4:
+            mos6507_set_address_bus_hl(0, sp-1);
+            mos6507_set_data_bus(pcl);
+            memmap_write();
             return -1;
         case 5:
-
+            mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
+            memmap_read(&adl);
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
             break;
     }
-
+    mos6507_set_address_bus_hl(adh, adl);
     return 0;
 }
 
