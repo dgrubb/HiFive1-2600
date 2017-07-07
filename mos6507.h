@@ -43,6 +43,7 @@ typedef struct {
     uint8_t       data_bus;            /* Data bus */
 } mos6507;
 
+void mos6507_init();
 void mos6507_reset();
 void mos6507_set_register(mos6507_register_t reg, uint8_t value);
 void mos6507_get_register(mos6507_register_t reg, uint8_t *value);

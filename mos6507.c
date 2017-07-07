@@ -7,9 +7,39 @@
  */
 
 #include "mos6507.h"
+#include "Atari-memmap.h"
 
 /* Representation of our CPU */
 static mos6507 cpu;
+
+void mos6507_init()
+{
+    uint8_t pch, pcl = 0;
+    uint16_t pc = 0;
+
+    /* Clear model representations */
+    mos6507_reset();
+
+    /* Now proceed through the 6507's regular startup sequence.
+     * 1. Jump to reset vector 0xFFFC, read that byte as the 
+     *    high byte of a memory address.
+     * 2. Increment to 0xFFFD, read that byte as the low byte
+     *    of a memory address.
+     */
+    mos6507_set_address_bus(0xFFFC);
+    memmap_read(&pch);
+    mos6507_set_address_bus(0xFFFD);
+    memmap_read(&pcl);
+
+    /* Pack the two bytes found at the reset vector into 
+     * the program counter and initialise it as the true
+     * start address of our program.
+     */
+    pc |= (pch << 8);
+    pc |= pcl;
+    mos6507_set_PC(pc);
+    mos6507_set_address_bus(mos6507_get_PC());
+}
 
 void mos6507_reset()
 {
