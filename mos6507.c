@@ -12,13 +12,32 @@
 /* Representation of our CPU */
 static mos6507 cpu;
 
-void mos6507_init()
+/* Invoking this function causes the state of the CPU to update
+ * as if receiving an external clock tick. Note that the 6507
+ * required at least two clock cycles to execute an opcode, usually
+ * more depending on the memory addressing mode invoked.
+ */
+void mos6507_clock()
+{
+    /* If the CPU is still in the middle of decoing/executing an
+     * operation then continue execution. Otherwise, read the next 
+     * opcode out of memory and beging decode.
+     */
+    if (!cpu.current_instruction) {
+        memmap_read(&cpu.current_instruction);
+    }
+    if(0 == opcode_execute(cpu.current_instruction)) {
+        cpu.current_instruction = 0;
+    }
+}
+
+void mos6507_reset()
 {
     uint8_t pch, pcl = 0;
     uint16_t pc = 0;
 
     /* Clear model representations */
-    mos6507_reset();
+    mos6507_init();
 
     /* Now proceed through the 6507's regular startup sequence.
      * 1. Jump to reset vector 0xFFFC, read that byte as the 
@@ -41,7 +60,7 @@ void mos6507_init()
     mos6507_set_address_bus(mos6507_get_PC());
 }
 
-void mos6507_reset()
+void mos6507_init()
 {
     /* Initialise all members back to 0 */
     mos6507 cpu = {0};

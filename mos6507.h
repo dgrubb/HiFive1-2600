@@ -38,7 +38,7 @@ typedef struct {
     uint8_t  S;   /* Stack pointer */
     uint8_t  P;   /* Status register */
     /* State description */
-    instruction_t current_instruction; /* Current op-code and addressing mode */
+    uint8_t       current_instruction; /* Current op-code and addressing mode */
     uint16_t      address_bus;         /* Address bus */
     uint8_t       data_bus;            /* Data bus */
 } mos6507;
