@@ -11,6 +11,7 @@
 
 /* Atari includes */
 #include "mos6507.h"
+#include "mos6532.h"
 
 /* Calculation assumes a core frequency of ~262MHz and pwmscale of 1.
  * Integer value is a result of:
@@ -108,13 +109,15 @@ int main()
 {
     puts(atari_logo);
 
+    opcode_populate_ISA_table();
+    mos6532_clear_memory();
     mos6507_reset();
     init_TIA_clock();
 
     while (1) {
         if(TIA_clock) {
             TIA_clock = 0;
-            puts("TIA clock");
+            mos6507_clock();
         }
     };
 
