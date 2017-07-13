@@ -114,6 +114,7 @@ extern atari_tia tia;
 
 /* Interfacing functions */
 void TIA_init();
+void TIA_clock_tick();
 void TIA_read_register(tia_readable_register_t reg, uint8_t *value);
 void TIA_set_chipselect(uint8_t cs);
 void TIA_set_databus_direction(tia_databus_direction_t direction);

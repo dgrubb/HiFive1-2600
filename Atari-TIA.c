@@ -19,6 +19,10 @@
 /* Singleton representation of a TIA chip */
 atari_tia tia;
 
+void TIA_clock_tick()
+{
+}
+
 /* Resets the TIA instance to default conditions with no state set.
  */
 void TIA_init()

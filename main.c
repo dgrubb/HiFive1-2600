@@ -10,6 +10,7 @@
 #include "plic/plic_driver.h"
 
 /* Atari includes */
+#include "Atari-TIA.h"
 #include "mos6507.h"
 #include "mos6532.h"
 
@@ -85,7 +86,7 @@ void init_TIA_clock()
     /* Clear PWM configuration register */
     PWM1_REG(PWM_CFG) = 0;
 
-    /* This is the real meat of things. PWM configuration register bits are 
+    /* This is the real meat of things. PWM configuration register bits are
      * documented in the SiFive E300 Platform Reference Manual:
      *
      * https://www.sifive.com/documentation/freedom-soc/freedom-e300-platform-reference-manual/
@@ -107,17 +108,38 @@ void init_TIA_clock()
 
 int main()
 {
+    uint8_t CPU_clock = 0;
+
+    /* Display Atari's awesome logo */
     puts(atari_logo);
 
+    /* Setup and reset all the emulated
+     * hardware: memory, CPU, TIA etc ...
+     */
     opcode_populate_ISA_table();
+    TIA_init();
     mos6532_clear_memory();
     mos6507_reset();
+
+    /* The TIA's clock is actually the fastest on the system at
+     * 3.58MHz. The CPU derives its clock from the TIA and receives
+     * a clock tick every third TIA tick, translating to a CPU clock
+     * of 1.19MHz.
+     */
     init_TIA_clock();
 
     while (1) {
         if(TIA_clock) {
+            /* Handle TIA and CPU clocks */
             TIA_clock = 0;
-            mos6507_clock();
+            CPU_clock++;
+
+            /* Now execute hardware ticks */
+            TIA_clock_tick();
+            if (CPU_clock >= 3) {
+                CPU_clock = 0;
+                mos6507_clock_tick();
+            }
         }
     };
 

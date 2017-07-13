@@ -5,7 +5,6 @@
  *
  * Provides implementations of the 6507 model.
  */
-
 #include "mos6507.h"
 #include "Atari-memmap.h"
 
@@ -17,7 +16,7 @@ static mos6507 cpu;
  * required at least two clock cycles to execute an opcode, usually
  * more depending on the memory addressing mode invoked.
  */
-void mos6507_clock()
+void mos6507_clock_tick()
 {
     /* If the CPU is still in the middle of decoing/executing an
      * operation then continue execution. Otherwise, read the next 
