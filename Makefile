@@ -6,6 +6,7 @@ BSP_BASE = ../../bsp
 # Program logic
 C_SRCS += main.c
 # IC emulation
+C_SRCS += clocks.c
 C_SRCS += mos6507.c
 C_SRCS += mos6507-opcodes.c
 C_SRCS += mos6507-microcode.c

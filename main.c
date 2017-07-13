@@ -1,27 +1,47 @@
 /* See LICENSE file for license details */
 
-/* Standard includes */
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 /* HiFive1/FE310 includes */
 #include "encoding.h"
 
-#define RTC_FREQUENCY 32768
+/* Atari includes */
+#include "mos6507.h"
+#include "clocks.h"
 
-void handle_m_time_interrupt()
-{
-}
+static const char atari_logo[] = "\n\r"
+"\n\r"
+"             HiFive1-2600\n\r"
+"\n\r"
+"An Atari 2600 emulator for an IoT platform.\n\r"
+"\n\r"
 
-void handle_m_ext_interrupt()
-{
-}
+"              $$ $$$$$ $$\n\r"
+"              $$ $$$$$ $$\n\r"
+"             .$$ $$$$$ $$.\n\r"
+"             :$$ $$$$$ $$:\n\r"
+"             $$$ $$$$$ $$$\n\r"
+"             $$$ $$$$$ $$$\n\r"
+"            ,$$$ $$$$$ $$$.\n\r"
+"           ,$$$$ $$$$$ $$$$.\n\r"
+"          ,$$$$; $$$$$ :$$$$.\n\r"
+"         ,$$$$$  $$$$$  $$$$$.\n\r"
+"       ,$$$$$$'  $$$$$  `$$$$$$.\n\r"
+"     ,$$$$$$$'   $$$$$   `$$$$$$$.\n\r"
+"  ,s$$$$$$$'     $$$$$     `$$$$$$$s.\n\r"
+"$$$$$$$$$'       $$$$$       `$$$$$$$$$\n\r"
+"$$$$$Y'          $$$$$          `Y$$$$$\n\r"
+"\n\r"
+"            Welcome to 1977!\n\r";
 
 int main()
 {
-  while (1) {};
+    puts(atari_logo);
 
-  return 0;
+    mos6507_reset();
+    init_TIA_clock();
+
+    while (1) {};
+
+    return 0;
 }
