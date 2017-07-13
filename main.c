@@ -1,14 +1,31 @@
 /* See LICENSE file for license details */
 
+/* Standard library includes */
 #include <stdio.h>
+#include <string.h>
 
 /* HiFive1/FE310 includes */
 #include "encoding.h"
+#include "platform.h"
+#include "plic/plic_driver.h"
 
 /* Atari includes */
 #include "mos6507.h"
-#include "clocks.h"
 
+/* Calculation assumes a core frequency of ~262MHz and pwmscale of 1.
+ * Integer value is a result of:
+ *
+ * (Clock source / divisor) / FREQUENCY
+ *
+ * Eg., 3.58MHz TIA input clock::
+ *
+ * (262MHz / 2^1) / 3580000 = 36
+ */
+#define PWM_SCALE 0x01
+#define PWM_FREQ  0x24
+
+static plic_instance_t g_plic;
+volatile uint8_t TIA_clock = 0;
 static const char atari_logo[] = "\n\r"
 "\n\r"
 "             HiFive1-2600\n\r"
@@ -38,6 +55,55 @@ static const char atari_logo[] = "\n\r"
 "\n\r"
 "            Welcome to 1977!\n\r";
 
+void handle_m_time_interrupt()
+{
+}
+
+void handle_m_ext_interrupt()
+{
+    plic_source int_num = PLIC_claim_interrupt(&g_plic);
+    switch (int_num) {
+        case 0:
+            break;
+        case INT_PWM1_BASE:
+            PWM1_REG(PWM_CFG) &= ~PWM_CFG_CMP0IP;
+            TIA_clock = 1;
+            break;
+    }
+    PLIC_complete_interrupt(&g_plic, int_num);
+}
+
+void init_TIA_clock()
+{
+    /* Setup interrupt using PWM1 as the source */
+    PLIC_init(&g_plic, PLIC_CTRL_ADDR, PLIC_NUM_INTERRUPTS, PLIC_NUM_PRIORITIES);
+    PLIC_enable_interrupt(&g_plic, INT_PWM1_BASE);
+    PLIC_set_threshold(&g_plic, 0);
+    PLIC_set_priority(&g_plic, INT_PWM1_BASE, 1);
+
+    /* Clear PWM configuration register */
+    PWM1_REG(PWM_CFG) = 0;
+
+    /* This is the real meat of things. PWM configuration register bits are 
+     * documented in the SiFive E300 Platform Reference Manual:
+     *
+     * https://www.sifive.com/documentation/freedom-soc/freedom-e300-platform-reference-manual/
+     */
+    PWM1_REG(PWM_CFG) =
+        (PWM_CFG_ENALWAYS) |
+        (PWM_CFG_ZEROCMP)  |
+        (PWM_CFG_STICKY)   |
+        (PWM_SCALE);
+    PWM1_REG(PWM_CMP0) = PWM_FREQ;
+
+    /* Reset the PWM count register, ready for usage */
+    PWM1_REG(PWM_COUNT) = 0;
+
+    /* Re-enable timers */
+    set_csr(mie, MIP_MTIP);
+    set_csr(mstatus, MSTATUS_MIE);
+}
+
 int main()
 {
     puts(atari_logo);
@@ -45,7 +111,12 @@ int main()
     mos6507_reset();
     init_TIA_clock();
 
-    while (1) {};
+    while (1) {
+        if(TIA_clock) {
+            TIA_clock = 0;
+            puts("TIA clock");
+        }
+    };
 
     return 0;
 }
