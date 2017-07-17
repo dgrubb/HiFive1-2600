@@ -1,6 +1,9 @@
 TARGET = HiFive1-2600
 CFLAGS += -O2 -fno-builtin-printf -DUSE_PLIC -DUSE_M_TIME
 
+# Enable compilation and execution of test suite
+CFLAGS += -DEXEC_TESTS
+
 BSP_BASE = ../../bsp
 
 # IC emulation
@@ -12,6 +15,7 @@ C_SRCS += Atari-TIA.c
 C_SRCS += Atari-memmap.c
 C_SRCS += Atari-cart.c
 # Program logic
+C_SRCS += tests.c
 C_SRCS += display.c
 C_SRCS += main.c
 
