@@ -113,6 +113,9 @@ int main()
     /* Display Atari's awesome logo */
     puts(atari_logo);
 
+    /* Setup FE310 perhipherals */
+    display_init();
+
     /* Setup and reset all the emulated
      * hardware: memory, CPU, TIA etc ...
      */
