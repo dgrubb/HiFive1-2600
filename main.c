@@ -10,6 +10,7 @@
 #include "plic/plic_driver.h"
 
 /* Atari includes */
+#include "display.h"
 #include "Atari-TIA.h"
 #include "mos6507.h"
 #include "mos6532.h"
@@ -113,7 +114,7 @@ int main()
     /* Display Atari's awesome logo */
     puts(atari_logo);
 
-    /* Setup FE310 perhipherals */
+    /* Setup FE310 peripherals */
     display_init();
 
     /* Setup and reset all the emulated

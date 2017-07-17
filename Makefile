@@ -12,6 +12,7 @@ C_SRCS += Atari-TIA.c
 C_SRCS += Atari-memmap.c
 C_SRCS += Atari-cart.c
 # Program logic
+C_SRCS += display.c
 C_SRCS += main.c
 
 C_SRCS += $(BSP_BASE)/drivers/plic/plic_driver.c
