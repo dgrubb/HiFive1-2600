@@ -27,6 +27,7 @@
 #define PWM_SCALE 0x01
 #define PWM_FREQ  0x24
 
+static const uint32_t BLUE_LED_MASK = (0x1 << BLUE_LED_OFFSET);
 static plic_instance_t g_plic;
 volatile uint8_t TIA_clock = 0;
 static const char atari_logo[] = "\n\r"
@@ -60,6 +61,7 @@ static const char atari_logo[] = "\n\r"
 
 void handle_m_time_interrupt()
 {
+    puts("Timer interrupt");
 }
 
 void handle_m_ext_interrupt()
@@ -101,8 +103,17 @@ void init_TIA_clock()
 
     /* Reset the PWM count register, ready for usage */
     PWM1_REG(PWM_COUNT) = 0;
+}
 
-    /* Re-enable timers */
+void init_GPIO ()
+{
+    GPIO_REG(GPIO_OUTPUT_EN)   |=  BLUE_LED_MASK;
+    GPIO_REG(GPIO_OUTPUT_VAL)  &=  ~BLUE_LED_MASK;
+}
+
+void enable_interrupts()
+{
+    set_csr(mie, MIP_MEIP);
     set_csr(mie, MIP_MTIP);
     set_csr(mstatus, MSTATUS_MIE);
 }
@@ -117,6 +128,7 @@ int main()
     /* Setup FE310 peripherals */
     display_init();
 
+    init_GPIO();
     /* Setup and reset all the emulated
      * hardware: memory, CPU, TIA etc ...
      */
@@ -131,6 +143,8 @@ int main()
      * of 1.19MHz.
      */
     init_TIA_clock();
+
+    enable_interrupts();
 
     while (1) {
         if(TIA_clock) {

@@ -158,7 +158,7 @@ void display_init_spi()
     SPI_REG(SPI_REG_FMT) =
         SPI_FMT_PROTO(SPI_PROTO_S)     |
         SPI_FMT_ENDIAN(SPI_ENDIAN_MSB) |
-        SPI_FMT_DIR(SPI_DIR_RX)        |
+        SPI_FMT_DIR(SPI_DIR_TX)        |
         SPI_FMT_LEN(8); // 8 bit long packets
 
     /* Set CS mode auto
@@ -182,13 +182,7 @@ void display_init_spi()
 
 void display_write(uint8_t data)
 {
-    /* Set SS low during trasmission */
-    GPIO_REG(GPIO_OUTPUT_VAL) &= ~(0x1 << PIN_10_OFFSET);
-
     /* Flush transmit buffer and send data */
     while (SPI_REG(SPI_REG_TXFIFO) & SPI_TXFIFO_FULL);
     SPI_REG(SPI_REG_TXFIFO) = data;
-
-    /* Set SS to high to release device */
-    GPIO_REG(GPIO_OUTPUT_VAL) |= (0x1 << PIN_10_OFFSET);
 }

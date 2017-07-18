@@ -114,7 +114,8 @@
 #define ILI9341_PINK        0xF81F
 
 static const uint32_t SPI1_IOF_MASK =
-    (1 << IOF_SPI1_SCK) |
+    (1 << IOF_SPI1_SS0)  |
+    (1 << IOF_SPI1_SCK)  |
     (1 << IOF_SPI1_MOSI) |
     (1 << IOF_SPI1_MISO);
 
