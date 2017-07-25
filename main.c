@@ -24,8 +24,8 @@
  *
  * (262MHz / 2^1) / 3580000 = 36
  */
-#define PWM_SCALE 0x01
 #define PWM_FREQ  0x24
+#define PWM_SCALE 0x01
 
 static const uint32_t BLUE_LED_MASK = (0x1 << BLUE_LED_OFFSET);
 static plic_instance_t g_plic;
@@ -148,6 +148,7 @@ int main()
 
     while (1) {
         if(TIA_clock) {
+            GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
             /* Handle TIA and CPU clocks */
             TIA_clock = 0;
             CPU_clock++;
