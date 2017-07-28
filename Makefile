@@ -11,12 +11,10 @@ C_SRCS += mos6507.c
 C_SRCS += mos6507-opcodes.c
 C_SRCS += mos6507-microcode.c
 C_SRCS += mos6532.c
-C_SRCS += Atari-TIA.c
 C_SRCS += Atari-memmap.c
 C_SRCS += Atari-cart.c
 # Program logic
 C_SRCS += tests.c
-C_SRCS += display.c
 C_SRCS += main.c
 
 C_SRCS += $(BSP_BASE)/drivers/plic/plic_driver.c

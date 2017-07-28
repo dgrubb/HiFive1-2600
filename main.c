@@ -10,8 +10,6 @@
 #include "plic/plic_driver.h"
 
 /* Atari includes */
-#include "display.h"
-#include "Atari-TIA.h"
 #include "mos6507.h"
 #include "mos6532.h"
 
@@ -24,12 +22,16 @@
  *
  * (262MHz / 2^1) / 3580000 = 36
  */
-#define PWM_FREQ  0x24
-#define PWM_SCALE 0x01
+#define PWM_FREQ    0x24
+#define PWM_SCALE   0x01
 
-static const uint32_t BLUE_LED_MASK = (0x1 << BLUE_LED_OFFSET);
+#define CLOCK_INPUT PIN_19_OFFSET
+
+static const uint32_t BLUE_LED_MASK    = (0x1 << BLUE_LED_OFFSET);
+static const uint32_t GREEN_LED_MASK   = (0x1 << GREEN_LED_OFFSET);
+static const uint32_t CLOCK_INPUT_MASK = (0x1 << CLOCK_INPUT);
 static plic_instance_t g_plic;
-volatile uint8_t TIA_clock = 0;
+volatile uint8_t system_clock = 0;
 static const char atari_logo[] = "\n\r"
 "\n\r"
 "             HiFive1-2600\n\r"
@@ -68,17 +70,15 @@ void handle_m_ext_interrupt()
 {
     plic_source int_num = PLIC_claim_interrupt(&g_plic);
     switch (int_num) {
-        case 0:
-            break;
-        case INT_PWM1_BASE:
-            PWM1_REG(PWM_CFG) &= ~PWM_CFG_CMP0IP;
-            TIA_clock = 1;
+        case PIN_19_OFFSET:
+            GPIO_REG(GPIO_RISE_IP) = (0x1 << CLOCK_INPUT);
+            system_clock = 1;
             break;
     }
     PLIC_complete_interrupt(&g_plic, int_num);
 }
 
-void init_TIA_clock()
+void init_clock()
 {
     /* Setup interrupt using PWM1 as the source */
     PLIC_init(&g_plic, PLIC_CTRL_ADDR, PLIC_NUM_INTERRUPTS, PLIC_NUM_PRIORITIES);
@@ -95,11 +95,15 @@ void init_TIA_clock()
      * https://www.sifive.com/documentation/freedom-soc/freedom-e300-platform-reference-manual/
      */
     PWM1_REG(PWM_CFG) =
-        (PWM_CFG_ENALWAYS) |
-        (PWM_CFG_ZEROCMP)  |
-        (PWM_CFG_STICKY)   |
+        (PWM_CFG_ENALWAYS)   |
+        (PWM_CFG_DEGLITCH)   |
+        (PWM_CFG_CMP2CENTER) |
+        (PWM_CFG_CMP3CENTER) |
+        (PWM_CFG_ZEROCMP)    |
         (PWM_SCALE);
+    PWM1_REG(PWM_COUNT) = 0;
     PWM1_REG(PWM_CMP0) = PWM_FREQ;
+    PWM1_REG(PWM_CMP3) = PWM_FREQ/2;
 
     /* Reset the PWM count register, ready for usage */
     PWM1_REG(PWM_COUNT) = 0;
@@ -107,8 +111,19 @@ void init_TIA_clock()
 
 void init_GPIO ()
 {
-    GPIO_REG(GPIO_OUTPUT_EN)   |=  BLUE_LED_MASK;
+    /* Debug output indicator */
+    GPIO_REG(GPIO_OUTPUT_EN)   |=   BLUE_LED_MASK;
     GPIO_REG(GPIO_OUTPUT_VAL)  &=  ~BLUE_LED_MASK;
+
+    /* Clock source ouput (PWM) */
+    GPIO_REG(GPIO_IOF_SEL)     |=   GREEN_LED_MASK;
+    GPIO_REG(GPIO_IOF_EN)      |=   GREEN_LED_MASK;
+
+    /* Clock source input */
+    GPIO_REG(GPIO_OUTPUT_EN)   &=  ~(0x1 << (CLOCK_INPUT - INT_GPIO_BASE));
+    GPIO_REG(GPIO_PULLUP_EN)   &=  ~(0x1 << (CLOCK_INPUT - INT_GPIO_BASE));
+    GPIO_REG(GPIO_INPUT_EN)    |=   (0x1 << (CLOCK_INPUT - INT_GPIO_BASE));
+    GPIO_REG(GPIO_RISE_IE)     |=   (0x1 << (CLOCK_INPUT - INT_GPIO_BASE));
 }
 
 void enable_interrupts()
@@ -120,45 +135,27 @@ void enable_interrupts()
 
 int main()
 {
-    uint8_t CPU_clock = 0;
-
     /* Display Atari's awesome logo */
     puts(atari_logo);
 
-    /* Setup FE310 peripherals */
-    display_init();
-
-    init_GPIO();
     /* Setup and reset all the emulated
      * hardware: memory, CPU, TIA etc ...
      */
     opcode_populate_ISA_table();
-    TIA_init();
     mos6532_clear_memory();
     mos6507_reset();
 
-    /* The TIA's clock is actually the fastest on the system at
-     * 3.58MHz. The CPU derives its clock from the TIA and receives
-     * a clock tick every third TIA tick, translating to a CPU clock
-     * of 1.19MHz.
-     */
-    init_TIA_clock();
-
+    /* Setup FE310 peripherals */
+    init_GPIO();
+    init_clock();
     enable_interrupts();
 
     while (1) {
-        if(TIA_clock) {
+        if(system_clock) {
             GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
-            /* Handle TIA and CPU clocks */
-            TIA_clock = 0;
-            CPU_clock++;
-
-            /* Now execute hardware ticks */
-            TIA_clock_tick();
-            if (CPU_clock >= 3) {
-                CPU_clock = 0;
-                mos6507_clock_tick();
-            }
+            /* Fire a CPU clock tick */
+            mos6507_clock_tick();
+            system_clock = 0;
         }
     };
 
