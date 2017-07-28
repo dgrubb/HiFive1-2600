@@ -24,12 +24,14 @@
  */
 #define PWM_FREQ    0x24
 #define PWM_SCALE   0x01
-
 #define CLOCK_INPUT PIN_19_OFFSET
 
+/* I/O masks */
 static const uint32_t BLUE_LED_MASK    = (0x1 << BLUE_LED_OFFSET);
 static const uint32_t GREEN_LED_MASK   = (0x1 << GREEN_LED_OFFSET);
 static const uint32_t CLOCK_INPUT_MASK = (0x1 << CLOCK_INPUT);
+
+/* Globals */
 static plic_instance_t g_plic;
 volatile uint8_t system_clock = 0;
 static const char atari_logo[] = "\n\r"
@@ -61,6 +63,10 @@ static const char atari_logo[] = "\n\r"
 "\n\r"
 "            Welcome to 1977!\n\r";
 
+/******************************************************************************
+ * Interrupt callbacks
+ *****************************************************************************/
+
 void handle_m_time_interrupt()
 {
     puts("Timer interrupt");
@@ -77,6 +83,10 @@ void handle_m_ext_interrupt()
     }
     PLIC_complete_interrupt(&g_plic, int_num);
 }
+
+/******************************************************************************
+ * Hardware initialisation
+ *****************************************************************************/
 
 void init_clock()
 {
@@ -103,7 +113,7 @@ void init_clock()
         (PWM_SCALE);
     PWM1_REG(PWM_COUNT) = 0;
     PWM1_REG(PWM_CMP0) = PWM_FREQ;
-    PWM1_REG(PWM_CMP3) = PWM_FREQ/2;
+    PWM1_REG(PWM_CMP3) = PWM_FREQ/2; /* Output a 50% duty cycle */
 
     /* Reset the PWM count register, ready for usage */
     PWM1_REG(PWM_COUNT) = 0;
@@ -133,6 +143,10 @@ void enable_interrupts()
     set_csr(mstatus, MSTATUS_MIE);
 }
 
+/******************************************************************************
+ * Main code entry point
+ *****************************************************************************/
+
 int main()
 {
     /* Display Atari's awesome logo */
@@ -149,6 +163,14 @@ int main()
     init_GPIO();
     init_clock();
     enable_interrupts();
+
+#ifdef EXEC_TESTS
+    /* Program flow is different when testing the consistency of the 6502
+     * state model. Rather than awaiting an external clock tick we simply step
+     * through. Exit with the test result once we're finished.
+     */
+    return execute_tests();
+#endif /* EXEC_TESTS */
 
     while (1) {
         if(system_clock) {

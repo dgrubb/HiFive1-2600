@@ -433,7 +433,7 @@ void opcode_populate_ISA_table()
 
 int opcode_ILL(int cycle, addressing_mode_t address_mode)
 {
-    
+    /* Halt and catch fire!! */
 }
 
 int opcode_ADC(int cycle, addressing_mode_t address_mode)

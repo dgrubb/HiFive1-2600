@@ -10,7 +10,6 @@
 
 #ifdef EXEC_TESTS
 
-#include <assert.h>
 #include <stdio.h>
 #include "mos6507.h"
 #include "mos6532.h"
@@ -19,25 +18,75 @@
     mos6532_clear_memory(); \
     mos6507_reset(); \
 
-void execute_tests()
+int execute_tests()
 {
-    test_LDA();
+    if (test_LDA()) goto err;
+
+    puts("All tests completed successfully.");
+    return 0;
+
+err:
+    puts("Error while executing test cases.");
+    return -1;
 }
 
-void test_LDA()
+/******************************************************************************
+ * Load the accumulator
+ *****************************************************************************/
+
+int test_LDA()
 {
-    RESET();
-    if (-1 == test_LDA_Immediate()) {
-        puts("Error");
-    } else {
-        puts("Success!");
-    }
+    if (test_LDA_Immediate()) goto lda_err;
+    if (test_LDA_Zero_Page()) goto lda_err;
+
+    puts("All LDA tests completed successfully.");
+    return 0;
+
+lda_err:
+    puts("Error in LDA test result.");
+    return -1;
 }
 
 int test_LDA_Immediate()
 {
-    assert(1);
     return 0;
+}
+
+int test_LDA_Zero_Page()
+{
+    return 0;
+}
+
+/******************************************************************************
+ * Load the X register
+ *****************************************************************************/
+
+int test_LDX()
+{
+    if (test_LDX_Immediate()) goto ldx_err;
+
+    puts("All LDX tests completed successfully.");
+    return 0;
+
+ldx_err:
+    puts("Error in LDX test result.");
+    return -1;
+}
+
+/******************************************************************************
+ * Load the Y register
+ *****************************************************************************/
+
+int test_LDY()
+{
+    if (test_LDY_Immediate()) goto ldy_err;
+
+    puts("All LDY tests completed successfully.");
+    return 0;
+
+ldy_err:
+    puts("Error in LDY test result.");
+    return -1;
 }
 
 #endif /* EXEC_TESTS */

@@ -11,8 +11,8 @@
 
 #ifdef EXEC_TESTS
 
-void execute_tests();
-void test_LDA();
+int execute_tests();
+int test_LDA();
 int test_LDA_Immediate();
 
 #endif /* EXEC_TESTS */
