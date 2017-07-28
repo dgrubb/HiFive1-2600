@@ -12,8 +12,14 @@
 #ifdef EXEC_TESTS
 
 int execute_tests();
+
 int test_LDA();
 int test_LDA_Immediate();
+int test_LDA_Zero_Page();
+
+int test_LDX();
+
+int test_LDY();
 
 #endif /* EXEC_TESTS */
 

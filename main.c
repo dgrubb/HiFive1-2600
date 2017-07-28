@@ -167,7 +167,7 @@ int main()
 #ifdef EXEC_TESTS
     /* Program flow is different when testing the consistency of the 6502
      * state model. Rather than awaiting an external clock tick we simply step
-     * through. Exit with the test result once we're finished.
+     * through automatically. Exit with the test result once we're finished.
      */
     return execute_tests();
 #endif /* EXEC_TESTS */

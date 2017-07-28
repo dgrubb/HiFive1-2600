@@ -11,4 +11,8 @@
 
 #include <stdint.h>
 
+void read_cartridge(uint16_t address, uint8_t * data);
+void load_cartridge(uint8_t cartridge);
+void eject_cartridge();
+
 #endif /* _ATARI_CART_H */
