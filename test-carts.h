@@ -14,7 +14,8 @@
 #ifdef EXEC_TESTS
 
 uint8_t test_cart_LDA_Immediate = {
-    
+    0xA9, /* LDA, Load accumulator with ... */
+    0xAA  /* ... the raw value 0xAA */
 };
 
 #endif /* EXEC_TESTS */
