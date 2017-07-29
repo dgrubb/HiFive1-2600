@@ -25,7 +25,7 @@ void mos6507_clock_tick()
     if (!cpu.current_instruction) {
         memmap_read(&cpu.current_instruction);
     }
-    if(0 == opcode_execute(cpu.current_instruction)) {
+    if(!opcode_execute(cpu.current_instruction)) {
         cpu.current_instruction = 0;
     }
 }
@@ -43,7 +43,14 @@ void mos6507_reset()
      *    high byte of a memory address.
      * 2. Increment to 0xFFFD, read that byte as the low byte
      *    of a memory address.
+     *
+     * To allow loading of small test programs jump to the bottom
+     * of ROM space rather than the top, so unit test ROMs can be
+     * just a few bytes in length.
      */
+#ifdef EXEC_TESTS
+    mos6507_set_address_bus(0x1000);
+#else
     mos6507_set_address_bus(0xFFFC);
     memmap_read(&pch);
     mos6507_set_address_bus(0xFFFD);
@@ -57,6 +64,7 @@ void mos6507_reset()
     pc |= pcl;
     mos6507_set_PC(pc);
     mos6507_set_address_bus(mos6507_get_PC());
+#endif /* EXEC_TESTS */
 }
 
 void mos6507_init()
