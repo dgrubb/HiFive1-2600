@@ -18,6 +18,21 @@ uint8_t test_cart_LDA_Immediate[] = {
     0xAA  /* ... the raw value 0xAA */
 };
 
+uint8_t test_cart_LDA_Zero_Page[] = {
+    0xA9, /* LDA, Load accumulator with ... */
+    0x81  /* ... the contents of this zero-page RAM location */
+};
+
+uint8_t test_cart_LDX_Immediate[] = {
+    0xA2, /* LDX, Load accumulator with ... */
+    0xAA  /* ... the raw value 0xAA */
+};
+
+uint8_t test_cart_LDY_Immediate[] = {
+    0xA0, /* LDY, Load accumulator with ... */
+    0xAA  /* ... the raw value 0xAA */
+};
+
 #endif /* EXEC_TESTS */
 
 #endif /* _TEST_CARTS_H */

@@ -43,11 +43,37 @@ void test_LDA()
 void test_LDA_Immediate()
 {
     RESET()
-    cartridge_load(test_cart_LDA_Immediate);
-}
+    uint8_t data = 0;
 
+    /* Perform test */
+    cartridge_load(test_cart_LDA_Immediate);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the immediate operand */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Accumulator? */
+    mos6507_get_register(MOS6507_REG_A, &data);
+    assert(data == 0xAA);
+}
 void test_LDA_Zero_Page()
 {
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loaing our test data into memory */
+    mos6507_set_data_bus(0xAA);
+    mos6507_set_address_bus(0x0081);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDA_Zero_Page);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Accumulator? */
+    mos6507_get_register(MOS6507_REG_A, &data);
+    assert(data == 0xAA);
 }
 
 /******************************************************************************
@@ -64,6 +90,34 @@ void test_LDX()
 void test_LDX_Immediate()
 {
     RESET()
+    uint8_t data = 0;
+
+    /* Perform test */
+    cartridge_load(test_cart_LDX_Immediate);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the immediate operand */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the X register? */
+    mos6507_get_register(MOS6507_REG_X, &data);
+    assert(data == 0xAA);
+}
+
+void test_LDX_Zero_Page()
+{
+    RESET()
+    uint8_t data = 0;
+
+    /* Perform test */
+    cartridge_load(test_cart_LDX_Zero_Page);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the X register? */
+    mos6507_get_register(MOS6507_REG_X, &data);
+    assert(data == 0xAA);
 }
 
 /******************************************************************************
@@ -80,6 +134,18 @@ void test_LDY()
 void test_LDY_Immediate()
 {
     RESET()
+    uint8_t data = 0;
+
+    /* Perform test */
+    cartridge_load(test_cart_LDY_Immediate);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the immediate operand */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Y register? */
+    mos6507_get_register(MOS6507_REG_Y, &data);
+    assert(data == 0xAA);
+
 }
 
 #endif /* EXEC_TESTS */
