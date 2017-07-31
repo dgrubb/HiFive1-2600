@@ -7,9 +7,9 @@
  */
 
 #include "Atari-memmap.h"
-#include "mos6507.h"
-#include "mos6532.h"
 #include "Atari-cart.h"
+#include "../cpu/mos6507.h"
+#include "../memory/mos6532.h"
 
 /* These read/write functions essentially replicate the 
  * chip-select pins on the TIA and RIOT by delegating 

@@ -14,12 +14,12 @@
  */
 static uint8_t *cartridge[];
 
-void read_cartridge(uint16_t address, uint8_t * data)
+void cartridge_read(uint16_t address, uint8_t * data)
 {
 }
 
-void load_cartridge(uint8_t *cart[])
+void cartridge_load(uint8_t *cart)
 {
 }
 
-void eject_cartridge();
+void cartridge_eject();

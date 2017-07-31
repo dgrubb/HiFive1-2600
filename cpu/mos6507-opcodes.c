@@ -12,11 +12,11 @@
  * http://www.obelisk.me.uk/6502/reference.html
  */
 
+#include "../atari/Atari-memmap.h"
 #include "mos6507.h"
 #include "mos6507-opcodes.h"
 #include "mos6507-microcode.h"
 #include "mos6507-addressing-macros.h"
-#include "Atari-memmap.h"
 
 /* Invoked at the end of each op-code. Resets the
  * clock cycle counter and increments the PC and 

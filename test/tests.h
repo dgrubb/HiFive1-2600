@@ -18,8 +18,10 @@ void test_LDA_Immediate();
 void test_LDA_Zero_Page();
 
 void test_LDX();
+void test_LDX_Immediate();
 
 void test_LDY();
+void test_LDY_Immediate();
 
 #endif /* EXEC_TESTS */
 

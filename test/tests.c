@@ -12,8 +12,10 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include "mos6507.h"
-#include "mos6532.h"
+#include "../atari/Atari-cart.h"
+#include "../cpu/mos6507.h"
+#include "../memory/mos6532.h"
+#include "test-carts.h"
 
 #define RESET() \
     mos6532_clear_memory(); \
@@ -41,7 +43,7 @@ void test_LDA()
 void test_LDA_Immediate()
 {
     RESET()
-    cartridge_insert(&test_cart_LDA_Immediate);
+    cartridge_load(test_cart_LDA_Immediate);
 }
 
 void test_LDA_Zero_Page()
@@ -59,6 +61,11 @@ void test_LDX()
     puts("All LDX tests completed successfully.");
 }
 
+void test_LDX_Immediate()
+{
+    RESET()
+}
+
 /******************************************************************************
  * Load the Y register
  *****************************************************************************/
@@ -68,6 +75,11 @@ void test_LDY()
     test_LDY_Immediate();
 
     puts("All LDY tests completed successfully.");
+}
+
+void test_LDY_Immediate()
+{
+    RESET()
 }
 
 #endif /* EXEC_TESTS */

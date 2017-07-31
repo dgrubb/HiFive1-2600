@@ -10,8 +10,9 @@
 #include "plic/plic_driver.h"
 
 /* Atari includes */
-#include "mos6507.h"
-#include "mos6532.h"
+#include "cpu/mos6507.h"
+#include "memory/mos6532.h"
+#include "test/tests.h"
 
 /* Calculation assumes a core frequency of ~262MHz and pwmscale of 1.
  * Integer value is a result of:
@@ -169,7 +170,8 @@ int main()
      * state model. Rather than awaiting an external clock tick we simply step
      * through automatically. Exit with the test result once we're finished.
      */
-    return execute_tests();
+    execute_tests();
+    return 0;
 #endif /* EXEC_TESTS */
 
     while (1) {

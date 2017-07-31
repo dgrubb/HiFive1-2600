@@ -6,15 +6,17 @@ CFLAGS += -DEXEC_TESTS
 
 BSP_BASE = ../../bsp
 
-# IC emulation
-C_SRCS += mos6507.c
-C_SRCS += mos6507-opcodes.c
-C_SRCS += mos6507-microcode.c
-C_SRCS += mos6532.c
-C_SRCS += Atari-memmap.c
-C_SRCS += Atari-cart.c
+# CPU:
+C_SRCS += cpu/mos6507.c
+C_SRCS += cpu/mos6507-opcodes.c
+C_SRCS += cpu/mos6507-microcode.c
+# Memory:
+C_SRCS += memory/mos6532.c
+# System architecture:
+C_SRCS += atari/Atari-memmap.c
+C_SRCS += atari/Atari-cart.c
 # Program logic
-C_SRCS += tests.c
+C_SRCS += test/tests.c
 C_SRCS += main.c
 
 C_SRCS += $(BSP_BASE)/drivers/plic/plic_driver.c
