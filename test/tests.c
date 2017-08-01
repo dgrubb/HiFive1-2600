@@ -42,6 +42,7 @@ void test_LDA()
     test_LDA_Immediate();
     test_LDA_Zero_Page();
     test_LDA_Zero_Page_X_Indexed();
+    test_LDA_Absolute();
 
     puts("--- All LDA tests completed successfully.\n\r");
 }
@@ -100,6 +101,75 @@ void test_LDA_Zero_Page_X_Indexed()
 
     /* Now load our test program and start clocking the CPU */
     cartridge_load(test_cart_LDA_Zero_Page_X_Indexed);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Accumulator? */
+    mos6507_get_register(MOS6507_REG_A, &data);
+    assert(data == 0xAA);
+}
+
+void test_LDA_Absolute()
+{
+    puts("+ Testing LDA, absolute addressing mode: 0xAD");
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loading our test data into memory */
+  //  mos6507_set_data_bus(0xAA);
+ //   mos6507_set_address_bus(0x2001);
+  //  memmap_write();
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDA_Absolute);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Accumulator? */
+    mos6507_get_register(MOS6507_REG_A, &data);
+    assert(data == 0xAA);
+}
+
+void test_LDA_Absolute_X_Indexed()
+{
+    puts("+ Testing LDA, absolute X indexed addressing mode: 0xAD");
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loading our test data into memory */
+    mos6507_set_data_bus(0xAA);
+    mos6507_set_address_bus(0x2001);
+    memmap_write();
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDA_Absolute);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Accumulator? */
+    mos6507_get_register(MOS6507_REG_A, &data);
+    assert(data == 0xAA);
+}
+
+void test_LDA_Absolute_X_Indexed_Boundary_Cross()
+{
+    puts("+ Testing LDA, absolute X indexed addressing mode with boundary crossing: 0xAD");
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loading our test data into memory */
+    mos6507_set_data_bus(0xAA);
+    mos6507_set_address_bus(0x2001);
+    memmap_write();
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDA_Absolute);
     mos6507_clock_tick(); /* Read the instruction */
     mos6507_clock_tick(); /* Fetch the next byte for the memory location */
     mos6507_clock_tick(); /* Fetch the value from memory and load it */

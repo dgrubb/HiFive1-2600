@@ -28,6 +28,24 @@ uint8_t test_cart_LDA_Zero_Page_X_Indexed[] = {
     0x90  /* ... the contents of this zero-page RAM location, +X index register */
 };
 
+uint8_t test_cart_LDA_Absolute[] = {
+    0xB5, /* LDA, Load accumulator with ... */
+    0x01, /* ... the contents of this low address byte ... */
+    0x20  /* ... and this high address byte ... */
+};
+
+uint8_t test_cart_LDA_Absolute_X_Indexed[] = {
+    0xBD, /* LDA, Load accumulator with ... */
+    0x01, /* ... the contents of this low address byte ... */
+    0x20  /* ... and this high address byte ... */
+};
+
+uint8_t test_cart_LDA_Absolute_X_Indexed_Boundary_Cross[] = {
+    0xBD, /* LDA, Load accumulator with ... */
+    0x01, /* ... the contents of this low address byte ... */
+    0x20  /* ... and this high address byte ... */
+};
+
 uint8_t test_cart_LDX_Immediate[] = {
     0xA2, /* LDX, Load accumulator with ... */
     0xAA  /* ... the raw value 0xAA */
