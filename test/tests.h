@@ -16,6 +16,7 @@ void execute_tests();
 void test_LDA();
 void test_LDA_Immediate();
 void test_LDA_Zero_Page();
+void test_LDA_Zero_Page_X_Indexed();
 
 void test_LDX();
 void test_LDX_Immediate();
