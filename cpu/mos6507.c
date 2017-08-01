@@ -50,7 +50,8 @@ void mos6507_reset()
      * just a few bytes in length.
      */
 #ifdef EXEC_TESTS
-    mos6507_set_address_bus(0x1000);
+    mos6507_set_PC(0x1000);
+    mos6507_set_address_bus(mos6507_get_PC());
 #else
     mos6507_set_address_bus(0xFFFC);
     memmap_read(&pch);
