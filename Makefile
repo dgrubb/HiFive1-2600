@@ -16,6 +16,7 @@ C_SRCS += memory/mos6532.c
 C_SRCS += atari/Atari-memmap.c
 C_SRCS += atari/Atari-cart.c
 # Program logic
+C_SRCS += test/debug.c
 C_SRCS += test/tests.c
 C_SRCS += main.c
 
