@@ -10,7 +10,7 @@
 #include "mos6507.h"
 
 /* Representation of our CPU */
-static mos6507 cpu;
+static mos6507 cpu = {0};
 
 /* Invoking this function causes the state of the CPU to update
  * as if receiving an external clock tick. Note that the 6507
@@ -72,7 +72,12 @@ void mos6507_reset()
 void mos6507_init()
 {
     /* Initialise all members back to 0 */
-    mos6507 cpu = {0};
+    cpu.A =  0;
+    cpu.Y =  0;
+    cpu.X =  0;
+    cpu.PC = 0;
+    cpu.S =  0;
+    cpu.P =  0;
 }
 
 void mos6507_set_register(mos6507_register_t reg, uint8_t value)
@@ -141,4 +146,17 @@ void mos6507_set_data_bus(uint8_t data)
 void mos6507_get_data_bus(uint8_t *data)
 {
     *data = cpu.data_bus;
+}
+
+char * mos6507_get_register_str(mos6507_register_t reg)
+{
+    switch(reg) {
+        case MOS6507_REG_A:  return "Accumulator";
+        case MOS6507_REG_Y:  return "Y index register";
+        case MOS6507_REG_X:  return "X index register";
+        case MOS6507_REG_PC: return "Program counter";
+        case MOS6507_REG_S:  return "Stack pointer";
+        case MOS6507_REG_P:  return "Status register";
+        default: return "Unknown";
+    }
 }

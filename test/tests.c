@@ -110,8 +110,6 @@ void test_LDA_Zero_Page_X_Indexed()
     /* Do we have the expected result (0xAA) in the Accumulator? */
     mos6507_get_register(MOS6507_REG_A, &data);
     assert(data == 0xAA);
-
-    debug_print_status_flags();
 }
 
 void test_LDA_Absolute()

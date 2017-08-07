@@ -47,6 +47,38 @@ int debug_get_status_flag(uint8_t flag)
     }
 }
 
+void debug_print_memory_contents(uint16_t address)
+{
+    char msg[MSG_LEN];
+    memset(msg, 0, MSG_LEN);
+
+    char *template = "Memory contents at address [ 0x%X, %d ]: 0x%X, %d";
+
+    uint16_t current_address;
+    uint8_t data;
+    // Change the address bus to the specified location, read the data, then
+    // revert back to what it was without a full CPU clock tick to make the 
+    // read seamless
+    mos6507_set_address_bus(address);
+    memmap_read(&data);
+    mos6507_set_address_bus(current_address);
+    sprintf(msg, template, address, address, data, data);
+    puts(msg);
+}
+
+void debug_print_special_register(mos6507_register_t reg)
+{
+    char msg[MSG_LEN];
+    memset(msg, 0, MSG_LEN);
+
+    char *template = "Special register [ %s ] contents: 0x%X, %d";
+
+    uint8_t data;
+    mos6507_get_register(reg, &data);
+    sprintf(msg, template, mos6507_get_register_str(reg), data, data);
+    puts(msg);
+}
+
 void debug_print_status_flags()
 {
     char msg[MSG_LEN];
@@ -54,7 +86,7 @@ void debug_print_status_flags()
 
     char *template = "Processor flags:\n\r"
                      "|- Sign -|- Overflow -|- Break -|- Decimal -|- Interrupt -|- Zero -|- Carry -|\n\r"
-                     "|    %d   |     %d      |    %d    |     %d     |      %d      |   %d    |    %d    |\n\r";
+                     "|    %d   |     %d      |    %d    |     %d     |      %d      |   %d    |    %d    |";
 
     sprintf(msg, template,
             debug_get_status_flag(MOS6507_STATUS_FLAG_NEGATIVE),
