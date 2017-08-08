@@ -20,6 +20,9 @@ void test_LDA_Zero_Page_X_Indexed();
 void test_LDA_Absolute();
 void test_LDA_Absolute_X_Indexed();
 void test_LDA_Absolute_X_Indexed_Boundary_Cross();
+void test_LDA_Absolute_Y_Indexed();
+void test_LDA_Absolute_Y_Indexed_Boundary_Cross();
+void test_LDA_Indirect_X_Indexed();
 
 void test_LDX();
 void test_LDX_Immediate();
