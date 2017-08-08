@@ -63,6 +63,8 @@ void test_LDA()
     test_LDA_Zero_Page();
     test_LDA_Zero_Page_X_Indexed();
     test_LDA_Absolute();
+    test_LDA_Absolute_X_Indexed();
+    test_LDA_Absolute_X_Indexed_Boundary_Cross();
 
     puts("--- All LDA tests completed successfully.\n\r");
 }
@@ -162,14 +164,16 @@ void test_LDA_Absolute_X_Indexed()
     uint8_t data = 0;
 
     /* Setup the test by pre-loading our test data into memory */
-    mos6507_set_data_bus(0xAA);
-    mos6507_set_address_bus(0x2001);
-    memmap_write();
+    insert_test_data(0x2001, 0xAA);
+
+    /* The cartridge specifies 0x2000, this offset gets us to the correct location */
+    mos6507_set_register(MOS6507_REG_X, 0x01);
 
     /* Now load our test program and start clocking the CPU */
-    cartridge_load(test_cart_LDA_Absolute);
+    cartridge_load(test_cart_LDA_Absolute_X_Indexed);
     mos6507_clock_tick(); /* Read the instruction */
-    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the low memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the high memory location */
     mos6507_clock_tick(); /* Fetch the value from memory and load it */
     /* End test */
 
@@ -185,14 +189,17 @@ void test_LDA_Absolute_X_Indexed_Boundary_Cross()
     uint8_t data = 0;
 
     /* Setup the test by pre-loading our test data into memory */
-    mos6507_set_data_bus(0xAA);
-    mos6507_set_address_bus(0x2001);
-    memmap_write();
+    insert_test_data(0x0100, 0xAA);
+
+    /* The cartridge specifies 0x2000, this offset gets us to the correct location */
+    mos6507_set_register(MOS6507_REG_X, 0x01);
 
     /* Now load our test program and start clocking the CPU */
-    cartridge_load(test_cart_LDA_Absolute);
+    cartridge_load(test_cart_LDA_Absolute_X_Indexed_Boundary_Cross);
     mos6507_clock_tick(); /* Read the instruction */
-    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the low memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the high memory location */
+    mos6507_clock_tick(); /* Compute new address with carry */
     mos6507_clock_tick(); /* Fetch the value from memory and load it */
     /* End test */
 

@@ -36,14 +36,14 @@ uint8_t test_cart_LDA_Absolute[] = {
 
 uint8_t test_cart_LDA_Absolute_X_Indexed[] = {
     0xBD, /* LDA, Load accumulator with ... */
-    0x01, /* ... the contents of this low address byte ... */
+    0x00, /* ... the contents of this low address byte ... */
     0x20  /* ... and this high address byte ... */
 };
 
 uint8_t test_cart_LDA_Absolute_X_Indexed_Boundary_Cross[] = {
     0xBD, /* LDA, Load accumulator with ... */
-    0x01, /* ... the contents of this low address byte ... */
-    0x20  /* ... and this high address byte ... */
+    0xFF, /* ... the contents of this low address byte ... */
+    0x00  /* ... and this high address byte ... */
 };
 
 uint8_t test_cart_LDX_Immediate[] = {
