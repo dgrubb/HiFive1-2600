@@ -78,6 +78,9 @@ void mos6507_init()
     cpu.PC = 0;
     cpu.S =  0;
     cpu.P =  0;
+    cpu.data_bus = 0;
+    cpu.address_bus = 0;
+    cpu.current_instruction = 0;
 }
 
 void mos6507_set_register(mos6507_register_t reg, uint8_t value)

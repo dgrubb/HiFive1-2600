@@ -59,6 +59,7 @@ void debug_print_memory_contents(uint16_t address)
     // Change the address bus to the specified location, read the data, then
     // revert back to what it was without a full CPU clock tick to make the 
     // read seamless
+    mos6507_get_address_bus(&current_address);
     mos6507_set_address_bus(address);
     memmap_read(&data);
     mos6507_set_address_bus(current_address);
@@ -101,3 +102,18 @@ void debug_print_status_flags()
     puts(msg);
 }
 
+void debug_print_buses()
+{
+    char msg[MSG_LEN];
+    memset(msg, 0, MSG_LEN);
+
+    char *template = "Address bus [ 0x%X ], data bus [ 0x%X ]";
+
+    uint16_t address;
+    uint8_t data;
+    mos6507_get_data_bus(&data);
+    mos6507_get_address_bus(&address);
+
+    sprintf(msg, template, address, data);
+    puts(msg);
+}
