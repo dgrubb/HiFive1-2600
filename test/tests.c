@@ -69,11 +69,18 @@ void test_LDA_Zero_Page()
     puts("+ Testing LDA, zero page addressing mode: 0xA5");
     RESET()
     uint8_t data = 0;
+    uint16_t current_address;
+    uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
+    mos6507_get_address_bus(&current_address);
+    mos6507_get_data_bus(&current_data);
     mos6507_set_data_bus(0xAA);
     mos6507_set_address_bus(0x0081);
     memmap_write();
+    mos6507_set_data_bus(current_data);
+    mos6507_set_address_bus(current_address);
+
 
     /* Now load our test program and start clocking the CPU */
     cartridge_load(test_cart_LDA_Zero_Page);
