@@ -32,6 +32,25 @@ void execute_tests()
     puts("====== All tests completed successfully ======\n\r");
 }
 
+void insert_test_data(uint16_t address, uint8_t data)
+{
+    uint16_t current_address;
+    uint8_t current_data;
+
+    /* Save the current adddress and data bus states. Switch both to the 
+     * specified data and address, write to memory and then set it back to
+     * the previous state. This all happens without the use of invoking a 
+     * CPU clock tick so appears seamlessly.
+     */
+    mos6507_get_address_bus(&current_address);
+    mos6507_get_data_bus(&current_data);
+    mos6507_set_data_bus(data);
+    mos6507_set_address_bus(address);
+    memmap_write();
+    mos6507_set_data_bus(current_data);
+    mos6507_set_address_bus(current_address);
+}
+
 /******************************************************************************
  * Load the accumulator
  *****************************************************************************/
@@ -73,14 +92,7 @@ void test_LDA_Zero_Page()
     uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
-    mos6507_get_address_bus(&current_address);
-    mos6507_get_data_bus(&current_data);
-    mos6507_set_data_bus(0xAA);
-    mos6507_set_address_bus(0x0081);
-    memmap_write();
-    mos6507_set_data_bus(current_data);
-    mos6507_set_address_bus(current_address);
-
+    insert_test_data(0x0081, 0xAA);
 
     /* Now load our test program and start clocking the CPU */
     cartridge_load(test_cart_LDA_Zero_Page);
@@ -99,12 +111,13 @@ void test_LDA_Zero_Page_X_Indexed()
     puts("+ Testing LDA, zero page X indexed addressing mode: 0xB5");
     RESET()
     uint8_t data = 0;
+    uint16_t current_address;
+    uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
-    mos6507_set_data_bus(0xAA);
-    mos6507_set_address_bus(0x0091);
-    memmap_write();
-    /* The carridge specifies 0x90, this offset gets us to the correct location */
+    insert_test_data(0x0091, 0xAA);
+
+    /* The cartridge specifies 0x90, this offset gets us to the correct location */
     mos6507_set_register(MOS6507_REG_X, 0x01);
 
     /* Now load our test program and start clocking the CPU */
