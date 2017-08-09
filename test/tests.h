@@ -35,6 +35,12 @@ void test_LDX_Absolute_Y_Indexed_Boundary_Cross();
 
 void test_LDY();
 void test_LDY_Immediate();
+void test_LDY_Zero_Page();
+void test_LDY_Zero_Page_X_Indexed();
+void test_LDY_Absolute();
+void test_LDY_Absolute_X_Indexed();
+void test_LDY_Absolute_X_Indexed_Boundary_Cross();
+
 
 #endif /* EXEC_TESTS */
 

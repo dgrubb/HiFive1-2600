@@ -104,7 +104,7 @@ void opcode_populate_ISA_table()
     ISA_table[0xAC].opcode = opcode_LDY;
     ISA_table[0xAC].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE;
     ISA_table[0xBC].opcode = opcode_LDY;
-    ISA_table[0xBB].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
+    ISA_table[0xBC].addressing_mode = OPCODE_ADDRESSING_MODE_ABSOLUTE_X_INDEXED;
 
     /* Store Accumulator in memory */
     ISA_table[0x85].opcode = opcode_STA;

@@ -80,17 +80,17 @@ uint8_t test_cart_LDX_Immediate[] = {
 };
 
 uint8_t test_cart_LDX_Zero_Page[] = {
-    0xA6, /* LDX, Load accumulator with ... */
+    0xA6, /* LDX, Load X index with ... */
     0x81  /* ... the contents of this zero-page RAM location */
 };
 
 uint8_t test_cart_LDX_Zero_Page_Y_Indexed[] = {
-    0xB6, /* LDX, Load accumulator with ... */
+    0xB6, /* LDX, Load X index with ... */
     0x90  /* ... the contents of this zero-page RAM location, +Y index register */
 };
 
 uint8_t test_cart_LDX_Absolute[] = {
-    0xAE, /* LDX, Load accumulator with ... */
+    0xAE, /* LDX, Load X index with ... */
     0x01, /* ... the contents of this low address byte ... */
     0x20  /* ... and this high address byte ... */
 };
@@ -102,10 +102,48 @@ uint8_t test_cart_LDX_Absolute_Y_Indexed[] = {
 };
 
 uint8_t test_cart_LDX_Absolute_Y_Indexed_Boundary_Cross[] = {
-    0xBE, /* LDA, Load X index with ... */
+    0xBE, /* LDX, Load X index with ... */
     0xFF, /* ... the contents of this low address byte ... */
     0x00  /* ... and this high address byte ... */
 };
+
+/******************************************************************************
+ * LDY
+ *****************************************************************************/
+
+uint8_t test_cart_LDY_Immediate[] = {
+    0xA0, /* LDY, Load Y index with ... */
+    0xAA  /* ... the raw value 0xAA */
+};
+
+uint8_t test_cart_LDY_Zero_Page[] = {
+    0xA4, /* LDY, Load Y index with ... */
+    0x81  /* ... the contents of this zero-page RAM location */
+};
+
+uint8_t test_cart_LDY_Zero_Page_X_Indexed[] = {
+    0xB4, /* LDY, Load Y index with ... */
+    0x90  /* ... the contents of this zero-page RAM location, +Y index register */
+};
+
+uint8_t test_cart_LDY_Absolute[] = {
+    0xAC, /* LDY, Load Y index with ... */
+    0x01, /* ... the contents of this low address byte ... */
+    0x20  /* ... and this high address byte ... */
+};
+
+uint8_t test_cart_LDY_Absolute_X_Indexed[] = {
+    0xBC, /* LDY, Load Y index with ... */
+    0x00, /* ... the contents of this low address byte ... */
+    0x20  /* ... and this high address byte ... */
+};
+
+uint8_t test_cart_LDY_Absolute_X_Indexed_Boundary_Cross[] = {
+    0xBC, /* LDY, Load Y index with ... */
+    0xFF, /* ... the contents of this low address byte ... */
+    0x00  /* ... and this high address byte ... */
+};
+
 
 #endif /* EXEC_TESTS */
 

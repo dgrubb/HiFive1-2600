@@ -29,6 +29,7 @@ void execute_tests()
 
     test_LDA();
     test_LDX();
+    test_LDY();
 
     puts("====== All tests completed successfully ======\n\r");
 }
@@ -480,18 +481,164 @@ void test_LDX_Absolute_Y_Indexed_Boundary_Cross()
     assert(data == 0xAA);
 }
 
-
 /******************************************************************************
  * Load the Y register
  *****************************************************************************/
 
 void test_LDY()
 {
+    puts("--- Testing LDY:");
 
+    test_LDY_Immediate();
+    test_LDY_Zero_Page();
+    test_LDY_Zero_Page_X_Indexed();
+    test_LDY_Absolute();
+    test_LDY_Absolute_X_Indexed();
+    test_LDY_Absolute_X_Indexed_Boundary_Cross();
+
+    puts("--- All LDY tests completed successfully.\n\r");
 }
 
 void test_LDY_Immediate()
 {
+    puts("+ Testing LDY [ 0xA0 ], immediate addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Perform test */
+    cartridge_load(test_cart_LDY_Immediate);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the immediate operand */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Y register? */
+    mos6507_get_register(MOS6507_REG_Y, &data);
+    assert(data == 0xAA);
 }
+
+void test_LDY_Zero_Page()
+{
+    puts("+ Testing LDY [ 0xA4 ], zero page addressing mode");
+    RESET()
+    uint8_t data = 0;
+    uint16_t current_address;
+    uint8_t current_data;
+
+    /* Setup the test by pre-loading our test data into memory */
+    insert_test_data(0x0081, 0xAA);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDY_Zero_Page);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Y register? */
+    mos6507_get_register(MOS6507_REG_Y, &data);
+    assert(data == 0xAA);
+}
+
+
+void test_LDY_Zero_Page_X_Indexed()
+{
+    puts("+ Testing LDY [ 0xB4 ], zero page X indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+    uint16_t current_address;
+    uint8_t current_data;
+
+    /* Setup the test by pre-loading our test data into memory */
+    insert_test_data(0x0091, 0xAA);
+
+    /* The cartridge specifies 0x90, this offset gets us to the correct location */
+    mos6507_set_register(MOS6507_REG_X, 0x01);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDY_Zero_Page_X_Indexed);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and use it as the next address */
+    mos6507_clock_tick(); /* Fetch the X register and index it with the address */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Y register? */
+    mos6507_get_register(MOS6507_REG_Y, &data);
+    assert(data == 0xAA);
+}
+
+void test_LDY_Absolute()
+{
+    puts("+ Testing LDY [ 0xAC ], absolute addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loading our test data into memory */
+    insert_test_data(0x2001, 0xAA);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDY_Absolute);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the low memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the high memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Y register? */
+    mos6507_get_register(MOS6507_REG_Y, &data);
+    assert(data == 0xAA);
+}
+
+void test_LDY_Absolute_X_Indexed()
+{
+    puts("+ Testing LDX [ 0xBC ], absolute X indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loading our test data into memory */
+    insert_test_data(0x2001, 0xAA);
+
+    /* The cartridge specifies 0x2000, this offset gets us to the correct location */
+    mos6507_set_register(MOS6507_REG_X, 0x01);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDY_Absolute_X_Indexed);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the low memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the high memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Y register? */
+    mos6507_get_register(MOS6507_REG_Y, &data);
+    assert(data == 0xAA);
+}
+
+void test_LDY_Absolute_X_Indexed_Boundary_Cross()
+{
+    puts("+ Testing LDY [ 0xBC ], absolute X indexed addressing mode with boundary crossing");
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loading our test data into memory */
+    insert_test_data(0x0100, 0xAA);
+
+    /* The cartridge specifies 0x2000, this offset gets us to the correct location */
+    mos6507_set_register(MOS6507_REG_X, 0x01);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_LDY_Absolute_X_Indexed_Boundary_Cross);
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the low memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the high memory location */
+    mos6507_clock_tick(); /* Compute new address with carry */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* End test */
+
+    /* Do we have the expected result (0xAA) in the Y register? */
+    mos6507_get_register(MOS6507_REG_Y, &data);
+    assert(data == 0xAA);
+}
+
 
 #endif /* EXEC_TESTS */
