@@ -278,9 +278,10 @@ void test_LDA_Indirect_X_Indexed()
     /* Now load our test program and start clocking the CPU */
     cartridge_load(test_cart_LDA_Indirect_X_Indexed);
     mos6507_clock_tick(); /* Read the instruction */
-    mos6507_clock_tick(); /* Fetch the next byte for the low memory location */
-    mos6507_clock_tick(); /* Fetch the next byte for the high memory location */
-    mos6507_clock_tick(); /* Compute new address with carry */
+    mos6507_clock_tick(); /* Fetch the zero page base address */
+    mos6507_clock_tick(); /* Set the data bus */
+    mos6507_clock_tick(); /* Apply X offset and fetch low byte */
+    mos6507_clock_tick(); /* Fetch high byte */
     mos6507_clock_tick(); /* Fetch the value from memory and load it */
     /* End test */
 
