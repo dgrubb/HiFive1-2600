@@ -28,6 +28,7 @@ void execute_tests()
     puts("============ Executing unit tests ============\n\r");
 
     test_LDA();
+    test_LDX();
 
     puts("====== All tests completed successfully ======\n\r");
 }
@@ -75,7 +76,7 @@ void test_LDA()
 
 void test_LDA_Immediate()
 {
-    puts("+ Testing LDA, immediate addressing mode: 0xA9");
+    puts("+ Testing LDA [ 0xA9 ], immediate addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -91,7 +92,7 @@ void test_LDA_Immediate()
 }
 void test_LDA_Zero_Page()
 {
-    puts("+ Testing LDA, zero page addressing mode: 0xA5");
+    puts("+ Testing LDA [ 0xA5 ], zero page addressing mode");
     RESET()
     uint8_t data = 0;
     uint16_t current_address;
@@ -114,7 +115,7 @@ void test_LDA_Zero_Page()
 
 void test_LDA_Zero_Page_X_Indexed()
 {
-    puts("+ Testing LDA, zero page X indexed addressing mode: 0xB5");
+    puts("+ Testing LDA [ 0xB5 ], zero page X indexed addressing mode");
     RESET()
     uint8_t data = 0;
     uint16_t current_address;
@@ -141,7 +142,7 @@ void test_LDA_Zero_Page_X_Indexed()
 
 void test_LDA_Absolute()
 {
-    puts("+ Testing LDA, absolute addressing mode: 0xAD");
+    puts("+ Testing LDA [ 0xAD ], absolute addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -163,7 +164,7 @@ void test_LDA_Absolute()
 
 void test_LDA_Absolute_X_Indexed()
 {
-    puts("+ Testing LDA, absolute X indexed addressing mode: 0xAD");
+    puts("+ Testing LDA [ 0xBD ], absolute X indexed addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -188,7 +189,7 @@ void test_LDA_Absolute_X_Indexed()
 
 void test_LDA_Absolute_X_Indexed_Boundary_Cross()
 {
-    puts("+ Testing LDA, absolute X indexed addressing mode with boundary crossing: 0xAD");
+    puts("+ Testing LDA [ 0xAD ], absolute X indexed addressing mode with boundary crossing");
     RESET()
     uint8_t data = 0;
 
@@ -214,7 +215,7 @@ void test_LDA_Absolute_X_Indexed_Boundary_Cross()
 
 void test_LDA_Absolute_Y_Indexed()
 {
-    puts("+ Testing LDA, absolute Y indexed addressing mode: 0xA9");
+    puts("+ Testing LDA [ 0xA9 ], absolute Y indexed addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -239,7 +240,7 @@ void test_LDA_Absolute_Y_Indexed()
 
 void test_LDA_Absolute_Y_Indexed_Boundary_Cross()
 {
-    puts("+ Testing LDA, absolute Y indexed addressing mode with boundary crossing: 0xA9");
+    puts("+ Testing LDA [ 0xA9 ], absolute Y indexed addressing mode with boundary crossing");
     RESET()
     uint8_t data = 0;
 
@@ -265,7 +266,7 @@ void test_LDA_Absolute_Y_Indexed_Boundary_Cross()
 
 void test_LDA_Indirect_X_Indexed()
 {
-    puts("+ Testing LDA, indirect X indexed addressing mode: 0xA1");
+    puts("+ Testing LDA [ 0xA1 ], indirect X indexed addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -293,7 +294,7 @@ void test_LDA_Indirect_X_Indexed()
 
 void test_LDA_Indirect_Y_Indexed()
 {
-    puts("+ Testing LDA, indirect Y indexed addressing mode: 0xB1");
+    puts("+ Testing LDA [ 0xB1 ], indirect Y indexed addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -340,7 +341,7 @@ void test_LDX()
 
 void test_LDX_Immediate()
 {
-    puts("+ Testing LDX, immediate addressing mode: 0xA2");
+    puts("+ Testing LDX [ 0xA2 ], immediate addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -357,7 +358,7 @@ void test_LDX_Immediate()
 
 void test_LDX_Zero_Page()
 {
-    puts("+ Testing LDX, zero page addressing mode: 0xA6");
+    puts("+ Testing LDX [ 0xA6 ], zero page addressing mode");
     RESET()
     uint8_t data = 0;
     uint16_t current_address;
@@ -381,7 +382,7 @@ void test_LDX_Zero_Page()
 
 void test_LDX_Zero_Page_Y_Indexed()
 {
-    puts("+ Testing LDX, zero page Y indexed addressing mode: 0xB6");
+    puts("+ Testing LDX [ 0xB6 ], zero page Y indexed addressing mode");
     RESET()
     uint8_t data = 0;
     uint16_t current_address;
@@ -408,7 +409,7 @@ void test_LDX_Zero_Page_Y_Indexed()
 
 void test_LDX_Absolute()
 {
-    puts("+ Testing LDX, absolute addressing mode: 0xAE");
+    puts("+ Testing LDX [ 0xAE ], absolute addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -430,7 +431,7 @@ void test_LDX_Absolute()
 
 void test_LDX_Absolute_Y_Indexed()
 {
-    puts("+ Testing LDX, absolute Y indexed addressing mode: 0xBE");
+    puts("+ Testing LDX [ 0xBE ], absolute Y indexed addressing mode");
     RESET()
     uint8_t data = 0;
 
@@ -455,7 +456,7 @@ void test_LDX_Absolute_Y_Indexed()
 
 void test_LDX_Absolute_Y_Indexed_Boundary_Cross()
 {
-    puts("+ Testing LDX, absolute Y indexed addressing mode with boundary crossing: 0xBE");
+    puts("+ Testing LDX [ 0xBE ], absolute Y indexed addressing mode with boundary crossing");
     RESET()
     uint8_t data = 0;
 
