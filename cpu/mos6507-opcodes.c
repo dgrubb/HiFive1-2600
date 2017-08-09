@@ -438,7 +438,7 @@ int opcode_ILL(int cycle, addressing_mode_t address_mode)
 
 int opcode_ADC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -449,7 +449,7 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
 
 int opcode_AND(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -460,7 +460,7 @@ int opcode_AND(int cycle, addressing_mode_t address_mode)
 
 int opcode_ASL(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data, address = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data, address = 0;
     uint8_t X, Y, c = 0;
 
     if (OPCODE_ADDRESSING_MODE_ACCUMULATOR == address_mode) {
@@ -534,7 +534,7 @@ int opcode_BEQ(int cycle, addressing_mode_t address_mode)
 
 int opcode_BIT(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -706,7 +706,7 @@ int opcode_CLV(int cycle, addressing_mode_t address_mode)
 
 int opcode_CMP(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -717,7 +717,7 @@ int opcode_CMP(int cycle, addressing_mode_t address_mode)
 
 int opcode_CPX(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -728,7 +728,7 @@ int opcode_CPX(int cycle, addressing_mode_t address_mode)
 
 int opcode_CPY(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -806,7 +806,7 @@ int opcode_DEY(int cycle, addressing_mode_t address_mode)
 
 int opcode_EOR(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -953,7 +953,7 @@ int opcode_JSR(int cycle, addressing_mode_t address_mode)
 
 int opcode_LDA(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -964,7 +964,7 @@ int opcode_LDA(int cycle, addressing_mode_t address_mode)
 
 int opcode_LDX(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -975,7 +975,7 @@ int opcode_LDX(int cycle, addressing_mode_t address_mode)
 
 int opcode_LDY(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -986,7 +986,7 @@ int opcode_LDY(int cycle, addressing_mode_t address_mode)
 
 int opcode_LSR(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data, address = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data, address = 0;
     uint8_t X, Y, c = 0;
 
     if (OPCODE_ADDRESSING_MODE_ACCUMULATOR == address_mode) {
@@ -1028,7 +1028,7 @@ int opcode_NOP(int cycle, addressing_mode_t address_mode)
 
 int opcode_ORA(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -1168,7 +1168,7 @@ int opcode_ROL(int cycle, addressing_mode_t address_mode)
 
 int opcode_ROR(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bah, bal, data, address = 0;
+    static uint8_t adl, adh, ial, iah, bah, bal, data, address = 0;
     uint8_t X, Y, c = 0;
 
     if (OPCODE_ADDRESSING_MODE_ACCUMULATOR == address_mode) {
@@ -1211,7 +1211,7 @@ int opcode_RTS(int cycle, addressing_mode_t address_mode)
 
 int opcode_SBC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()

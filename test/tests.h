@@ -23,9 +23,15 @@ void test_LDA_Absolute_X_Indexed_Boundary_Cross();
 void test_LDA_Absolute_Y_Indexed();
 void test_LDA_Absolute_Y_Indexed_Boundary_Cross();
 void test_LDA_Indirect_X_Indexed();
+void test_LDA_Indirect_Y_Indexed();
 
 void test_LDX();
 void test_LDX_Immediate();
+void test_LDX_Zero_Page();
+void test_LDX_Zero_Page_Y_Indexed();
+void test_LDX_Absolute();
+void test_LDX_Absolute_Y_Indexed();
+void test_LDX_Absolute_Y_Indexed_Boundary_Cross();
 
 void test_LDY();
 void test_LDY_Immediate();

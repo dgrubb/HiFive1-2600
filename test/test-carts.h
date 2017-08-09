@@ -60,23 +60,51 @@ uint8_t test_cart_LDA_Absolute_Y_Indexed_Boundary_Cross[] = {
 
 uint8_t test_cart_LDA_Indirect_X_Indexed[] = {
     0xA1, /* LDA, Load accumulator with ... */
-    0x90,
-    0x00
+    0x90, /* ... an address in zero-page which ... */
+    0x00  /* ... combined with the X index register yeilds the actual data */
 };
 
+uint8_t test_cart_LDA_Indirect_Y_Indexed[] = {
+    0xA1, /* LDA, Load accumulator with ... */
+    0x90, /* ... an address in zero-page which ... */
+    0x00  /* ... combined with the Y index register yeilds the actual data */
+};
+
+/******************************************************************************
+ * LDX
+ *****************************************************************************/
+
 uint8_t test_cart_LDX_Immediate[] = {
-    0xA2, /* LDX, Load accumulator with ... */
+    0xA2, /* LDX, Load X index with ... */
     0xAA  /* ... the raw value 0xAA */
 };
 
 uint8_t test_cart_LDX_Zero_Page[] = {
-    0xA9, /* LDX, Load accumulator with ... */
+    0xA6, /* LDX, Load accumulator with ... */
     0x81  /* ... the contents of this zero-page RAM location */
 };
 
-uint8_t test_cart_LDY_Immediate[] = {
-    0xA0, /* LDY, Load accumulator with ... */
-    0xAA  /* ... the raw value 0xAA */
+uint8_t test_cart_LDX_Zero_Page_Y_Indexed[] = {
+    0xB6, /* LDX, Load accumulator with ... */
+    0x90  /* ... the contents of this zero-page RAM location, +Y index register */
+};
+
+uint8_t test_cart_LDX_Absolute[] = {
+    0xAE, /* LDX, Load accumulator with ... */
+    0x01, /* ... the contents of this low address byte ... */
+    0x20  /* ... and this high address byte ... */
+};
+
+uint8_t test_cart_LDX_Absolute_Y_Indexed[] = {
+    0xAE, /* LDX, Load X index with ... */
+    0x00, /* ... the contents of this low address byte ... */
+    0x20  /* ... and this high address byte ... */
+};
+
+uint8_t test_cart_LDX_Absolute_Y_Indexed_Boundary_Cross[] = {
+    0xBE, /* LDA, Load X index with ... */
+    0xFF, /* ... the contents of this low address byte ... */
+    0x00  /* ... and this high address byte ... */
 };
 
 #endif /* EXEC_TESTS */
