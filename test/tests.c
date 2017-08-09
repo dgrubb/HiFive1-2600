@@ -299,18 +299,20 @@ void test_LDA_Indirect_Y_Indexed()
 
     /* Setup the test by pre-loading our test data into memory */
     insert_test_data(0x0090, 0x91);
-    insert_test_data(0x0091, 0x00);
-    insert_test_data(0x0092, 0xAA);
+    insert_test_data(0x0091, 0x95);
+    insert_test_data(0x0092, 0x00);
+    insert_test_data(0x0097, 0xAA);
 
-    mos6507_set_register(MOS6507_REG_Y, 0x01);
+    mos6507_set_register(MOS6507_REG_Y, 0x02);
 
     /* Now load our test program and start clocking the CPU */
     cartridge_load(test_cart_LDA_Indirect_Y_Indexed);
     mos6507_clock_tick(); /* Read the instruction */
-    mos6507_clock_tick(); /* Fetch the zero page base address */
-    mos6507_clock_tick(); /* Set the data bus */
-    mos6507_clock_tick(); /* Apply X offset and fetch low byte */
-    mos6507_clock_tick(); /* Fetch high byte */
+    mos6507_clock_tick(); /* Fetch the address offset */
+    mos6507_clock_tick(); /* Apply the offset and read the low byte */
+    mos6507_clock_tick(); /* Increment address and read high byte */
+    mos6507_clock_tick(); /* Apply Y index offset */
+    mos6507_clock_tick(); /* Fetch data */
     /* End test */
 
     /* Do we have the expected result (0xAA) in the Accumulator? */
