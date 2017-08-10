@@ -13,6 +13,10 @@
 
 #ifdef EXEC_TESTS
 
+/******************************************************************************
+ * LDA
+ *****************************************************************************/
+
 uint8_t test_cart_LDA_Immediate[] = {
     0xA9, /* LDA, Load accumulator with ... */
     0xAA  /* ... the raw value 0xAA */
@@ -144,6 +148,31 @@ uint8_t test_cart_LDY_Absolute_X_Indexed_Boundary_Cross[] = {
     0x00  /* ... and this high address byte ... */
 };
 
+/******************************************************************************
+ * STA
+ *****************************************************************************/
+
+uint8_t test_cart_STA_Zero_Page[] = {
+    0xA9, /* LDA, load accumulator with ... */
+    0xBB, /* ... this value */
+    0x85, /* ... then move that value */
+    0x99  /* ... into this location in memory */
+};
+
+uint8_t test_cart_STA_Zero_Page_X_Indexed[] = {
+    0xA9, /* LDA, load accumulator with ... */
+    0xBB, /* ... this value */
+    0x95, /* Then move the accumulator contents ... */
+    0x90 /* ... to the offset of this address + index register*/
+};
+
+uint8_t test_cart_STA_Absolute[] = {
+    0xA9, /* LDA, load accumulator with ... */
+    0xBB, /* ... this value */
+    0x8D, /* Then move the accumulator contents ... */
+    0xFF, /* ... to this ...*/
+    0x01  /* ... address */
+};
 
 #endif /* EXEC_TESTS */
 

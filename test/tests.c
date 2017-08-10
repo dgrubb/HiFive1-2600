@@ -30,6 +30,7 @@ void execute_tests()
     test_LDA();
     test_LDX();
     test_LDY();
+    test_STA();
 
     puts("====== All tests completed successfully ======\n\r");
 }
@@ -49,6 +50,23 @@ void insert_test_data(uint16_t address, uint8_t data)
     mos6507_set_data_bus(data);
     mos6507_set_address_bus(address);
     memmap_write();
+    mos6507_set_data_bus(current_data);
+    mos6507_set_address_bus(current_address);
+}
+
+void read_test_data(uint16_t address, uint8_t *data)
+{
+    uint16_t current_address;
+    uint8_t current_data;
+
+    /* Save the current address and data bus states. Switch to the specified
+     * address and read out of memory. Once complete return the address and 
+     * data bus to their previous states.
+     */
+    mos6507_get_address_bus(&current_address);
+    mos6507_get_data_bus(&current_data);
+    mos6507_set_address_bus(address);
+    memmap_read(data);
     mos6507_set_data_bus(current_data);
     mos6507_set_address_bus(current_address);
 }
@@ -96,8 +114,6 @@ void test_LDA_Zero_Page()
     puts("+ Testing LDA [ 0xA5 ], zero page addressing mode");
     RESET()
     uint8_t data = 0;
-    uint16_t current_address;
-    uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
     insert_test_data(0x0081, 0xAA);
@@ -640,5 +656,93 @@ void test_LDY_Absolute_X_Indexed_Boundary_Cross()
     assert(data == 0xAA);
 }
 
+/******************************************************************************
+ * Store the Accumulator
+ *****************************************************************************/
+
+void test_STA()
+{
+    puts("--- Testing STA:");
+
+    test_STA_Zero_Page();
+    test_STA_Zero_Page_X_Indexed();
+    test_STA_Absolute();
+
+    puts("--- All STA tests completed successfully.\n\r");
+}
+
+void test_STA_Zero_Page()
+{
+    puts("+ Testing STA [ 0xA9 ], zero page addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STA_Zero_Page);
+    /* Load (LDA) a value into the Accumulator */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STA) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Store the Accumulator value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x0099, &data);
+    assert(data == 0xBB);
+}
+
+void test_STA_Zero_Page_X_Indexed()
+{
+    puts("+ Testing STA [ 0x95 ], zero page X indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Set out offset to be added to the address in the cartridge */
+    mos6507_set_register(MOS6507_REG_X, 0x09);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STA_Zero_Page_X_Indexed);
+    /* Load (LDA) a value into the Accumulator */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STA) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Store the Accumulator value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x0099, &data);
+    assert(data == 0xBB);
+}
+
+void test_STA_Absolute()
+{
+    puts("+ Testing STA [ 0x8D ], absolute addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STA_Absolute);
+    /* Load (LDA) a value into the Accumulator */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STA) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Store the Accumulator value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x01FF, &data);
+    assert(data == 0xBB);
+}
 
 #endif /* EXEC_TESTS */

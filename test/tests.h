@@ -41,6 +41,10 @@ void test_LDY_Absolute();
 void test_LDY_Absolute_X_Indexed();
 void test_LDY_Absolute_X_Indexed_Boundary_Cross();
 
+void test_STA();
+void test_STA_Zero_Page();
+void test_STA_Zero_Page_X_Indexed();
+void test_STA_Absolute();
 
 #endif /* EXEC_TESTS */
 
