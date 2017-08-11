@@ -1005,7 +1005,7 @@ int opcode_LSR(int cycle, addressing_mode_t address_mode)
     }
 
     FETCH_DATA()
-    mos6507_LSR(data);
+    mos6507_LSR(&data);
     END_OPCODE()
 }
 
@@ -1032,7 +1032,7 @@ int opcode_ORA(int cycle, addressing_mode_t address_mode)
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
-    mos6507_ORA(data);
+    mos6507_ORA(&data);
     END_OPCODE()
     return 0;
 }
@@ -1187,7 +1187,7 @@ int opcode_ROR(int cycle, addressing_mode_t address_mode)
     }
 
     FETCH_DATA()
-    mos6507_ROR(data);
+    mos6507_ROR(&data);
     END_OPCODE()
 }
 

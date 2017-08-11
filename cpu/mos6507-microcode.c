@@ -109,24 +109,68 @@ void mos6507_CPY(uint8_t data)
 
 void mos6507_EOR(uint8_t data)
 {
+    uint8_t accumulator, tmp = 0;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+
+    tmp = accumulator ^ data;
+
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
+    mos6507_set_register(MOS6507_REG_A, tmp);
 }
 
-void mos6507_LSR(uint8_t data)
+void mos6507_LSR(uint8_t *data)
 {
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (*data & 0x01));
+    *data >>= 1;
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(*data & 0xFF));
 }
 
-void mos6507_ORA(uint8_t data)
+void mos6507_ORA(uint8_t *data)
 {
+    uint8_t accumulator, tmp = 0;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+
+    tmp = accumulator | *data;
+
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
+    mos6507_set_register(MOS6507_REG_A, tmp);
 }
 
-void mos6507_ROL(uint8_t data)
+void mos6507_ROL(uint8_t *data)
 {
+    uint16_t tmp = 0;
+    uint8_t accumulator = 0;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+
+    tmp = *data << 1;
+    if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY)) {
+        tmp |= 0x01;
+    }
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp & 0x0100));
+    *data = (tmp & 0xFF);
 }
 
-void mos6507_ROR(uint8_t data)
+void mos6507_ROR(uint8_t *data)
 {
+    uint16_t tmp = 0;
+    uint8_t accumulator = 0;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+
+    tmp = *data >> 1;
+    if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY)) {
+        tmp |= 0x80;
+    }
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (*data & 0x01));
+    *data = (tmp & 0xFF);
 }
 
 void mos6507_SBC(uint8_t data)
 {
+
 }
