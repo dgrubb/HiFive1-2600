@@ -88,7 +88,7 @@ void mos6507_CPX(uint8_t data)
 
     mos6507_get_register(MOS6507_REG_X, &X);
 
-    tmp = accumulator - data;
+    tmp = X - data;
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp < 0x0100));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
@@ -101,7 +101,7 @@ void mos6507_CPY(uint8_t data)
 
     mos6507_get_register(MOS6507_REG_Y, &Y);
 
-    tmp = accumulator - data;
+    tmp = Y - data;
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp < 0x0100));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
