@@ -58,18 +58,53 @@ void mos6507_ASL(uint8_t *data)
 
 void mos6507_BIT(uint8_t data)
 {
+    uint8_t accumulator, tmp = 0;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+
+    tmp = accumulator & data;
+
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (data & MOS6507_STATUS_FLAG_NEGATIVE));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_OVERFLOW, (data & MOS6507_STATUS_FLAG_OVERFLOW));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
 }
 
 void mos6507_CMP(uint8_t data)
 {
+    uint16_t tmp = 0;
+    uint8_t accumulator = 0;
+
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+
+    tmp = accumulator - data;
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp < 0x0100));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
 }
 
 void mos6507_CPX(uint8_t data)
 {
+    uint16_t tmp = 0;
+    uint8_t X = 0;
+
+    mos6507_get_register(MOS6507_REG_X, &X);
+
+    tmp = accumulator - data;
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp < 0x0100));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
 }
 
 void mos6507_CPY(uint8_t data)
 {
+    uint16_t tmp = 0;
+    uint8_t Y = 0;
+
+    mos6507_get_register(MOS6507_REG_Y, &Y);
+
+    tmp = accumulator - data;
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp < 0x0100));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
 }
 
 void mos6507_EOR(uint8_t data)
