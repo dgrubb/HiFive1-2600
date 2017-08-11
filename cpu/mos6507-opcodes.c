@@ -479,7 +479,7 @@ int opcode_ASL(int cycle, addressing_mode_t address_mode)
     }
 
     FETCH_DATA()
-    mos6507_ASL(data);
+    mos6507_ASL(&data);
     END_OPCODE()
     return 0;
 }

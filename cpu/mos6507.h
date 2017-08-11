@@ -12,13 +12,15 @@
 #include <stdint.h>
 #include "mos6507-opcodes.h"
 
-#define MOS6507_STATUS_FLAG_NEGATIVE  0x80
-#define MOS6507_STATUS_FLAG_OVERFLOW  0x40
-#define MOS6507_STATUS_FLAG_BREAK     0x10
-#define MOS6507_STATUS_FLAG_DECIMAL   0x08
-#define MOS6507_STATUS_FLAG_INTERRUPT 0x04
-#define MOS6507_STATUS_FLAG_ZERO      0x02
-#define MOS6507_STATUS_FLAG_CARRY     0x01
+typedef enum {
+    MOS6507_STATUS_FLAG_NEGATIVE  = 0x80,
+    MOS6507_STATUS_FLAG_OVERFLOW  = 0x40,
+    MOS6507_STATUS_FLAG_BREAK     = 0x10,
+    MOS6507_STATUS_FLAG_DECIMAL   = 0x08,
+    MOS6507_STATUS_FLAG_INTERRUPT = 0x04,
+    MOS6507_STATUS_FLAG_ZERO      = 0x02,
+    MOS6507_STATUS_FLAG_CARRY     = 0x01
+} mos6507_status_flag_t;
 
 typedef enum {
     MOS6507_REG_A = 0,
@@ -56,6 +58,8 @@ void mos6507_get_data_bus(uint8_t *data);
 void mos6507_increment_PC();
 uint16_t mos6507_get_PC();
 void mos6507_set_PC(uint16_t pc);
+void mos6507_set_status_flag(mos6507_status_flag_t flag, int value);
+int mos6507_get_status_flag(mos6507_status_flag_t flag);
 char * mos6507_get_register_str(mos6507_register_t reg);
 
 #endif /* _MOS6507_H */

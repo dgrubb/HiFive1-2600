@@ -163,3 +163,21 @@ char * mos6507_get_register_str(mos6507_register_t reg)
         default: return "Unknown";
     }
 }
+
+void mos6507_set_status_flag(mos6507_status_flag_t flag, int value) {
+    uint8_t status;
+    mos6507_get_register(MOS6507_REG_S, &status);
+    if (value) {
+        status |= flag;
+    } else {
+        status &= ~flag;
+    }
+    mos6507_set_register(MOS6507_REG_S, status);
+}
+
+int mos6507_get_status_flag(mos6507_status_flag_t flag) {
+    uint8_t status;
+    mos6507_get_register(MOS6507_REG_S, &status);
+    return (status & flag);
+}
+

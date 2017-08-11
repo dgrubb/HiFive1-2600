@@ -14,7 +14,7 @@
 
 void mos6507_ADC(uint8_t data);
 void mos6507_AND(uint8_t data);
-void mos6507_ASL(uint8_t data);
+void mos6507_ASL(uint8_t *data);
 void mos6507_BIT(uint8_t data);
 void mos6507_CMP(uint8_t data);
 void mos6507_CPX(uint8_t data);

@@ -60,6 +60,8 @@ void test_STY_Zero_Page();
 void test_STY_Zero_Page_X_Indexed();
 void test_STY_Absolute();
 
+void test_ADC();
+
 #endif /* EXEC_TESTS */
 
 #endif /* _TEST_H */
