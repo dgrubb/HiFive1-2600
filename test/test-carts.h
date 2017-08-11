@@ -174,6 +174,88 @@ uint8_t test_cart_STA_Absolute[] = {
     0x01  /* ... address */
 };
 
+uint8_t test_cart_STA_Absolute_X_Indexed[] = {
+    0xA9, /* LDA, load accumulator with ... */
+    0xBB, /* ... this value */
+    0x9D, /* The move the accumulator contents ... */
+    0xF0, /* ... low byte ... */
+    0x01 /* ... high byte ... */
+};
+
+uint8_t test_cart_STA_Absolute_Y_Indexed[] = {
+    0x99, /* LDA, load accumulator with ... */
+    0xBB, /* ... this value */
+    0x9D, /* The move the accumulator contents ... */
+    0xF0, /* ... low byte ... */
+    0x01 /* ... high byte ... */
+};
+
+uint8_t test_cart_STA_Indirect_X_Indexed[] = {
+    0x99, /* LDA, load accumulator with ... */
+    0xBB, /* ... this value */
+    0x81, /* Then move accumulator contents ... */
+    0x90  /* ... to this address + index offset*/
+};
+
+uint8_t test_cart_STA_Indirect_Y_Indexed[] = {
+    0x99, /* LDA, load accumulator with ... */
+    0xBB, /* ... this value */
+    0x91, /* Then move accumulator contents ... */
+    0x90  /* ... to this address + index offset*/
+};
+
+/******************************************************************************
+ * STX
+ *****************************************************************************/
+
+uint8_t test_cart_STX_Zero_Page[] = {
+    0xA2, /* LDX, load X index with ... */
+    0xBB, /* ... this value */
+    0x86, /* Then read that value ... */
+    0x99, /* .. into this zero page location */
+};
+
+uint8_t test_cart_STX_Zero_Page_Y_Indexed[] = {
+    0xA2, /* LDX, load X index with ... */
+    0xBB, /* ... this value */
+    0x96, /* Then read that value ... */
+    0x90, /* .. into this zero page location */
+};
+
+uint8_t test_cart_STX_Absolute[] = {
+    0xA2, /* LDX, load X index with ... */
+    0xBB, /* ... this value */
+    0x8E, /* Then read that value ... */
+    0xFF, /* .. into this low byte ... */
+    0x01  /* ... and this high byte */
+};
+
+/******************************************************************************
+ * STY
+ *****************************************************************************/
+
+uint8_t test_cart_STY_Zero_Page[] = {
+    0xA0, /* LDY, load Y index with ... */
+    0xBB, /* ... this value */
+    0x84, /* Then read that value ... */
+    0x99, /* .. into this zero page location */
+};
+
+uint8_t test_cart_STY_Zero_Page_X_Indexed[] = {
+    0xA0, /* LDY, load Y index with ... */
+    0xBB, /* ... this value */
+    0x94, /* Then read that value ... */
+    0x90, /* .. into this zero page location */
+};
+
+uint8_t test_cart_STY_Absolute[] = {
+    0xA0, /* LDY, load Y index with ... */
+    0xBB, /* ... this value */
+    0x8C, /* Then read that value ... */
+    0xFF, /* .. into this low byte ... */
+    0x01  /* ... and this high byte */
+};
+
 #endif /* EXEC_TESTS */
 
 #endif /* _TEST_CARTS_H */

@@ -31,6 +31,8 @@ void execute_tests()
     test_LDX();
     test_LDY();
     test_STA();
+    test_STX();
+    test_STY();
 
     puts("====== All tests completed successfully ======\n\r");
 }
@@ -667,6 +669,10 @@ void test_STA()
     test_STA_Zero_Page();
     test_STA_Zero_Page_X_Indexed();
     test_STA_Absolute();
+    test_STA_Absolute_X_Indexed();
+    test_STA_Absolute_Y_Indexed();
+    test_STA_Indirect_X_Indexed();
+    test_STA_Indirect_Y_Indexed();
 
     puts("--- All STA tests completed successfully.\n\r");
 }
@@ -736,7 +742,7 @@ void test_STA_Absolute()
     /* Now execute the store (STA) function */
     mos6507_clock_tick(); /* Read the instruction */
     mos6507_clock_tick(); /* Fetch the next byte for the memory location */
-    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Update the address bus to the memory address */
     mos6507_clock_tick(); /* Store the Accumulator value into memory */
     /* End test */
 
@@ -744,5 +750,308 @@ void test_STA_Absolute()
     read_test_data(0x01FF, &data);
     assert(data == 0xBB);
 }
+
+void test_STA_Absolute_X_Indexed()
+{
+    puts("+ Testing STA [ 0x9D ], absolute X indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Set out offset to be added to the address in the cartridge */
+    mos6507_set_register(MOS6507_REG_X, 0x0F);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STA_Absolute_X_Indexed);
+    /* Load (LDA) a value into the Accumulator */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STA) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Set busses */
+    mos6507_clock_tick(); /* Store the Accumulator value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x01FF, &data);
+    assert(data == 0xBB);
+}
+
+void test_STA_Absolute_Y_Indexed()
+{
+    puts("+ Testing STA [ 0x99 ], absolute Y indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Set out offset to be added to the address in the cartridge */
+    mos6507_set_register(MOS6507_REG_Y, 0x0F);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STA_Absolute_Y_Indexed);
+    /* Load (LDA) a value into the Accumulator */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STA) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Set busses */
+    mos6507_clock_tick(); /* Store the Accumulator value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x01FF, &data);
+    assert(data == 0xBB);
+}
+
+void test_STA_Indirect_X_Indexed()
+{
+    puts("+ Testing STA [ 0x81 ], indirect X indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loading our test data into memory */
+    insert_test_data(0x0090, 0x90);
+    insert_test_data(0x0095, 0xFF);
+    insert_test_data(0x0096, 0x01);
+
+    /* Set out offset to be added to the address in the cartridge */
+    mos6507_set_register(MOS6507_REG_X, 0x05);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STA_Indirect_X_Indexed);
+    /* Load (LDA) a value into the Accumulator */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STA) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Set busses */
+    mos6507_clock_tick(); /* Set busses */
+    mos6507_clock_tick(); /* Store the Accumulator value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x01FF, &data);
+    assert(data == 0xBB);
+}
+
+void test_STA_Indirect_Y_Indexed()
+{
+    puts("+ Testing STA [ 0x91 ], indirect Y indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Setup the test by pre-loading our test data into memory */
+    insert_test_data(0x0090, 0x90);
+    insert_test_data(0x0095, 0xFF);
+    insert_test_data(0x0096, 0x01);
+
+    /* Set out offset to be added to the address in the cartridge */
+    mos6507_set_register(MOS6507_REG_Y, 0x05);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STA_Indirect_Y_Indexed);
+    /* Load (LDA) a value into the Accumulator */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STA) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Set busses */
+    mos6507_clock_tick(); /* Set busses */
+    mos6507_clock_tick(); /* Store the Accumulator value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x01FF, &data);
+    assert(data == 0xBB);
+}
+
+/******************************************************************************
+ * Store the X index register
+ *****************************************************************************/
+
+void test_STX()
+{
+    puts("--- Testing STX:");
+
+    test_STX_Zero_Page();
+    test_STX_Zero_Page_Y_Indexed();
+    test_STX_Absolute();
+
+    puts("--- All STX tests completed successfully.\n\r");
+}
+
+void test_STX_Zero_Page()
+{
+    puts("+ Testing STX [ 0x86 ], zero page addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STX_Zero_Page);
+    /* Load (LDX) a value into the X index register */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STX) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Store the X index value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x0099, &data);
+    assert(data == 0xBB);
+}
+
+void test_STX_Zero_Page_Y_Indexed()
+{
+    puts("+ Testing STX [ 0x96 ], zero page Y indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Set out offset to be added to the address in the cartridge */
+    mos6507_set_register(MOS6507_REG_Y, 0x09);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STX_Zero_Page_Y_Indexed);
+    /* Load (LDX) a value into the X index register */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STX) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Store the X index value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x0099, &data);
+    assert(data == 0xBB);
+}
+
+void test_STX_Absolute()
+{
+    puts("+ Testing STX [ 0x8E ], absolute addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STX_Absolute);
+    /* Load (LDX) a value into the X index register */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STX) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Store the X index value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x01FF, &data);
+    assert(data == 0xBB);
+}
+
+/******************************************************************************
+ * Store the Y index register
+ *****************************************************************************/
+
+void test_STY()
+{
+    puts("--- Testing STY:");
+
+    test_STY_Zero_Page();
+    test_STY_Zero_Page_X_Indexed();
+    test_STY_Absolute();
+
+    puts("--- All STY tests completed successfully.\n\r");
+}
+
+void test_STY_Zero_Page()
+{
+    puts("+ Testing STY [ 0x84 ], zero page addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STY_Zero_Page);
+    /* Load (LDY) a value into the Y index register */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STY) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Store the Y index value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x0099, &data);
+    assert(data == 0xBB);
+}
+
+void test_STY_Zero_Page_X_Indexed()
+{
+    puts("+ Testing STY [ 0x94 ], zero page X indexed addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Set out offset to be added to the address in the cartridge */
+    mos6507_set_register(MOS6507_REG_X, 0x09);
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STY_Zero_Page_X_Indexed);
+    /* Load (LDY) a value into the Y index register */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STY) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Update the address bus to the memory address + index */
+    mos6507_clock_tick(); /* Store the Y index value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x0099, &data);
+    assert(data == 0xBB);
+}
+
+void test_STY_Absolute()
+{
+    puts("+ Testing STY [ 0x8C ], absolute addressing mode");
+    RESET()
+    uint8_t data = 0;
+
+    /* Now load our test program and start clocking the CPU */
+    cartridge_load(test_cart_STY_Absolute);
+    /* Load (LDY) a value into the Y index register */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the value from memory and load it */
+    /* Now execute the store (STY) function */
+    mos6507_clock_tick(); /* Read the instruction */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Fetch the next byte for the memory location */
+    mos6507_clock_tick(); /* Store the Y index value into memory */
+    /* End test */
+
+    /* Do we have the expected result (0xBB) in memory? */
+    read_test_data(0x01FF, &data);
+    assert(data == 0xBB);
+}
+
 
 #endif /* EXEC_TESTS */

@@ -45,6 +45,20 @@ void test_STA();
 void test_STA_Zero_Page();
 void test_STA_Zero_Page_X_Indexed();
 void test_STA_Absolute();
+void test_STA_Absolute_X_Indexed();
+void test_STA_Absolute_Y_Indexed();
+void test_STA_Indirect_X_Indexed();
+void test_STA_Indirect_Y_Indexed();
+
+void test_STX();
+void test_STX_Zero_Page();
+void test_STX_Zero_Page_Y_Indexed();
+void test_STX_Absolute();
+
+void test_STY();
+void test_STY_Zero_Page();
+void test_STY_Zero_Page_X_Indexed();
+void test_STY_Absolute();
 
 #endif /* EXEC_TESTS */
 
