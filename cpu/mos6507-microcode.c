@@ -172,5 +172,22 @@ void mos6507_ROR(uint8_t *data)
 
 void mos6507_SBC(uint8_t data)
 {
+    uint16_t tmp;
+    uint8_t accumulator = 0;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
 
+    if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_DECIMAL)) {
+        // TODO
+    } else {
+        tmp = accumulator - data - (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY) ? 1 : 0);
+        mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+        mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, !(tmp & 0x8000));
+        mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
+        mos6507_set_status_flag(
+            MOS6507_STATUS_FLAG_OVERFLOW,
+            !((accumulator ^ data) & 0x80) && ((accumulator ^ tmp) & 0x80)
+        );
+    }
+
+    mos6507_set_register(MOS6507_REG_A, (tmp & 0xFF));
 }
