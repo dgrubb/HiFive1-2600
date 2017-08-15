@@ -1059,6 +1059,29 @@ void test_STY_Absolute()
 
 void test_ADC()
 {
+    puts("--- Testing ADC:");
+
+    test_ADC_Immediate();
+
+    puts("--- All ADC tests completed successfully.\n\r");
+
+}
+
+void test_ADC_Immediate()
+{
+    puts("+ Testing ADC [ 0x69 ], immediate addressing mode");
+    RESET()
+    uint8_t accumulator, data, P = 0;
+
+    
+
+    /* Do we have the expected result in the Accumulator and 
+     * has the Carry bit been set correctly? */
+    mos6507_get_register(MOS6507_REG_S, &P);
+    assert(MOS6507_STATUS_FLAG_CARRY & P);
+
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+    assert(accumulator = 10);
 }
 
 #endif /* EXEC_TESTS */
