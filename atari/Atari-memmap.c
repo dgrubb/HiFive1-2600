@@ -10,6 +10,7 @@
 #include "Atari-cart.h"
 #include "../cpu/mos6507.h"
 #include "../memory/mos6532.h"
+#include "../external/spi.h"
 
 #define IS_TIA(x) (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
 #define IS_RIOT(x) (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END)
