@@ -12,17 +12,26 @@
  * part of memory. We "load" a cartridge by storing a pointer 
  * to the desired cartridge data.
  */
-static uint8_t *cartridge;
+static uint8_t *cartridge = 0;
 
 void cartridge_read(uint16_t address, uint8_t * data)
 {
-    // TODO: this is really dangerous, fix please
-    *data = cartridge[address];
+    if (cartridge) {
+        *data = cartridge[address];
+    }
 }
 
 void cartridge_load(uint8_t *cart)
 {
+    if (cartridge) {
+        cartridge_eject();
+    }
     cartridge = cart;
 }
 
-void cartridge_eject();
+void cartridge_eject()
+{
+    /* Clear the pointer to the current cartridge array */
+    cartridge = 0;
+}
+
