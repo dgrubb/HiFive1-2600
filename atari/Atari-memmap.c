@@ -11,14 +11,9 @@
 #include "../cpu/mos6507.h"
 #include "../memory/mos6532.h"
 
-#define IS_TIA(x) \
-    (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END) ? 1 : 0
-
-#define IS_RIOT(x) \
-    (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END) ? 1 : 0
-
-#define IS_CART(x) \
-    (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END) ? 1 : 0
+#define IS_TIA(x) (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
+#define IS_RIOT(x) (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END)
+#define IS_CART(x) (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END)
 
 void memmap_map_address(uint16_t *address)
 {
