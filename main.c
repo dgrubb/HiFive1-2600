@@ -9,8 +9,9 @@
 #include "platform.h"
 #include "plic/plic_driver.h"
 
-/* Atari includes */
+/* Atari and platform includes */
 #include "cpu/mos6507.h"
+#include "external/spi.h"
 #include "memory/mos6532.h"
 #include "test/tests.h"
 
@@ -173,6 +174,7 @@ int main()
 
     /* Setup FE310 peripherals */
     init_GPIO();
+    init_SPI();
     init_clock();
     enable_interrupts();
 
@@ -190,6 +192,8 @@ int main()
             GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
             /* Fire a CPU clock tick */
             mos6507_clock_tick();
+            /* Trasmit any changes in data and address bus to peripherals */
+            spi_transmit_bus_states();
             system_clock = 0;
         }
     };

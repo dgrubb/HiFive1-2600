@@ -17,6 +17,8 @@ C_SRCS += memory/mos6532.c
 # System architecture:
 C_SRCS += atari/Atari-memmap.c
 C_SRCS += atari/Atari-cart.c
+# uC hardware
+C_SRCS += external/spi.c
 # Program logic
 C_SRCS += test/debug.c
 C_SRCS += test/tests.c
