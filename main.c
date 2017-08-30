@@ -21,10 +21,21 @@
  *
  * Eg., 3.58MHz TIA input clock::
  *
- * (262MHz / 2^1) / 3580000 = 36
+ * (262MHz / 2^1) / 3580000 = 36 (0x24 in hex)
  */
+#ifndef STANDALONE
 #define PWM_FREQ    0x24
 #define PWM_SCALE   0x01
+#else
+/* When not expecting a slave TIA device to scale the system clock
+ * generate our own. 6507 input clock is 3.58MHz/3:
+ *
+ * (262MHz / 2^1) / 1193333 = ~110 (0x6E in hex)
+ */
+#define PWM_FREQ    0x6E
+#define PWM_SCALE   0x01
+#endif /* STANDALONE */
+
 #define CLOCK_INPUT PIN_19_OFFSET
 
 /* I/O masks */

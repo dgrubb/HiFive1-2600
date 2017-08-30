@@ -3,6 +3,8 @@ CFLAGS += -O2 -fno-builtin-printf -DUSE_PLIC -DUSE_M_TIME
 
 # Enable compilation and execution of test suite
 CFLAGS += -DEXEC_TESTS
+# Run program without the requirement of a slave TIA device
+CFLAGS += -DSTANDALONE
 
 BSP_BASE = ../../bsp
 
