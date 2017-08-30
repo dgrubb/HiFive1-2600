@@ -10,6 +10,14 @@
 #include "mos6507-microcode.h"
 #include "mos6507.h"
 
+/* Add memory to Accumulator.
+ * A + M + C -> A, C
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - + |
+ */
 void mos6507_ADC(uint8_t data)
 {
     uint16_t tmp;
@@ -17,7 +25,10 @@ void mos6507_ADC(uint8_t data)
     mos6507_get_register(MOS6507_REG_A, &accumulator);
 
     if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_DECIMAL)) {
-        // TODO
+        /* Interesting! According to Bill Mensch of MOS Technologies this
+         * feature did actually get used by Atari for their port of Asteroids.
+         * https://www.youtube.com/watch?v=Ne1ApyqSvm0 (55:00)
+         */
     } else {
         tmp = data + accumulator + (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY) ? 1 : 0);
         mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
@@ -32,6 +43,14 @@ void mos6507_ADC(uint8_t data)
     mos6507_set_register(MOS6507_REG_A, (tmp & 0xFF));
 }
 
+/* Logical AND memory with Accumulator.
+ * A & M -> A
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + - - - - |
+ */
 void mos6507_AND(uint8_t data)
 {
     uint8_t accumulator, tmp = 0;
@@ -44,6 +63,14 @@ void mos6507_AND(uint8_t data)
     mos6507_set_register(MOS6507_REG_A, tmp);
 }
 
+/* Shift left by one bit.
+ * C <- [76543210] <- 0
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
 void mos6507_ASL(uint8_t *data)
 {
     uint16_t tmp = *data;
@@ -56,6 +83,16 @@ void mos6507_ASL(uint8_t *data)
     *data = (tmp & 0xFF);
 }
 
+/* Test bits in memory with Accumulator. Bits 7 and 6 of operand are transfered
+ * to bit 7 and 6 of status register (N, V). Zeroflag is set to the result of
+ * operand & Accumulator.
+ * A & M, M[7] -> N, M[6] -> V
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | 7 + - - - 6 |
+ */
 void mos6507_BIT(uint8_t data)
 {
     uint8_t accumulator, tmp = 0;
@@ -68,6 +105,14 @@ void mos6507_BIT(uint8_t data)
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
 }
 
+/* Compare memory with Accumulator.
+ * A - M
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
 void mos6507_CMP(uint8_t data)
 {
     uint16_t tmp = 0;
@@ -81,6 +126,14 @@ void mos6507_CMP(uint8_t data)
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
 }
 
+/* Compare memory with Index X.
+ * X - M
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
 void mos6507_CPX(uint8_t data)
 {
     uint16_t tmp = 0;
@@ -94,6 +147,14 @@ void mos6507_CPX(uint8_t data)
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
 }
 
+/* Compare memory with Index Y.
+ * Y - M
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
 void mos6507_CPY(uint8_t data)
 {
     uint16_t tmp = 0;
@@ -107,6 +168,14 @@ void mos6507_CPY(uint8_t data)
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
 }
 
+/* Exclusive OR memory with Accumulator.
+ * A ^ M -> A
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + - - - - |
+ */
 void mos6507_EOR(uint8_t data)
 {
     uint8_t accumulator, tmp = 0;
@@ -119,6 +188,14 @@ void mos6507_EOR(uint8_t data)
     mos6507_set_register(MOS6507_REG_A, tmp);
 }
 
+/* Shift right by one bit.
+ * 0 -> [76543210] -> C
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | - + + - - - |
+ */
 void mos6507_LSR(uint8_t *data)
 {
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (*data & 0x01));
@@ -126,6 +203,14 @@ void mos6507_LSR(uint8_t *data)
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(*data & 0xFF));
 }
 
+/* Logical OR memory with Accumulator.
+ * A | M -> A
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + - - - - |
+ */
 void mos6507_ORA(uint8_t *data)
 {
     uint8_t accumulator, tmp = 0;
@@ -138,6 +223,14 @@ void mos6507_ORA(uint8_t *data)
     mos6507_set_register(MOS6507_REG_A, tmp);
 }
 
+/* Rotate one bit left.
+ * C <- [76543210] <- C
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
 void mos6507_ROL(uint8_t *data)
 {
     uint16_t tmp = 0;
@@ -154,6 +247,14 @@ void mos6507_ROL(uint8_t *data)
     *data = (tmp & 0xFF);
 }
 
+/* Rotate one bit right.
+ * C -> [76543210] -> C
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
 void mos6507_ROR(uint8_t *data)
 {
     uint16_t tmp = 0;
@@ -170,6 +271,14 @@ void mos6507_ROR(uint8_t *data)
     *data = (tmp & 0xFF);
 }
 
+/* Subtract memory from Accumulator with borrow.
+ * A - M - C -> A
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - + |
+ */
 void mos6507_SBC(uint8_t data)
 {
     uint16_t tmp;
