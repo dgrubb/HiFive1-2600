@@ -12,22 +12,14 @@
 #include "../memory/mos6532.h"
 
 #define IS_TIA(x) \
-    if (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END) { \
-        return 1; \
-    }; \
-    return 0;
+    (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END) ? 1 : 0
+
 
 #define IS_RIOT(x) \
-    if (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END) { \
-        return 1; \
-    }; \
-    return 0;
+    (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END) ? 1 : 0
 
 #define IS_CART(x) \
-    if (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END) { \
-        return 1; \
-    }; \
-    return 0;
+    (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END) ? 1 : 0
 
 void memmap_map_address(uint16_t *address)
 {
