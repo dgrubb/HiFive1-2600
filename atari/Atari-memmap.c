@@ -11,6 +11,24 @@
 #include "../cpu/mos6507.h"
 #include "../memory/mos6532.h"
 
+#define IS_TIA(x) \
+    if (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END) { \
+        return 1; \
+    }; \
+    return 0;
+
+#define IS_RIOT(x) \
+    if (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END) { \
+        return 1; \
+    }; \
+    return 0;
+
+#define IS_CART(x) \
+    if (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END) { \
+        return 1; \
+    }; \
+    return 0;
+
 void memmap_map_address(uint16_t *address)
 {
     /* The 6507 is a variant of the 6502. It shares the 16-bit addressing
@@ -37,12 +55,18 @@ void memmap_write()
     memmap_map_address(&address);
 
     /* Access particular device */
-    if (address >= MEMMAP_TIA_START && address <= MEMMAP_TIA_END) {
-    } else if (address >= MEMMAP_RIOT_START && address <= MEMMAP_RIOT_END) {
+    if (IS_TIA(address)) {
+        return;
+    }
+    if (IS_RIOT(address)) {
         mos6532_write(address - MEMMAP_RIOT_START, data);
-    } else if (address >= MEMMAP_CART_START && address <= MEMMAP_CART_END) {
-    } else {
-        /* Handle error */
+        return;
+    }
+    if (IS_CART(address)) {
+        /* Cartridges are read-only. Are there hardware peripherals which 
+         * use this space for extending functionality? E.g., SuperCharger?
+         */
+        return;
     }
 }
 
@@ -54,12 +78,16 @@ void memmap_read(uint8_t *data)
     memmap_map_address(&address);
 
     /* Access particular device */
-    if (address >= MEMMAP_TIA_START && address <= MEMMAP_TIA_END) {
-    } else if (address >= MEMMAP_RIOT_START && address <= MEMMAP_RIOT_END) {
+    if (IS_TIA(address)) {
+        return;
+    }
+    if (IS_RIOT(address)) {
         mos6532_read(address - MEMMAP_RIOT_START, data);
-    } else if (address >= MEMMAP_CART_START && address <= MEMMAP_CART_END) {
+        return;
+    }
+    if (IS_CART(address)) {
         cartridge_read(address - MEMMAP_CART_START, data);
-    } else {
-        /* Handle error */
+        return;
     }
 }
+

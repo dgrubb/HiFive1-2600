@@ -20,5 +20,6 @@
 
 void memmap_write();
 void memmap_read(uint8_t *data);
+void memmap_map_address(uint16_t *address);
 
 #endif /* _MEMMAP_H */
