@@ -14,7 +14,6 @@
 #define IS_TIA(x) \
     (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END) ? 1 : 0
 
-
 #define IS_RIOT(x) \
     (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END) ? 1 : 0
 
