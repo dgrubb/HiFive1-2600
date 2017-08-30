@@ -41,7 +41,7 @@ void memmap_write()
     memmap_map_address(&address);
 
     /* Access particular device */
-    if (IS_TIA(address)) {}
+    if (IS_TIA(address)) spi_write_TIA_register();
     if (IS_RIOT(address)) mos6532_write(address - MEMMAP_RIOT_START, data);
     if (IS_CART(address)) {
         /* Cartridges are read-only. Are there hardware peripherals which 
@@ -58,7 +58,7 @@ void memmap_read(uint8_t *data)
     memmap_map_address(&address);
 
     /* Access particular device */
-    if (IS_TIA(address)) {}
+    if (IS_TIA(address)) spi_read_TIA_register();
     if (IS_RIOT(address)) mos6532_read(address - MEMMAP_RIOT_START, data);
     if (IS_CART(address)) cartridge_read(address - MEMMAP_CART_START, data);
 }
