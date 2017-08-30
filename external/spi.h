@@ -20,6 +20,9 @@
 #define SPI_REG(x) SPI1_REG(x)
 #define RTC_FREQUENCY 32768
 
+#define SPI_READ  0x01
+#define SPI_WRITE 0x00
+
 static const uint32_t SPI1_IOF_MASK =
     (1 << IOF_SPI1_SS0)  |
     (1 << IOF_SPI1_SCK)  |
@@ -29,6 +32,8 @@ static const uint32_t SPI1_IOF_MASK =
 void init_SPI();
 void spi_write(uint8_t data);
 void spi_transmit_bus_states();
+void spi_read_register();
+void spi_write_register();
 
 #endif /* _SPI_H */
 
