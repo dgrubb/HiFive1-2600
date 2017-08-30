@@ -36,7 +36,7 @@ typedef struct {
     uint8_t  A;   /* Accumulator */
     uint8_t  Y;   /* Y register */
     uint8_t  X;   /* X register */
-    uint16_t PC; /* Program counter */
+    uint16_t PC;  /* Program counter */
     uint8_t  S;   /* Stack pointer */
     uint8_t  P;   /* Status register */
     /* State description */
