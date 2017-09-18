@@ -12,6 +12,7 @@
 /* Atari and platform includes */
 #include "cpu/mos6507.h"
 #include "external/spi.h"
+#include "atari/Atari-TIA.h"
 #include "memory/mos6532.h"
 #include "test/tests.h"
 
@@ -171,6 +172,7 @@ int main()
     opcode_populate_ISA_table();
     mos6532_clear_memory();
     mos6507_reset();
+    TIA_init();
 
     /* Setup FE310 peripherals */
     init_GPIO();
