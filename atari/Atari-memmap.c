@@ -8,11 +8,12 @@
 
 #include "Atari-memmap.h"
 #include "Atari-cart.h"
+#include "Atari-TIA.h"
 #include "../cpu/mos6507.h"
 #include "../memory/mos6532.h"
 #include "../external/spi.h"
 
-#define IS_TIA(x) (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
+#define IS_TIA(x)  (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
 #define IS_RIOT(x) (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END)
 #define IS_CART(x) (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END)
 
@@ -42,7 +43,7 @@ void memmap_write()
     memmap_map_address(&address);
 
     /* Access particular device */
-    if (IS_TIA(address)) spi_write_TIA_register();
+    if (IS_TIA(address)) TIA_write_register(address - MEMMAP_TIA_START, data);
     if (IS_RIOT(address)) mos6532_write(address - MEMMAP_RIOT_START, data);
     if (IS_CART(address)) {
         /* Cartridges are read-only. Are there hardware peripherals which 
@@ -59,7 +60,7 @@ void memmap_read(uint8_t *data)
     memmap_map_address(&address);
 
     /* Access particular device */
-    if (IS_TIA(address)) spi_read_TIA_register();
+    if (IS_TIA(address)) TIA_read_register(address - MEMMAP_TIA_START, data);
     if (IS_RIOT(address)) mos6532_read(address - MEMMAP_RIOT_START, data);
     if (IS_CART(address)) cartridge_read(address - MEMMAP_CART_START, data);
 }
