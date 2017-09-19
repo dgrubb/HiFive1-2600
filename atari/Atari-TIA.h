@@ -95,7 +95,7 @@ extern atari_tia tia;
 
 /* Interfacing functions */
 void TIA_init();
-void TIA_read_register(tia_readable_register_t reg, uint8_t *value);
-void TIA_write_register(tia_writable_register_t reg, uint8_t value);
+void TIA_read_register(uint8_t reg, uint8_t *value);
+void TIA_write_register(uint8_t reg, uint8_t value);
 
 #endif /* _ATARI_TIA_H */

@@ -30,7 +30,7 @@ void TIA_init()
  * reg: register to read (e.g., VSYNC, VBLANK, etc ...).
  * *value: location to place retrieved value of register into.
  */
-void TIA_read_register(tia_readable_register_t reg, uint8_t *value)
+void TIA_read_register(uint8_t reg, uint8_t *value)
 {
     *value = tia.read_regs[reg];
 }
@@ -40,7 +40,7 @@ void TIA_read_register(tia_readable_register_t reg, uint8_t *value)
  * reg: register to write to (e.g., CXM0P, CXM1P etc ...).
  * value: value to place into register.
  */
-void TIA_write_register(tia_writable_register_t reg, uint8_t value)
+void TIA_write_register(uint8_t reg, uint8_t value)
 {
     tia.write_regs[reg] = value;
 }
