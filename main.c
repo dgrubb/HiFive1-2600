@@ -12,6 +12,7 @@
 /* Atari and platform includes */
 #include "cpu/mos6507.h"
 #include "external/spi.h"
+#include "external/UART_driver.h"
 #include "atari/Atari-TIA.h"
 #include "memory/mos6532.h"
 #include "test/tests.h"
@@ -177,8 +178,27 @@ int main()
     /* Setup FE310 peripherals */
     init_GPIO();
     init_SPI();
+    UART_init(115200, 0);
     init_clock();
     enable_interrupts();
+
+#ifdef MANUAL_STEP
+    /* Executes a cartridge as normal, but instead of waiting on clock signal
+     * though a pin the program executes a clock per key press on the UART. 
+     * While in this mode the UART output will print status register and current
+     * execution state to a human-readable output. The intention is to allow
+     * for loading a proper Atari ROM dump and step through it manually.
+     */
+    char wait;
+    while (1) {
+        /* UART_get_char() has a blocking option, but we don't really care
+         * what key was pressed.
+         */
+        UART_get_char(&wait, 1);
+        GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
+        mos6507_clock_tick();
+        debug_print_execution_step();
+    };
 
 #ifdef EXEC_TESTS
     /* Program flow is different when testing the consistency of the 6502
@@ -188,6 +208,8 @@ int main()
     execute_tests();
     return 0;
 #endif /* EXEC_TESTS */
+
+#endif /* MANUAL_STEP */
 
     while (1) {
         if(system_clock) {

@@ -117,3 +117,13 @@ void debug_print_buses()
     sprintf(msg, template, address, data);
     puts(msg);
 }
+
+void debug_print_execution_step()
+{
+    debug_print_buses();
+    debug_print_special_register(MOS6507_REG_PC);
+    debug_print_special_register(MOS6507_REG_A);
+    debug_print_special_register(MOS6507_REG_X);
+    debug_print_special_register(MOS6507_REG_Y);
+    debug_print_status_flags();
+}
