@@ -118,8 +118,17 @@ void debug_print_buses()
     puts(msg);
 }
 
+void debug_print_instruction()
+{
+    char msg[MSG_LEN];
+    memset(msg, 0, MSG_LEN);
+
+    char * template = "";
+}
+
 void debug_print_execution_step()
 {
+    debug_print_instruction();
     debug_print_buses();
     debug_print_special_register(MOS6507_REG_PC);
     debug_print_special_register(MOS6507_REG_A);

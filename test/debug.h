@@ -20,6 +20,7 @@ void debug_print_special_register(mos6507_register_t reg);
 void debug_print_buses();
 void debug_print_execution_step();
 int debug_get_status_flag(uint8_t flag);
+void debug_print_instruction();
 
 #endif /* EXEC_TESTS */
 

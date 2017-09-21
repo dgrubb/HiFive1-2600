@@ -41,6 +41,7 @@ typedef struct {
     uint8_t  P;   /* Status register */
     /* State description */
     uint8_t       current_instruction; /* Current op-code and addressing mode */
+    uint8_t       current_clock;       /* Current clock tick of the current instruction */
     uint16_t      address_bus;         /* Address bus */
     uint8_t       data_bus;            /* Data bus */
 } mos6507;
@@ -61,5 +62,7 @@ void mos6507_set_PC(uint16_t pc);
 void mos6507_set_status_flag(mos6507_status_flag_t flag, int value);
 int mos6507_get_status_flag(mos6507_status_flag_t flag);
 char * mos6507_get_register_str(mos6507_register_t reg);
+void mos5607_get_current_instruction(uint8_t *instruction);
+void mos5607_get_current_instruction_cycle(uint8_t *instruction_cycle);
 
 #endif /* _MOS6507_H */

@@ -26,7 +26,8 @@ void mos6507_clock_tick()
     if (!cpu.current_instruction) {
         memmap_read(&cpu.current_instruction);
     }
-    if(!opcode_execute(cpu.current_instruction)) {
+    cpu.current_clock = opcode_execute(cpu.current_instruction);
+    if(!cpu.current_clock) {
         cpu.current_instruction = 0;
     }
 }
@@ -81,6 +82,7 @@ void mos6507_init()
     cpu.data_bus = 0;
     cpu.address_bus = 0;
     cpu.current_instruction = 0;
+    cpu.current_clock = 0;
 }
 
 void mos6507_set_register(mos6507_register_t reg, uint8_t value)
@@ -181,3 +183,12 @@ int mos6507_get_status_flag(mos6507_status_flag_t flag) {
     return (status & flag);
 }
 
+void mos5607_get_current_instruction(uint8_t *instruction)
+{
+    *instruction = cpu.current_instruction;
+}
+
+void mos5607_get_current_instruction_cycle(uint8_t *instruction_cycle)
+{
+    *instruction_cycle = cpu.current_clock;
+}
