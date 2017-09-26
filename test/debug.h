@@ -26,6 +26,7 @@ void debug_print_buses();
 void debug_print_execution_step();
 int debug_get_status_flag(uint8_t flag);
 void debug_print_instruction();
+const char * debug_lookup_opcode_str(uint8_t opcode);
 
 #endif /* EXEC_TESTS */
 

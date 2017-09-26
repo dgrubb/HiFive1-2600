@@ -208,6 +208,8 @@ debug_opcode_t debug_opcodes[] = {
     {0xEA, "NOP - Implied"}
 };
 
+const uint8_t debug_opcode_table_size = sizeof debug_opcodes / sizeof debug_opcodes[0];
+
 int debug_get_status_flag(uint8_t flag)
 {
     uint8_t p;
@@ -308,7 +310,15 @@ void debug_print_instruction()
     char msg[MSG_LEN];
     memset(msg, 0, MSG_LEN);
 
-    char * template = "";
+    uint8_t instruction, cycle;
+
+    mos5607_get_current_instruction(&instruction);
+    mos5607_get_current_instruction_cycle(&cycle);
+
+    char * template = "Instruction [ 0x%X, %s ], cycle: %d";
+
+    sprintf(msg, template, instruction, debug_lookup_opcode_str(instruction), cycle);
+    puts(msg);
 }
 
 void debug_print_execution_step()
@@ -324,6 +334,13 @@ void debug_print_execution_step()
 
 const char * debug_lookup_opcode_str(uint8_t opcode)
 {
+    int i;
+    for (i=0; i<debug_opcode_table_size; i++) {
+        if (debug_opcodes[i].op == opcode) {
+            return debug_opcodes[i].str;
+        }
+    }
+    return "Unknown";
 }
 
 #endif /* EXEC_TESTS */
