@@ -10,9 +10,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include "debug.h"
 #include "../atari/Atari-memmap.h"
 #include "../cpu/mos6507.h"
 #include "../memory/mos6532.h"
+
 #define MOS6507_STATUS_FLAG_NEGATIVE  0x80
 #define MOS6507_STATUS_FLAG_OVERFLOW  0x40
 #define MOS6507_STATUS_FLAG_BREAK     0x10
@@ -135,4 +137,8 @@ void debug_print_execution_step()
     debug_print_special_register(MOS6507_REG_X);
     debug_print_special_register(MOS6507_REG_Y);
     debug_print_status_flags();
+}
+
+void debug_lookup_opcode_str(uint8_t opcode, struct debug_opcode *result)
+{
 }
