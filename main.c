@@ -14,8 +14,11 @@
 #include "external/spi.h"
 #include "external/UART_driver.h"
 #include "atari/Atari-TIA.h"
+#include "atari/Atari-cart.h"
 #include "memory/mos6532.h"
+#include "test/test-carts.h"
 #include "test/tests.h"
+#include "test/debug.h"
 
 /* Calculation assumes a core frequency of ~262MHz and pwmscale of 1.
  * Integer value is a result of:
@@ -182,6 +185,7 @@ int main()
     init_clock();
     enable_interrupts();
 
+
 #ifdef MANUAL_STEP
     /* Executes a cartridge as normal, but instead of waiting on clock signal
      * though a pin the program executes a clock per key press on the UART. 
@@ -191,6 +195,7 @@ int main()
      */
     char wait;
     while (1) {
+        cartridge_load(test_cart_STY_Absolute);
         /* UART_get_char() has a blocking option, but we don't really care
          * what key was pressed.
          */

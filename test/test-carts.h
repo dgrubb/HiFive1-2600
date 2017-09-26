@@ -1,5 +1,5 @@
 /*
- * File: test-carts.h
+ * File: test-carts.c
  * Author: dgrubb
  * Date: 07/28/2017
  *
@@ -7,26 +7,19 @@
  * CPU for test purposes.
  */
 
-
 #ifndef _TEST_CARTS_H
 #define _TEST_CARTS_H
 
 #ifdef EXEC_TESTS
 
+#include <stdint.h>
+
 /******************************************************************************
  * LDA
  *****************************************************************************/
 
-uint8_t test_cart_LDA_Immediate[] = {
-    0xA9, /* LDA, Load accumulator with ... */
-    0xAA  /* ... the raw value 0xAA */
-};
-
-uint8_t test_cart_LDA_Zero_Page[] = {
-    0xA5, /* LDA, Load accumulator with ... */
-    0x81  /* ... the contents of this zero-page RAM location */
-};
-
+uint8_t test_cart_LDA_Immediate[];
+uint8_t test_cart_LDA_Zero_Page[];
 uint8_t test_cart_LDA_Zero_Page_X_Indexed[] = {
     0xB5, /* LDA, Load accumulator with ... */
     0x90  /* ... the contents of this zero-page RAM location, +X index register */

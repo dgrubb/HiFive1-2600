@@ -156,13 +156,13 @@ void mos6507_get_data_bus(uint8_t *data)
 char * mos6507_get_register_str(mos6507_register_t reg)
 {
     switch(reg) {
-        case MOS6507_REG_A:  return "Accumulator";
+        case MOS6507_REG_A:  return "Accumulator     ";
         case MOS6507_REG_Y:  return "Y index register";
         case MOS6507_REG_X:  return "X index register";
-        case MOS6507_REG_PC: return "Program counter";
-        case MOS6507_REG_S:  return "Stack pointer";
-        case MOS6507_REG_P:  return "Status register";
-        default: return "Unknown";
+        case MOS6507_REG_PC: return "Program counter ";
+        case MOS6507_REG_S:  return "Stack pointer   ";
+        case MOS6507_REG_P:  return "Status register ";
+        default:             return "Unknown         ";
     }
 }
 

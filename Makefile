@@ -5,7 +5,7 @@ CFLAGS += -O2 -fno-builtin-printf -DUSE_PLIC -DUSE_M_TIME
 CFLAGS += -DEXEC_TESTS
 # Enable manual stepping through a cartridge, requires EXEC_TESTS for
 # debug helper functions
-C_FLAGS += -DMANUAL_STEP
+CFLAGS += -DMANUAL_STEP
 # Run program without the requirement of a slave TIA device
 #CFLAGS += -DSTANDALONE
 
@@ -26,6 +26,7 @@ C_SRCS += external/spi.c
 C_SRCS += external/UART_driver.c
 # Program logic
 C_SRCS += test/debug.c
+C_SRCS += test/test-carts.c
 C_SRCS += test/tests.c
 C_SRCS += main.c
 

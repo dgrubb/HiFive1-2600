@@ -25,7 +25,7 @@
 
 void execute_tests()
 {
-    puts("============ Executing unit tests ============\n\r");
+    puts("============ Executing unit tests ============");
 
     test_LDA();
     test_LDX();
@@ -34,7 +34,7 @@ void execute_tests()
     test_STX();
     test_STY();
 
-    puts("====== All tests completed successfully ======\n\r");
+    puts("====== All tests completed successfully ======");
 }
 
 void insert_test_data(uint16_t address, uint8_t data)
@@ -92,7 +92,7 @@ void test_LDA()
     test_LDA_Indirect_X_Indexed();
     test_LDA_Indirect_Y_Indexed();
 
-    puts("--- All LDA tests completed successfully.\n\r");
+    puts("--- All LDA tests completed successfully.");
 }
 
 void test_LDA_Immediate()
@@ -355,7 +355,7 @@ void test_LDX()
     test_LDX_Absolute_Y_Indexed();
     test_LDX_Absolute_Y_Indexed_Boundary_Cross();
 
-    puts("--- All LDX tests completed successfully.\n\r");
+    puts("--- All LDX tests completed successfully.");
 }
 
 void test_LDX_Immediate()
@@ -514,7 +514,7 @@ void test_LDY()
     test_LDY_Absolute_X_Indexed();
     test_LDY_Absolute_X_Indexed_Boundary_Cross();
 
-    puts("--- All LDY tests completed successfully.\n\r");
+    puts("--- All LDY tests completed successfully.");
 }
 
 void test_LDY_Immediate()
@@ -674,7 +674,7 @@ void test_STA()
     test_STA_Indirect_X_Indexed();
     test_STA_Indirect_Y_Indexed();
 
-    puts("--- All STA tests completed successfully.\n\r");
+    puts("--- All STA tests completed successfully.");
 }
 
 void test_STA_Zero_Page()
@@ -887,7 +887,7 @@ void test_STX()
     test_STX_Zero_Page_Y_Indexed();
     test_STX_Absolute();
 
-    puts("--- All STX tests completed successfully.\n\r");
+    puts("--- All STX tests completed successfully.");
 }
 
 void test_STX_Zero_Page()
@@ -976,7 +976,7 @@ void test_STY()
     test_STY_Zero_Page_X_Indexed();
     test_STY_Absolute();
 
-    puts("--- All STY tests completed successfully.\n\r");
+    puts("--- All STY tests completed successfully.");
 }
 
 void test_STY_Zero_Page()
@@ -1063,7 +1063,7 @@ void test_ADC()
 
     test_ADC_Immediate();
 
-    puts("--- All ADC tests completed successfully.\n\r");
+    puts("--- All ADC tests completed successfully.");
 
 }
 
