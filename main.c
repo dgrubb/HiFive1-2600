@@ -195,7 +195,7 @@ int main()
      */
     char wait;
     while (1) {
-        cartridge_load(test_cart_STY_Absolute);
+        cartridge_load(test_cart_STA_Absolute);
         /* UART_get_char() has a blocking option, but we don't really care
          * what key was pressed.
          */

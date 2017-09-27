@@ -323,6 +323,9 @@ void debug_print_instruction()
 
 void debug_print_execution_step()
 {
+    puts("\n\r----------------------------------------------------------------"
+         "---------------------\n\r");
+
     debug_print_instruction();
     debug_print_buses();
     debug_print_special_register(MOS6507_REG_PC);
