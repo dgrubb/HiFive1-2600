@@ -12,7 +12,7 @@
 #include <stdint.h>
 
 void cartridge_read(uint16_t address, uint8_t * data);
-void cartridge_load(uint8_t *cart);
+void cartridge_load(const uint8_t *cart);
 void cartridge_eject();
 
 #endif /* _ATARI_CART_H */

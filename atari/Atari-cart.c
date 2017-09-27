@@ -12,7 +12,7 @@
  * part of memory. We "load" a cartridge by storing a pointer 
  * to the desired cartridge data.
  */
-static uint8_t *cartridge = 0;
+static const uint8_t *cartridge = 0;
 
 void cartridge_read(uint16_t address, uint8_t * data)
 {
@@ -21,7 +21,7 @@ void cartridge_read(uint16_t address, uint8_t * data)
     }
 }
 
-void cartridge_load(uint8_t *cart)
+void cartridge_load(const uint8_t *cart)
 {
     if (cartridge) {
         cartridge_eject();
