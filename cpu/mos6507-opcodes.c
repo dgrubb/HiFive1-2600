@@ -561,11 +561,10 @@ int opcode_BMI(int cycle, addressing_mode_t address_mode)
 
 int opcode_BNE(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t condition, offset, P = 0;
+    static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
-    mos6507_get_register(MOS6507_REG_P, &P);
-    if ((P & MOS6507_STATUS_FLAG_ZERO) == 0) {
+    if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_ZERO)) {
         condition = 1;
     }
 
