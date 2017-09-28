@@ -1336,6 +1336,8 @@ int opcode_TAX(int cycle, addressing_mode_t address_mode)
         case 1:
             mos6507_get_register(MOS6507_REG_A, &value);
             mos6507_set_register(MOS6507_REG_X, value);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1356,6 +1358,8 @@ int opcode_TAY(int cycle, addressing_mode_t address_mode)
         case 1:
             mos6507_get_register(MOS6507_REG_A, &value);
             mos6507_set_register(MOS6507_REG_Y, value);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1376,6 +1380,8 @@ int opcode_TSX(int cycle, addressing_mode_t address_mode)
         case 1:
             mos6507_get_register(MOS6507_REG_P, &value);
             mos6507_set_register(MOS6507_REG_X, value);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1396,6 +1402,8 @@ int opcode_TXA(int cycle, addressing_mode_t address_mode)
         case 1:
             mos6507_get_register(MOS6507_REG_X, &value);
             mos6507_set_register(MOS6507_REG_A, value);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1416,6 +1424,8 @@ int opcode_TXS(int cycle, addressing_mode_t address_mode)
         case 1:
             mos6507_get_register(MOS6507_REG_X, &value);
             mos6507_set_register(MOS6507_REG_P, value);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1436,6 +1446,8 @@ int opcode_TYA(int cycle, addressing_mode_t address_mode)
         case 1:
             mos6507_get_register(MOS6507_REG_Y, &value);
             mos6507_set_register(MOS6507_REG_A, value);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
