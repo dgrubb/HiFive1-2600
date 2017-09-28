@@ -564,9 +564,7 @@ int opcode_BNE(int cycle, addressing_mode_t address_mode)
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
-    if (!mos6507_get_status_flag(MOS6507_STATUS_FLAG_ZERO)) {
-        condition = 1;
-    }
+    condition = !mos6507_get_status_flag(MOS6507_STATUS_FLAG_ZERO);
 
     CALC_BRANCH()
 
