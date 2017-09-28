@@ -12,6 +12,7 @@
             mos6507_set_address_bus(mos6507_get_PC()); \
             memmap_read(&offset); \
             if (!condition) { \
+                END_OPCODE(); \
                 return 0; \
             } \
             return -1; \
