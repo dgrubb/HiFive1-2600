@@ -748,23 +748,17 @@ int opcode_DEC(int cycle, addressing_mode_t address_mode)
 
 int opcode_DEX(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t value, status = 0;
+    static uint8_t value = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
             return -1;
         case 1:
-            mos6507_get_register(MOS6507_REG_P, &status);
             mos6507_get_register(MOS6507_REG_X, &value);
             value--;
-            if (0 == value) {
-                status &= ~(MOS6507_STATUS_FLAG_ZERO);
-            }
-            if (0x80 | value) {
-                status &= ~(MOS6507_STATUS_FLAG_NEGATIVE);
-            }
             mos6507_set_register(MOS6507_REG_X, value);
-            mos6507_set_register(MOS6507_REG_P, status);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -777,23 +771,17 @@ int opcode_DEX(int cycle, addressing_mode_t address_mode)
 
 int opcode_DEY(int cycle, addressing_mode_t address_mode)
 {
-    static int8_t value, status = 0;
+    static uint8_t value = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
             return -1;
         case 1:
-            mos6507_get_register(MOS6507_REG_P, &status);
             mos6507_get_register(MOS6507_REG_Y, &value);
             value--;
-            if (0 == value) {
-                status &= ~(MOS6507_STATUS_FLAG_ZERO);
-            }
-            if (0x80 | value) {
-                status &= ~(MOS6507_STATUS_FLAG_NEGATIVE);
-            }
             mos6507_set_register(MOS6507_REG_Y, value);
-            mos6507_set_register(MOS6507_REG_P, status);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
