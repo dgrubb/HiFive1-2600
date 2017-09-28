@@ -127,6 +127,13 @@ void mos6507_set_PC(uint16_t pc)
     cpu.PC = pc;
 }
 
+void mos6507_set_PC_hl(uint8_t pch, uint8_t pcl)
+{
+    cpu.PC  = 0;
+    cpu.PC |= (pch << 8);
+    cpu.PC |= pcl;
+}
+
 void mos6507_set_address_bus_hl(uint8_t adh, uint8_t adl)
 {
     cpu.address_bus  = 0;

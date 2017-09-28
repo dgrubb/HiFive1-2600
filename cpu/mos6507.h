@@ -59,6 +59,7 @@ void mos6507_get_data_bus(uint8_t *data);
 void mos6507_increment_PC();
 uint16_t mos6507_get_PC();
 void mos6507_set_PC(uint16_t pc);
+void mos6507_set_PC_hl(uint8_t pch, uint8_t pcl);
 void mos6507_set_status_flag(mos6507_status_flag_t flag, int value);
 int mos6507_get_status_flag(mos6507_status_flag_t flag);
 char * mos6507_get_register_str(mos6507_register_t reg);

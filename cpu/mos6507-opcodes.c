@@ -565,7 +565,7 @@ int opcode_BNE(int cycle, addressing_mode_t address_mode)
     static uint16_t addr = 0;
 
     mos6507_get_register(MOS6507_REG_P, &P);
-    if ((P & MOS6507_STATUS_FLAG_NEGATIVE) != 0) {
+    if ((P & MOS6507_STATUS_FLAG_ZERO) == 0) {
         condition = 1;
     }
 
