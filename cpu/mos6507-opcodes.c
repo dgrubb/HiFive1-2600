@@ -958,6 +958,8 @@ int opcode_LDA(int cycle, addressing_mode_t address_mode)
 
     FETCH_DATA()
     mos6507_set_register(MOS6507_REG_A, data);
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(data & 0xFF));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (data & 0x80));
     END_OPCODE()
     return 0;
 }
@@ -969,6 +971,8 @@ int opcode_LDX(int cycle, addressing_mode_t address_mode)
 
     FETCH_DATA()
     mos6507_set_register(MOS6507_REG_X, data);
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(data & 0xFF));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (data & 0x80));
     END_OPCODE()
     return 0;
 }

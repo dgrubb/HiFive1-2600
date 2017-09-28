@@ -13,6 +13,13 @@
 #include "../memory/mos6532.h"
 #include "../external/spi.h"
 
+// TODO: remove after debug
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include "../test/debug.h"
+#define MSG_LEN 300
+
 #define IS_TIA(x)  (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
 #define IS_RIOT(x) (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END)
 #define IS_CART(x) (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END)

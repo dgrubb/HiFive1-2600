@@ -262,8 +262,15 @@ void debug_print_special_register(mos6507_register_t reg)
     char *template = "Special register [ %s ] contents: 0x%X, %d";
 
     uint8_t data;
-    mos6507_get_register(reg, &data);
-    sprintf(msg, template, mos6507_get_register_str(reg), data, data);
+    uint16_t longdata;
+
+    if(reg == MOS6507_REG_PC) {
+       longdata = mos6507_get_PC();
+       sprintf(msg, template, mos6507_get_register_str(reg), longdata, longdata);
+    } else {
+        mos6507_get_register(reg, &data);
+        sprintf(msg, template, mos6507_get_register_str(reg), data, data);
+    }
     puts(msg);
 }
 
@@ -277,14 +284,13 @@ void debug_print_status_flags()
                      "|    %d   |     %d      |    %d    |     %d     |      %d      |   %d    |    %d    |";
 
     sprintf(msg, template,
-            debug_get_status_flag(MOS6507_STATUS_FLAG_NEGATIVE),
-            debug_get_status_flag(MOS6507_STATUS_FLAG_OVERFLOW),
-            debug_get_status_flag(MOS6507_STATUS_FLAG_BREAK),
-            debug_get_status_flag(MOS6507_STATUS_FLAG_DECIMAL),
-            debug_get_status_flag(MOS6507_STATUS_FLAG_INTERRUPT),
-            debug_get_status_flag(MOS6507_STATUS_FLAG_ZERO),
-            debug_get_status_flag(MOS6507_STATUS_FLAG_CARRY),
-            debug_get_status_flag(MOS6507_STATUS_FLAG_CARRY));
+            mos6507_get_status_flag(MOS6507_STATUS_FLAG_NEGATIVE),
+            mos6507_get_status_flag(MOS6507_STATUS_FLAG_OVERFLOW),
+            mos6507_get_status_flag(MOS6507_STATUS_FLAG_BREAK),
+            mos6507_get_status_flag(MOS6507_STATUS_FLAG_DECIMAL),
+            mos6507_get_status_flag(MOS6507_STATUS_FLAG_INTERRUPT),
+            mos6507_get_status_flag(MOS6507_STATUS_FLAG_ZERO),
+            mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY));
 
     puts(msg);
 }

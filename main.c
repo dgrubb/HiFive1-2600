@@ -19,6 +19,8 @@
 #include "test/test-carts.h"
 #include "test/tests.h"
 #include "test/debug.h"
+/* Game cart data */
+#include "carts/halo2600.h"
 
 /* Calculation assumes a core frequency of ~262MHz and pwmscale of 1.
  * Integer value is a result of:
@@ -175,8 +177,11 @@ int main()
      */
     opcode_populate_ISA_table();
     mos6532_clear_memory();
-    mos6507_reset();
     TIA_init();
+
+    /* Emulation is ready to start so load cartridge and reset CPU */
+    cartridge_load(Halo_2600);
+    mos6507_reset();
 
     /* Setup FE310 peripherals */
     init_GPIO();
@@ -184,7 +189,6 @@ int main()
     UART_init(115200, 0);
     init_clock();
     enable_interrupts();
-
 
 #ifdef MANUAL_STEP
     /* Executes a cartridge as normal, but instead of waiting on clock signal
@@ -195,14 +199,12 @@ int main()
      */
     char wait;
     while (1) {
-        cartridge_load(test_cart_STA_Absolute);
         /* UART_get_char() has a blocking option, but we don't really care
          * what key was pressed.
          */
         UART_get_char(&wait, 1);
         GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
         mos6507_clock_tick();
-        debug_print_execution_step();
     };
 
 #ifdef EXEC_TESTS

@@ -7,6 +7,7 @@
  */
 
 #include "../atari/Atari-memmap.h"
+#include "../test/debug.h"
 #include "mos6507.h"
 
 /* Representation of our CPU */
@@ -26,6 +27,9 @@ void mos6507_clock_tick()
     if (!cpu.current_instruction) {
         memmap_read(&cpu.current_instruction);
     }
+#ifdef MANUAL_STEP
+    debug_print_execution_step();
+#endif
     cpu.current_clock = opcode_execute(cpu.current_instruction);
     if(!cpu.current_clock) {
         cpu.current_instruction = 0;
@@ -50,14 +54,11 @@ void mos6507_reset()
      * of ROM space rather than the top, so unit test ROMs can be
      * just a few bytes in length.
      */
-#ifdef EXEC_TESTS
-    mos6507_set_PC(0x1000);
-    mos6507_set_address_bus(mos6507_get_PC());
-#else
+
     mos6507_set_address_bus(0xFFFC);
-    memmap_read(&pch);
-    mos6507_set_address_bus(0xFFFD);
     memmap_read(&pcl);
+    mos6507_set_address_bus(0xFFFD);
+    memmap_read(&pch);
 
     /* Pack the two bytes found at the reset vector into 
      * the program counter and initialise it as the true
@@ -65,9 +66,9 @@ void mos6507_reset()
      */
     pc |= (pch << 8);
     pc |= pcl;
+
     mos6507_set_PC(pc);
     mos6507_set_address_bus(mos6507_get_PC());
-#endif /* EXEC_TESTS */
 }
 
 void mos6507_init()
@@ -88,12 +89,12 @@ void mos6507_init()
 void mos6507_set_register(mos6507_register_t reg, uint8_t value)
 {
     switch(reg) {
-        case MOS6507_REG_A:  cpu.A = value;  break;
-        case MOS6507_REG_Y:  cpu.Y = value;  break;
-        case MOS6507_REG_X:  cpu.X = value;  break;
+        case MOS6507_REG_A:  cpu.A  = value; break;
+        case MOS6507_REG_Y:  cpu.Y  = value; break;
+        case MOS6507_REG_X:  cpu.X  = value; break;
         case MOS6507_REG_PC: cpu.PC = value; break;
-        case MOS6507_REG_S:  cpu.S = value;  break;
-        case MOS6507_REG_P:  cpu.P = value;  break;
+        case MOS6507_REG_S:  cpu.S  = value; break;
+        case MOS6507_REG_P:  cpu.P  = value; break;
         default: /* Handle error */ break;
     }
 }
@@ -168,19 +169,19 @@ char * mos6507_get_register_str(mos6507_register_t reg)
 
 void mos6507_set_status_flag(mos6507_status_flag_t flag, int value) {
     uint8_t status;
-    mos6507_get_register(MOS6507_REG_S, &status);
+    mos6507_get_register(MOS6507_REG_P, &status);
     if (value) {
         status |= flag;
     } else {
         status &= ~flag;
     }
-    mos6507_set_register(MOS6507_REG_S, status);
+    mos6507_set_register(MOS6507_REG_P, status);
 }
 
 int mos6507_get_status_flag(mos6507_status_flag_t flag) {
     uint8_t status;
-    mos6507_get_register(MOS6507_REG_S, &status);
-    return (status & flag);
+    mos6507_get_register(MOS6507_REG_P, &status);
+    return (status & flag) ? 1 : 0;
 }
 
 void mos5607_get_current_instruction(uint8_t *instruction)
