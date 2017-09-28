@@ -1380,7 +1380,7 @@ int opcode_TSX(int cycle, addressing_mode_t address_mode)
             /* Consume clock cycle for fetching op-code */
             return -1;
         case 1:
-            mos6507_get_register(MOS6507_REG_P, &value);
+            mos6507_get_register(MOS6507_REG_S, &value);
             mos6507_set_register(MOS6507_REG_X, value);
             mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
             mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
@@ -1425,7 +1425,7 @@ int opcode_TXS(int cycle, addressing_mode_t address_mode)
             return -1;
         case 1:
             mos6507_get_register(MOS6507_REG_X, &value);
-            mos6507_set_register(MOS6507_REG_P, value);
+            mos6507_set_register(MOS6507_REG_S, value);
             mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
             mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
