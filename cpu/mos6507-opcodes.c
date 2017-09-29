@@ -872,6 +872,7 @@ int opcode_JMP(int cycle, addressing_mode_t address_mode)
 int opcode_JSR(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t adl, adh, pcl, pch, data, S = 0;
+    uint16_t address = 0;
 
     switch(cycle) {
         case 0:
@@ -906,7 +907,9 @@ int opcode_JSR(int cycle, addressing_mode_t address_mode)
             /* End of op-code execution */
             break;
     }
-    mos6507_set_address_bus_hl(adh, adl);
+    address = (adh << 8) | adl;
+    mos6507_set_address_bus(address);
+    mos6507_set_PC(address);
     return 0;
 }
 
@@ -1411,8 +1414,6 @@ int opcode_TSX(int cycle, addressing_mode_t address_mode)
         case 1:
             mos6507_get_register(MOS6507_REG_S, &value);
             mos6507_set_register(MOS6507_REG_X, value);
-            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
-            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1455,8 +1456,6 @@ int opcode_TXS(int cycle, addressing_mode_t address_mode)
         case 1:
             mos6507_get_register(MOS6507_REG_X, &value);
             mos6507_set_register(MOS6507_REG_S, value);
-            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
-            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
