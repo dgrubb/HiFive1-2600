@@ -83,6 +83,30 @@ void mos6507_ASL(uint8_t *data)
     *data = (tmp & 0xFF);
 }
 
+/* Shift Accumulator left by one bit.
+ * C <- [76543210] <- 0
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
+void mos6507_ASL_Accumulator()
+{
+    uint8_t accumulator;
+    uint16_t tmp;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+    tmp = accumulator;
+
+    tmp <<= 1;
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp & 0x100));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
+
+    accumulator = (tmp & 0xFF);
+    mos6507_set_register(MOS6507_REG_A, accumulator);
+}
+
 /* Test bits in memory with Accumulator. Bits 7 and 6 of operand are transfered
  * to bit 7 and 6 of status register (N, V). Zeroflag is set to the result of
  * operand & Accumulator.
@@ -285,7 +309,7 @@ void mos6507_ROL_Accumulator()
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp & 0x0100));
     accumulator = (tmp & 0xFF);
-    mos6507_set_register(MOS6507_REG_A, &accumulator);
+    mos6507_set_register(MOS6507_REG_A, accumulator);
 }
 
 /* Rotate one bit right.
@@ -298,9 +322,10 @@ void mos6507_ROL_Accumulator()
  */
 void mos6507_ROR(uint8_t *data)
 {
-    uint16_t tmp, tmpCarry = 0;
+    uint16_t tmp = 0;
+    uint8_t tmpCarry = 0;
 
-    tmpCarry = data & 0x01;
+    tmpCarry = (*data & 0x01);
     tmp = *data >> 1;
     if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY)) {
         tmp |= 0x80;
@@ -334,7 +359,7 @@ void mos6507_ROR_Accumulator()
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, tmpCarry);
     accumulator = (tmp & 0xFF);
-    mos6507_set_register(MOS6507_REG_A, &accumulator);
+    mos6507_set_register(MOS6507_REG_A, accumulator);
 }
 /* Subtract memory from Accumulator with borrow.
  * A - M - C -> A

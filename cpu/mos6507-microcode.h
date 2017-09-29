@@ -15,6 +15,7 @@
 void mos6507_ADC(uint8_t data);
 void mos6507_AND(uint8_t data);
 void mos6507_ASL(uint8_t *data);
+void mos6507_ASL_Accumulator();
 void mos6507_BIT(uint8_t data);
 void mos6507_CMP(uint8_t data);
 void mos6507_CPX(uint8_t data);
@@ -26,6 +27,7 @@ void mos6507_ORA(uint8_t *data);
 void mos6507_ROL(uint8_t *data);
 void mos6507_ROL_Accumulator();
 void mos6507_ROR(uint8_t *data);
+void mos6507_ROR_Accumulator();
 void mos6507_SBC(uint8_t data);
 
 #endif /* _MOS6507_MICROCODE_H */
