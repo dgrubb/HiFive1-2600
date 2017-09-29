@@ -203,6 +203,24 @@ void mos6507_LSR(uint8_t *data)
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(*data & 0xFF));
 }
 
+/* Shift right by one bit in the Accumulator.
+ * 0 -> [76543210] -> C
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | - + + - - - |
+ */
+void mos6507_LSR_Accumulator()
+{
+    uint8_t accumulator;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (accumulator & 0x01));
+    accumulator >>= 1;
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(accumulator & 0xFF));
+    mos6507_set_register(MOS6507_REG_A, accumulator);
+}
+
 /* Logical OR memory with Accumulator.
  * A | M -> A
  *
@@ -234,8 +252,6 @@ void mos6507_ORA(uint8_t *data)
 void mos6507_ROL(uint8_t *data)
 {
     uint16_t tmp = 0;
-    uint8_t accumulator = 0;
-    mos6507_get_register(MOS6507_REG_A, &accumulator);
 
     tmp = *data << 1;
     if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY)) {
@@ -245,6 +261,31 @@ void mos6507_ROL(uint8_t *data)
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp & 0x0100));
     *data = (tmp & 0xFF);
+}
+
+/* Rotate Accumulator one bit left.
+ * C <- [76543210] <- C
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
+void mos6507_ROL_Accumulator()
+{
+    uint16_t tmp = 0;
+    uint8_t accumulator;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+
+    tmp = accumulator << 1;
+    if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY)) {
+        tmp |= 0x01;
+    }
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (tmp & 0x0100));
+    accumulator = (tmp & 0xFF);
+    mos6507_set_register(MOS6507_REG_A, &accumulator);
 }
 
 /* Rotate one bit right.
@@ -257,20 +298,44 @@ void mos6507_ROL(uint8_t *data)
  */
 void mos6507_ROR(uint8_t *data)
 {
-    uint16_t tmp = 0;
-    uint8_t accumulator = 0;
-    mos6507_get_register(MOS6507_REG_A, &accumulator);
+    uint16_t tmp, tmpCarry = 0;
 
+    tmpCarry = data & 0x01;
     tmp = *data >> 1;
     if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY)) {
         tmp |= 0x80;
     }
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
-    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, (*data & 0x01));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, tmpCarry);
     *data = (tmp & 0xFF);
 }
 
+/* Rotate Accumulator one bit right.
+ * C -> [76543210] -> C
+ *
+ * Status flag changes (+ = conditionally modified, 1 = set, 0 = cleared):
+ *
+ * | N Z C I D V |
+ * | + + + - - - |
+ */
+void mos6507_ROR_Accumulator()
+{
+    uint16_t tmp, tmpCarry = 0;
+    uint8_t accumulator;
+    mos6507_get_register(MOS6507_REG_A, &accumulator);
+
+    tmpCarry = accumulator & 0x01;
+    tmp = accumulator >> 1;
+    if (mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY)) {
+        tmp |= 0x80;
+    }
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (tmp & 0x80));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(tmp & 0xFF));
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_CARRY, tmpCarry);
+    accumulator = (tmp & 0xFF);
+    mos6507_set_register(MOS6507_REG_A, &accumulator);
+}
 /* Subtract memory from Accumulator with borrow.
  * A - M - C -> A
  *

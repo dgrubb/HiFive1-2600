@@ -21,8 +21,10 @@ void mos6507_CPX(uint8_t data);
 void mos6507_CPY(uint8_t data);
 void mos6507_EOR(uint8_t data);
 void mos6507_LSR(uint8_t *data);
+void mos6507_LSR_Accumulator();
 void mos6507_ORA(uint8_t *data);
 void mos6507_ROL(uint8_t *data);
+void mos6507_ROL_Accumulator();
 void mos6507_ROR(uint8_t *data);
 void mos6507_SBC(uint8_t data);
 
