@@ -62,3 +62,7 @@ int mos6532_write(uint16_t address,uint8_t data)
     memory[address] = data;
     return 0;
 }
+
+void mos6532_clock_tick()
+{
+}

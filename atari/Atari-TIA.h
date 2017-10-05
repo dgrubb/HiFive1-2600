@@ -11,6 +11,11 @@
 
 #include <stdint.h>
 
+/* Ref: Stella Programmer's Guide, Pg. 4 */
+#define TIA_COLOUR_CLOCK_VISIBLE    160
+#define TIA_COLOUR_CLOCK_HSYNC      68
+#define TIA_COLOUR_CLOCK_TOTAL      (TIA_COLOUR_CLOCK_VISIBLE + TIA_COLOUR_CLOCK_HSYNC)
+
 /* Define available memory registers semantically */
 /* Writable registers */
 typedef enum {
@@ -87,6 +92,7 @@ typedef struct {
     // Data registers
     uint8_t write_regs[TIA_WRITE_REG_LEN];
     uint8_t read_regs[TIA_READ_REG_LEN];
+    uint8_t colour_clock;
 } atari_tia;
 
 /* This is the single instance of atari_tia type to represent
@@ -97,5 +103,10 @@ extern atari_tia tia;
 void TIA_init();
 void TIA_read_register(uint8_t reg, uint8_t *value);
 void TIA_write_register(uint8_t reg, uint8_t value);
+void TIA_clock_tick();
+void TIA_generate_colour();
+void TIA_generate_hsync();
+void TIA_generate_vsync();
+void TIA_generate_vblank();
 
 #endif /* _ATARI_TIA_H */

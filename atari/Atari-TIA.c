@@ -45,3 +45,46 @@ void TIA_write_register(uint8_t reg, uint8_t value)
     tia.write_regs[reg] = value;
 }
 
+void TIA_generate_colour()
+{
+
+}
+
+void TIA_generate_hsync()
+{
+}
+
+void TIA_generate_vsync()
+{
+}
+
+void TIA_generate_vblank()
+{
+}
+
+void TIA_clock_tick()
+{
+    /* Vertical blanking periods */
+    if (tia.write_regs[TIA_WRITE_REG_VSYNC]) {
+        TIA_generate_vsync();
+        return;
+    }
+    if (tia.write_regs[TIA_WRITE_REG_VBLANK]) {
+        TIA_generate_vblank();
+        return;
+    }
+
+    /* Horizonal colour and blanking signals  */
+    if (tia.colour_clock == TIA_COLOUR_CLOCK_TOTAL) {
+        tia.colour_clock = 0;
+        return;
+    }
+    if (tia.colour_clock <= TIA_COLOUR_CLOCK_VISIBLE) {
+        TIA_generate_colour();
+    }
+    if ((tia.colour_clock > TIA_COLOUR_CLOCK_VISIBLE) && (tia.colour_clock < TIA_COLOUR_CLOCK_TOTAL)) {
+        TIA_generate_hsync();
+    }
+    tia.colour_clock++;
+}
+

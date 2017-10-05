@@ -32,16 +32,18 @@
  * (262MHz / 2^1) / 3580000 = 36 (0x24 in hex)
  */
 #ifndef STANDALONE
-#define PWM_FREQ    0x24
-#define PWM_SCALE   0x01
+#define PWM_FREQ        0x24
+#define PWM_FREQ_DIV    0x0C /* PWM_FREQ/2 for 50% duty */
+#define PWM_SCALE       0x01
 #else
 /* When not expecting a slave TIA device to scale the system clock
  * generate our own. 6507 input clock is 3.58MHz/3:
  *
  * (262MHz / 2^1) / 1193333 = ~110 (0x6E in hex)
  */
-#define PWM_FREQ    0x6E
-#define PWM_SCALE   0x01
+#define PWM_FREQ        0x6E
+#define PWM_FREQ_DIV    0x37 /* PWM_FREQ/2 for 50% duty */
+#define PWM_SCALE       0x01
 #endif /* STANDALONE */
 
 #define CLOCK_INPUT PIN_19_OFFSET
@@ -114,7 +116,7 @@ void init_clock()
     PLIC_init(&g_plic, PLIC_CTRL_ADDR, PLIC_NUM_INTERRUPTS, PLIC_NUM_PRIORITIES);
     PLIC_enable_interrupt(&g_plic, INT_PWM1_BASE);
     PLIC_set_threshold(&g_plic, 0);
-    PLIC_set_priority(&g_plic, INT_PWM1_BASE, 1);
+    PLIC_set_priority(&g_plic, INT_PWM1_BASE, 7);
 
     /* Clear PWM configuration register */
     PWM1_REG(PWM_CFG) = 0;
@@ -133,7 +135,7 @@ void init_clock()
         (PWM_SCALE);
     PWM1_REG(PWM_COUNT) = 0;
     PWM1_REG(PWM_CMP0) = PWM_FREQ;
-    PWM1_REG(PWM_CMP3) = PWM_FREQ/2; /* Output a 50% duty cycle */
+    PWM1_REG(PWM_CMP3) = PWM_FREQ_DIV; /* Output a 50% duty cycle */
 
     /* Reset the PWM count register, ready for usage */
     PWM1_REG(PWM_COUNT) = 0;
