@@ -39,9 +39,6 @@ CFLAGS += -DMANUAL_STEP
 # Allow for printing the emulator state to UART
 CFLAGS += -DPRINT_STATE
 
-# Use a custom init routine
-CFLAGS += -DNO_INIT
-
 # Identify this directory for location of custom headers
 CFLAGS += -I./
 

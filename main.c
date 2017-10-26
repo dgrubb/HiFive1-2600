@@ -146,34 +146,12 @@ void enable_interrupts()
     set_csr(mstatus, MSTATUS_MIE);
 }
 
-void platform_init(void)
-{
-    use_default_clocks();
-    use_pll(0, 0, 1, 40, 1);
-    uart_init(115200);
-
-    printf("core freq at %d Hz\n", get_cpu_freq());
-
-    write_csr(mtvec, &trap_entry);
-    if (read_csr(misa) & (1 << ('F' - 'A'))) { // if F extension is present
-    write_csr(mstatus, MSTATUS_FS); // allow FPU instructions without trapping
-    write_csr(fcsr, 0); // initialize rounding mode, undefined at reset
-    }
-}
-
 /******************************************************************************
  * Main code entry point
  *****************************************************************************/
 
 int main()
 {
-#ifndef NO_INIT
-    /* Forgoe the usual SiFive init routine to allow for setting a faster
-     * clock rate.
-     */
-    platform_init();
-#endif /* NO_INIT */
-
     /* Display Atari's awesome logo */
     puts(atari_logo);
 
