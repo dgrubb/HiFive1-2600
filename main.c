@@ -10,15 +10,17 @@
 #include "plic/plic_driver.h"
 
 /* Atari and platform includes */
-#include "cpu/mos6507.h"
-#include "external/spi.h"
-#include "external/UART_driver.h"
+#include "mos6507/mos6507.h"
 #include "atari/Atari-TIA.h"
 #include "atari/Atari-cart.h"
-#include "memory/mos6532.h"
-#include "test/test-carts.h"
-#include "test/tests.h"
-#include "test/debug.h"
+#include "mos6532/mos6532.h"
+#ifdef EXEC_TESTS
+    #include "test/test-carts.h"
+    #include "test/tests.h"
+#endif
+#ifdef PRINT_STATE
+    #include "test/debug.h"
+#endif
 /* Game cart data */
 #include "carts/halo2600.h"
 

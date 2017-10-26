@@ -12,10 +12,10 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include "../atari/Atari-cart.h"
-#include "../atari/Atari-memmap.h"
-#include "../cpu/mos6507.h"
-#include "../memory/mos6532.h"
+#include "atari/Atari-cart.h"
+#include "atari/Atari-memmap.h"
+#include "cpu/mos6507.h"
+#include "memory/mos6532.h"
 #include "debug.h"
 #include "test-carts.h"
 
@@ -23,7 +23,7 @@
     mos6532_clear_memory(); \
     mos6507_reset(); \
 
-void execute_tests()
+void execute_tests(void)
 {
     puts("============ Executing unit tests ============");
 
@@ -77,7 +77,7 @@ void read_test_data(uint16_t address, uint8_t *data)
  * Load the accumulator
  *****************************************************************************/
 
-void test_LDA()
+void test_LDA(void)
 {
     puts("--- Testing LDA:");
 
@@ -95,7 +95,7 @@ void test_LDA()
     puts("--- All LDA tests completed successfully.");
 }
 
-void test_LDA_Immediate()
+void test_LDA_Immediate(void)
 {
     puts("+ Testing LDA [ 0xA9 ], immediate addressing mode");
     RESET()
@@ -111,7 +111,7 @@ void test_LDA_Immediate()
     mos6507_get_register(MOS6507_REG_A, &data);
     assert(data == 0xAA);
 }
-void test_LDA_Zero_Page()
+void test_LDA_Zero_Page(void)
 {
     puts("+ Testing LDA [ 0xA5 ], zero page addressing mode");
     RESET()
@@ -132,13 +132,11 @@ void test_LDA_Zero_Page()
     assert(data == 0xAA);
 }
 
-void test_LDA_Zero_Page_X_Indexed()
+void test_LDA_Zero_Page_X_Indexed(void)
 {
     puts("+ Testing LDA [ 0xB5 ], zero page X indexed addressing mode");
     RESET()
     uint8_t data = 0;
-    uint16_t current_address;
-    uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
     insert_test_data(0x0091, 0xAA);
@@ -159,7 +157,7 @@ void test_LDA_Zero_Page_X_Indexed()
     assert(data == 0xAA);
 }
 
-void test_LDA_Absolute()
+void test_LDA_Absolute(void)
 {
     puts("+ Testing LDA [ 0xAD ], absolute addressing mode");
     RESET()
@@ -181,7 +179,7 @@ void test_LDA_Absolute()
     assert(data == 0xAA);
 }
 
-void test_LDA_Absolute_X_Indexed()
+void test_LDA_Absolute_X_Indexed(void)
 {
     puts("+ Testing LDA [ 0xBD ], absolute X indexed addressing mode");
     RESET()
@@ -206,7 +204,7 @@ void test_LDA_Absolute_X_Indexed()
     assert(data == 0xAA);
 }
 
-void test_LDA_Absolute_X_Indexed_Boundary_Cross()
+void test_LDA_Absolute_X_Indexed_Boundary_Cross(void)
 {
     puts("+ Testing LDA [ 0xAD ], absolute X indexed addressing mode with boundary crossing");
     RESET()
@@ -232,7 +230,7 @@ void test_LDA_Absolute_X_Indexed_Boundary_Cross()
     assert(data == 0xAA);
 }
 
-void test_LDA_Absolute_Y_Indexed()
+void test_LDA_Absolute_Y_Indexed(void)
 {
     puts("+ Testing LDA [ 0xA9 ], absolute Y indexed addressing mode");
     RESET()
@@ -257,7 +255,7 @@ void test_LDA_Absolute_Y_Indexed()
     assert(data == 0xAA);
 }
 
-void test_LDA_Absolute_Y_Indexed_Boundary_Cross()
+void test_LDA_Absolute_Y_Indexed_Boundary_Cross(void)
 {
     puts("+ Testing LDA [ 0xA9 ], absolute Y indexed addressing mode with boundary crossing");
     RESET()
@@ -283,7 +281,7 @@ void test_LDA_Absolute_Y_Indexed_Boundary_Cross()
     assert(data == 0xAA);
 }
 
-void test_LDA_Indirect_X_Indexed()
+void test_LDA_Indirect_X_Indexed(void)
 {
     puts("+ Testing LDA [ 0xA1 ], indirect X indexed addressing mode");
     RESET()
@@ -311,7 +309,7 @@ void test_LDA_Indirect_X_Indexed()
     assert(data == 0xAA);
 }
 
-void test_LDA_Indirect_Y_Indexed()
+void test_LDA_Indirect_Y_Indexed(void)
 {
     puts("+ Testing LDA [ 0xB1 ], indirect Y indexed addressing mode");
     RESET()
@@ -344,7 +342,7 @@ void test_LDA_Indirect_Y_Indexed()
  * Load the X register
  *****************************************************************************/
 
-void test_LDX()
+void test_LDX(void)
 {
     puts("--- Testing LDX:");
 
@@ -358,7 +356,7 @@ void test_LDX()
     puts("--- All LDX tests completed successfully.");
 }
 
-void test_LDX_Immediate()
+void test_LDX_Immediate(void)
 {
     puts("+ Testing LDX [ 0xA2 ], immediate addressing mode");
     RESET()
@@ -375,13 +373,11 @@ void test_LDX_Immediate()
     assert(data == 0xAA);
 }
 
-void test_LDX_Zero_Page()
+void test_LDX_Zero_Page(void)
 {
     puts("+ Testing LDX [ 0xA6 ], zero page addressing mode");
     RESET()
     uint8_t data = 0;
-    uint16_t current_address;
-    uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
     insert_test_data(0x0081, 0xAA);
@@ -399,13 +395,11 @@ void test_LDX_Zero_Page()
 }
 
 
-void test_LDX_Zero_Page_Y_Indexed()
+void test_LDX_Zero_Page_Y_Indexed(void)
 {
     puts("+ Testing LDX [ 0xB6 ], zero page Y indexed addressing mode");
     RESET()
     uint8_t data = 0;
-    uint16_t current_address;
-    uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
     insert_test_data(0x0091, 0xAA);
@@ -426,7 +420,7 @@ void test_LDX_Zero_Page_Y_Indexed()
     assert(data == 0xAA);
 }
 
-void test_LDX_Absolute()
+void test_LDX_Absolute(void)
 {
     puts("+ Testing LDX [ 0xAE ], absolute addressing mode");
     RESET()
@@ -448,7 +442,7 @@ void test_LDX_Absolute()
     assert(data == 0xAA);
 }
 
-void test_LDX_Absolute_Y_Indexed()
+void test_LDX_Absolute_Y_Indexed(void)
 {
     puts("+ Testing LDX [ 0xBE ], absolute Y indexed addressing mode");
     RESET()
@@ -473,7 +467,7 @@ void test_LDX_Absolute_Y_Indexed()
     assert(data == 0xAA);
 }
 
-void test_LDX_Absolute_Y_Indexed_Boundary_Cross()
+void test_LDX_Absolute_Y_Indexed_Boundary_Cross(void)
 {
     puts("+ Testing LDX [ 0xBE ], absolute Y indexed addressing mode with boundary crossing");
     RESET()
@@ -503,7 +497,7 @@ void test_LDX_Absolute_Y_Indexed_Boundary_Cross()
  * Load the Y register
  *****************************************************************************/
 
-void test_LDY()
+void test_LDY(void)
 {
     puts("--- Testing LDY:");
 
@@ -517,7 +511,7 @@ void test_LDY()
     puts("--- All LDY tests completed successfully.");
 }
 
-void test_LDY_Immediate()
+void test_LDY_Immediate(void)
 {
     puts("+ Testing LDY [ 0xA0 ], immediate addressing mode");
     RESET()
@@ -534,13 +528,11 @@ void test_LDY_Immediate()
     assert(data == 0xAA);
 }
 
-void test_LDY_Zero_Page()
+void test_LDY_Zero_Page(void)
 {
     puts("+ Testing LDY [ 0xA4 ], zero page addressing mode");
     RESET()
     uint8_t data = 0;
-    uint16_t current_address;
-    uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
     insert_test_data(0x0081, 0xAA);
@@ -558,13 +550,11 @@ void test_LDY_Zero_Page()
 }
 
 
-void test_LDY_Zero_Page_X_Indexed()
+void test_LDY_Zero_Page_X_Indexed(void)
 {
     puts("+ Testing LDY [ 0xB4 ], zero page X indexed addressing mode");
     RESET()
     uint8_t data = 0;
-    uint16_t current_address;
-    uint8_t current_data;
 
     /* Setup the test by pre-loading our test data into memory */
     insert_test_data(0x0091, 0xAA);
@@ -585,7 +575,7 @@ void test_LDY_Zero_Page_X_Indexed()
     assert(data == 0xAA);
 }
 
-void test_LDY_Absolute()
+void test_LDY_Absolute(void)
 {
     puts("+ Testing LDY [ 0xAC ], absolute addressing mode");
     RESET()
@@ -607,7 +597,7 @@ void test_LDY_Absolute()
     assert(data == 0xAA);
 }
 
-void test_LDY_Absolute_X_Indexed()
+void test_LDY_Absolute_X_Indexed(void)
 {
     puts("+ Testing LDX [ 0xBC ], absolute X indexed addressing mode");
     RESET()
@@ -632,7 +622,7 @@ void test_LDY_Absolute_X_Indexed()
     assert(data == 0xAA);
 }
 
-void test_LDY_Absolute_X_Indexed_Boundary_Cross()
+void test_LDY_Absolute_X_Indexed_Boundary_Cross(void)
 {
     puts("+ Testing LDY [ 0xBC ], absolute X indexed addressing mode with boundary crossing");
     RESET()
@@ -662,7 +652,7 @@ void test_LDY_Absolute_X_Indexed_Boundary_Cross()
  * Store the Accumulator
  *****************************************************************************/
 
-void test_STA()
+void test_STA(void)
 {
     puts("--- Testing STA:");
 
@@ -677,7 +667,7 @@ void test_STA()
     puts("--- All STA tests completed successfully.");
 }
 
-void test_STA_Zero_Page()
+void test_STA_Zero_Page(void)
 {
     puts("+ Testing STA [ 0xA9 ], zero page addressing mode");
     RESET()
@@ -700,7 +690,7 @@ void test_STA_Zero_Page()
     assert(data == 0xBB);
 }
 
-void test_STA_Zero_Page_X_Indexed()
+void test_STA_Zero_Page_X_Indexed(void)
 {
     puts("+ Testing STA [ 0x95 ], zero page X indexed addressing mode");
     RESET()
@@ -727,7 +717,7 @@ void test_STA_Zero_Page_X_Indexed()
     assert(data == 0xBB);
 }
 
-void test_STA_Absolute()
+void test_STA_Absolute(void)
 {
     puts("+ Testing STA [ 0x8D ], absolute addressing mode");
     RESET()
@@ -751,7 +741,7 @@ void test_STA_Absolute()
     assert(data == 0xBB);
 }
 
-void test_STA_Absolute_X_Indexed()
+void test_STA_Absolute_X_Indexed(void)
 {
     puts("+ Testing STA [ 0x9D ], absolute X indexed addressing mode");
     RESET()
@@ -779,7 +769,7 @@ void test_STA_Absolute_X_Indexed()
     assert(data == 0xBB);
 }
 
-void test_STA_Absolute_Y_Indexed()
+void test_STA_Absolute_Y_Indexed(void)
 {
     puts("+ Testing STA [ 0x99 ], absolute Y indexed addressing mode");
     RESET()
@@ -807,7 +797,7 @@ void test_STA_Absolute_Y_Indexed()
     assert(data == 0xBB);
 }
 
-void test_STA_Indirect_X_Indexed()
+void test_STA_Indirect_X_Indexed(void)
 {
     puts("+ Testing STA [ 0x81 ], indirect X indexed addressing mode");
     RESET()
@@ -841,7 +831,7 @@ void test_STA_Indirect_X_Indexed()
     assert(data == 0xBB);
 }
 
-void test_STA_Indirect_Y_Indexed()
+void test_STA_Indirect_Y_Indexed(void)
 {
     puts("+ Testing STA [ 0x91 ], indirect Y indexed addressing mode");
     RESET()
@@ -879,7 +869,7 @@ void test_STA_Indirect_Y_Indexed()
  * Store the X index register
  *****************************************************************************/
 
-void test_STX()
+void test_STX(void)
 {
     puts("--- Testing STX:");
 
@@ -890,7 +880,7 @@ void test_STX()
     puts("--- All STX tests completed successfully.");
 }
 
-void test_STX_Zero_Page()
+void test_STX_Zero_Page(void)
 {
     puts("+ Testing STX [ 0x86 ], zero page addressing mode");
     RESET()
@@ -913,7 +903,7 @@ void test_STX_Zero_Page()
     assert(data == 0xBB);
 }
 
-void test_STX_Zero_Page_Y_Indexed()
+void test_STX_Zero_Page_Y_Indexed(void)
 {
     puts("+ Testing STX [ 0x96 ], zero page Y indexed addressing mode");
     RESET()
@@ -940,7 +930,7 @@ void test_STX_Zero_Page_Y_Indexed()
     assert(data == 0xBB);
 }
 
-void test_STX_Absolute()
+void test_STX_Absolute(void)
 {
     puts("+ Testing STX [ 0x8E ], absolute addressing mode");
     RESET()
@@ -968,7 +958,7 @@ void test_STX_Absolute()
  * Store the Y index register
  *****************************************************************************/
 
-void test_STY()
+void test_STY(void)
 {
     puts("--- Testing STY:");
 
@@ -979,7 +969,7 @@ void test_STY()
     puts("--- All STY tests completed successfully.");
 }
 
-void test_STY_Zero_Page()
+void test_STY_Zero_Page(void)
 {
     puts("+ Testing STY [ 0x84 ], zero page addressing mode");
     RESET()
@@ -1002,7 +992,7 @@ void test_STY_Zero_Page()
     assert(data == 0xBB);
 }
 
-void test_STY_Zero_Page_X_Indexed()
+void test_STY_Zero_Page_X_Indexed(void)
 {
     puts("+ Testing STY [ 0x94 ], zero page X indexed addressing mode");
     RESET()
@@ -1029,7 +1019,7 @@ void test_STY_Zero_Page_X_Indexed()
     assert(data == 0xBB);
 }
 
-void test_STY_Absolute()
+void test_STY_Absolute(void)
 {
     puts("+ Testing STY [ 0x8C ], absolute addressing mode");
     RESET()
@@ -1057,7 +1047,7 @@ void test_STY_Absolute()
  * Add to Accumulator with carry check
  *****************************************************************************/
 
-void test_ADC()
+void test_ADC(void)
 {
     puts("--- Testing ADC:");
 
@@ -1067,13 +1057,11 @@ void test_ADC()
 
 }
 
-void test_ADC_Immediate()
+void test_ADC_Immediate(void)
 {
     puts("+ Testing ADC [ 0x69 ], immediate addressing mode");
     RESET()
-    uint8_t accumulator, data, P = 0;
-
-    
+    uint8_t accumulator, P = 0;
 
     /* Do we have the expected result in the Accumulator and 
      * has the Carry bit been set correctly? */

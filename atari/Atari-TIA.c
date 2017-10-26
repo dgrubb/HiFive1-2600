@@ -13,7 +13,7 @@ atari_tia tia;
 
 /* Resets the TIA instance to default conditions with no state set.
  */
-void TIA_init()
+void TIA_init(void)
 {
     int i = 0;
     // Data registers
@@ -45,24 +45,24 @@ void TIA_write_register(uint8_t reg, uint8_t value)
     tia.write_regs[reg] = value;
 }
 
-void TIA_generate_colour()
+void TIA_generate_colour(void)
 {
 
 }
 
-void TIA_generate_hsync()
+void TIA_generate_hsync(void)
 {
 }
 
-void TIA_generate_vsync()
+void TIA_generate_vsync(void)
 {
 }
 
-void TIA_generate_vblank()
+void TIA_generate_vblank(void)
 {
 }
 
-void TIA_clock_tick()
+void TIA_clock_tick(void)
 {
     /* Vertical blanking periods */
     if (tia.write_regs[TIA_WRITE_REG_VSYNC]) {

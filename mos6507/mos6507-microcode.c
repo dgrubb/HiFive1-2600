@@ -20,7 +20,7 @@
  */
 void mos6507_ADC(uint8_t data)
 {
-    uint16_t tmp;
+    uint16_t tmp = 0;
     uint8_t accumulator = 0;
     mos6507_get_register(MOS6507_REG_A, &accumulator);
 
@@ -91,7 +91,7 @@ void mos6507_ASL(uint8_t *data)
  * | N Z C I D V |
  * | + + + - - - |
  */
-void mos6507_ASL_Accumulator()
+void mos6507_ASL_Accumulator(void)
 {
     uint8_t accumulator;
     uint16_t tmp;
@@ -235,7 +235,7 @@ void mos6507_LSR(uint8_t *data)
  * | N Z C I D V |
  * | - + + - - - |
  */
-void mos6507_LSR_Accumulator()
+void mos6507_LSR_Accumulator(void)
 {
     uint8_t accumulator;
     mos6507_get_register(MOS6507_REG_A, &accumulator);
@@ -295,7 +295,7 @@ void mos6507_ROL(uint8_t *data)
  * | N Z C I D V |
  * | + + + - - - |
  */
-void mos6507_ROL_Accumulator()
+void mos6507_ROL_Accumulator(void)
 {
     uint16_t tmp = 0;
     uint8_t accumulator;
@@ -344,7 +344,7 @@ void mos6507_ROR(uint8_t *data)
  * | N Z C I D V |
  * | + + + - - - |
  */
-void mos6507_ROR_Accumulator()
+void mos6507_ROR_Accumulator(void)
 {
     uint16_t tmp, tmpCarry = 0;
     uint8_t accumulator;
@@ -371,7 +371,7 @@ void mos6507_ROR_Accumulator()
  */
 void mos6507_SBC(uint8_t data)
 {
-    uint16_t tmp;
+    uint16_t tmp = 0;
     uint8_t accumulator = 0;
     mos6507_get_register(MOS6507_REG_A, &accumulator);
 

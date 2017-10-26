@@ -32,7 +32,7 @@ void memmap_map_address(uint16_t *address)
  * chip-select pins on the TIA and RIOT by delegating 
  * memory access requests to their respective locations.
  */
-void memmap_write()
+void memmap_write(void)
 {
     /* Fetch data and address from CPU */
     uint16_t address;

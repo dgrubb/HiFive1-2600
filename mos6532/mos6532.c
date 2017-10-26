@@ -11,6 +11,8 @@
 #include "mos6507/mos6507.h"
 #include "mos6532.h"
 
+static uint8_t memory[MEM_SIZE];
+
 /* Checks that a requested memory address is within the 
  * RAM space.
  *
@@ -29,7 +31,7 @@ int mos6532_bounds_check(uint8_t address)
 
 /* Resets all RAM to zero
  */
-void mos6532_clear_memory()
+void mos6532_clear_memory(void)
 {
     memset(memory, 0, MEM_SIZE);
 }
@@ -63,6 +65,6 @@ int mos6532_write(uint16_t address,uint8_t data)
     return 0;
 }
 
-void mos6532_clock_tick()
+void mos6532_clock_tick(void)
 {
 }

@@ -29,7 +29,7 @@ void cartridge_load(const uint8_t *cart)
     cartridge = cart;
 }
 
-void cartridge_eject()
+void cartridge_eject(void)
 {
     /* Clear the pointer to the current cartridge array */
     cartridge = 0;

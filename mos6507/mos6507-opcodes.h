@@ -9,13 +9,12 @@
 #ifndef _MOS6507_OPCODES_H
 #define _MOS6507_OPCODES_H
 
+#include <stdint.h>
+
 /* Opcodes are 8-bit, allowing for 255 unique permutations.
  * However, many bit selections don't represent valid operations.
  */
 #define ISA_LENGTH 255
-
-/* Define a function pointer type */
-typedef int (*fp)();
 
 typedef enum {
     OPCODE_ADDRESSING_MODE_ACCUMULATOR = 0,
@@ -33,6 +32,9 @@ typedef enum {
     OPCODE_ADDRESSING_MODE_ZERO_PAGE_Y_INDEXED,
 } addressing_mode_t;
 
+/* Define a function pointer type */
+typedef int (*fp)(int, addressing_mode_t);
+
 typedef struct {
     fp opcode;
     addressing_mode_t addressing_mode;
@@ -40,7 +42,7 @@ typedef struct {
 
 extern instruction_t ISA_table[ISA_LENGTH];
 
-void opcode_populate_ISA_table();
+void opcode_populate_ISA_table(void);
 int opcode_execute(uint8_t opcode);
 
 /* The following function prototypes define each possible opcodes from a

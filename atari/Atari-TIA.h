@@ -100,13 +100,13 @@ typedef struct {
 extern atari_tia tia;
 
 /* Interfacing functions */
-void TIA_init();
+void TIA_init(void);
 void TIA_read_register(uint8_t reg, uint8_t *value);
 void TIA_write_register(uint8_t reg, uint8_t value);
-void TIA_clock_tick();
-void TIA_generate_colour();
-void TIA_generate_hsync();
-void TIA_generate_vsync();
-void TIA_generate_vblank();
+void TIA_clock_tick(void);
+void TIA_generate_colour(void);
+void TIA_generate_hsync(void);
+void TIA_generate_vsync(void);
+void TIA_generate_vblank(void);
 
 #endif /* _ATARI_TIA_H */

@@ -46,9 +46,9 @@ typedef struct {
     uint8_t       data_bus;            /* Data bus */
 } mos6507;
 
-void mos6507_init();
-void mos6507_reset();
-void mos6507_clock_tick();
+void mos6507_init(void);
+void mos6507_reset(void);
+void mos6507_clock_tick(void);
 void mos6507_set_register(mos6507_register_t reg, uint8_t value);
 void mos6507_get_register(mos6507_register_t reg, uint8_t *value);
 void mos6507_set_address_bus_hl(uint8_t adh, uint8_t adl);
@@ -56,8 +56,8 @@ void mos6507_set_address_bus(uint16_t address);
 void mos6507_get_address_bus(uint16_t *address);
 void mos6507_set_data_bus(uint8_t data);
 void mos6507_get_data_bus(uint8_t *data);
-void mos6507_increment_PC();
-uint16_t mos6507_get_PC();
+void mos6507_increment_PC(void);
+uint16_t mos6507_get_PC(void);
 void mos6507_set_PC(uint16_t pc);
 void mos6507_set_PC_hl(uint8_t pch, uint8_t pcl);
 void mos6507_set_status_flag(mos6507_status_flag_t flag, int value);

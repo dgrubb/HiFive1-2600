@@ -7,7 +7,9 @@
  */
 
 #include "atari/Atari-memmap.h"
-#include "test/debug.h"
+#ifdef PRINT_STATE
+    #include "test/debug.h"
+#endif
 #include "mos6507.h"
 
 /* Representation of our CPU */
@@ -18,7 +20,7 @@ static mos6507 cpu = {0};
  * required at least two clock cycles to execute an opcode, usually
  * more depending on the memory addressing mode invoked.
  */
-void mos6507_clock_tick()
+void mos6507_clock_tick(void)
 {
     /* If the CPU is still in the middle of decoing/executing an
      * operation then continue execution. Otherwise, read the next 
@@ -27,7 +29,7 @@ void mos6507_clock_tick()
     if (!cpu.current_instruction) {
         memmap_read(&cpu.current_instruction);
     }
-#ifdef MANUAL_STEP
+#ifdef PRINT_STATE
     debug_print_execution_step();
 #endif
     cpu.current_clock = opcode_execute(cpu.current_instruction);
@@ -36,7 +38,7 @@ void mos6507_clock_tick()
     }
 }
 
-void mos6507_reset()
+void mos6507_reset(void)
 {
     uint8_t pch, pcl = 0;
     uint16_t pc = 0;
@@ -71,7 +73,7 @@ void mos6507_reset()
     mos6507_set_address_bus(mos6507_get_PC());
 }
 
-void mos6507_init()
+void mos6507_init(void)
 {
     /* Initialise all members back to 0 */
     cpu.A =  0;
@@ -112,12 +114,12 @@ void mos6507_get_register(mos6507_register_t reg, uint8_t *value)
     }
 }
 
-void mos6507_increment_PC()
+void mos6507_increment_PC(void)
 {
     cpu.PC++;
 }
 
-uint16_t mos6507_get_PC()
+uint16_t mos6507_get_PC(void)
 {
     return cpu.PC;
 }

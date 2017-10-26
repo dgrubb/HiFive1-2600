@@ -7,14 +7,14 @@
  * information.
  */
 
-#ifdef EXEC_TESTS
+#ifdef PRINT_STATE
 
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include "debug.h"
-#include "../atari/Atari-memmap.h"
-#include "../memory/mos6532.h"
+#include "atari/Atari-memmap.h"
+#include "mos6532/mos6532.h"
 
 #define MOS6507_STATUS_FLAG_NEGATIVE  0x80
 #define MOS6507_STATUS_FLAG_OVERFLOW  0x40
@@ -274,7 +274,7 @@ void debug_print_special_register(mos6507_register_t reg)
     puts(msg);
 }
 
-void debug_print_status_flags()
+void debug_print_status_flags(void)
 {
     char msg[MSG_LEN];
     memset(msg, 0, MSG_LEN);
@@ -295,7 +295,7 @@ void debug_print_status_flags()
     puts(msg);
 }
 
-void debug_print_buses()
+void debug_print_buses(void)
 {
     char msg[MSG_LEN];
     memset(msg, 0, MSG_LEN);
@@ -311,7 +311,7 @@ void debug_print_buses()
     puts(msg);
 }
 
-void debug_print_instruction()
+void debug_print_instruction(void)
 {
     char msg[MSG_LEN];
     memset(msg, 0, MSG_LEN);
@@ -327,7 +327,7 @@ void debug_print_instruction()
     puts(msg);
 }
 
-void debug_print_execution_step()
+void debug_print_execution_step(void)
 {
     puts("\n\r----------------------------------------------------------------"
          "---------------------\n\r");

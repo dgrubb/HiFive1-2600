@@ -51,7 +51,7 @@ int opcode_execute(uint8_t opcode)
  * instruction. E.g., LDY is 0x0C so index 12 of the ISA table
  * would be loaded with a pointer to function opcode_LDY().
  */
-void opcode_populate_ISA_table()
+void opcode_populate_ISA_table(void)
 {
     int i = 0;
     /* Initially, fill the entire table with ILL */
@@ -436,11 +436,12 @@ void opcode_populate_ISA_table()
 int opcode_ILL(int cycle, addressing_mode_t address_mode)
 {
     /* Halt and catch fire!! */
+    return 0;
 }
 
 int opcode_ADC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -451,7 +452,7 @@ int opcode_ADC(int cycle, addressing_mode_t address_mode)
 
 int opcode_AND(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -462,7 +463,7 @@ int opcode_AND(int cycle, addressing_mode_t address_mode)
 
 int opcode_ASL(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data, address = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     if (OPCODE_ADDRESSING_MODE_ACCUMULATOR == address_mode) {
@@ -489,7 +490,7 @@ int opcode_ASL(int cycle, addressing_mode_t address_mode)
 
 int opcode_BCC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t condition, offset, P = 0;
+    static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
     condition = !mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY);
@@ -502,7 +503,7 @@ int opcode_BCC(int cycle, addressing_mode_t address_mode)
 
 int opcode_BCS(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t condition, offset, P = 0;
+    static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
     condition = mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY);
@@ -515,7 +516,7 @@ int opcode_BCS(int cycle, addressing_mode_t address_mode)
 
 int opcode_BEQ(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t condition, offset, P = 0;
+    static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
     condition = mos6507_get_status_flag(MOS6507_STATUS_FLAG_ZERO);
@@ -528,7 +529,7 @@ int opcode_BEQ(int cycle, addressing_mode_t address_mode)
 
 int opcode_BIT(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -539,7 +540,7 @@ int opcode_BIT(int cycle, addressing_mode_t address_mode)
 
 int opcode_BMI(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t condition, offset, P = 0;
+    static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
     condition = mos6507_get_status_flag(MOS6507_STATUS_FLAG_NEGATIVE);
@@ -565,7 +566,7 @@ int opcode_BNE(int cycle, addressing_mode_t address_mode)
 
 int opcode_BPL(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t condition, offset, P = 0;
+    static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
     condition = !mos6507_get_status_flag(MOS6507_STATUS_FLAG_NEGATIVE);
@@ -578,11 +579,12 @@ int opcode_BPL(int cycle, addressing_mode_t address_mode)
 
 int opcode_BRK(int cycle, addressing_mode_t address_mode)
 {
+    return 0;
 }
 
 int opcode_BVC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t condition, offset, P = 0;
+    static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
     condition = !mos6507_get_status_flag(MOS6507_STATUS_FLAG_OVERFLOW);
@@ -595,7 +597,7 @@ int opcode_BVC(int cycle, addressing_mode_t address_mode)
 
 int opcode_BVS(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t condition, offset, P = 0;
+    static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
 
     condition = mos6507_get_status_flag(MOS6507_STATUS_FLAG_OVERFLOW);
@@ -680,7 +682,7 @@ int opcode_CLV(int cycle, addressing_mode_t address_mode)
 
 int opcode_CMP(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -691,7 +693,7 @@ int opcode_CMP(int cycle, addressing_mode_t address_mode)
 
 int opcode_CPX(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -702,7 +704,7 @@ int opcode_CPX(int cycle, addressing_mode_t address_mode)
 
 int opcode_CPY(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -713,12 +715,13 @@ int opcode_CPY(int cycle, addressing_mode_t address_mode)
 
 int opcode_DEC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA();
     data--;
-    memmap_write(data);
+    mos6507_set_data_bus(data);
+    memmap_write();
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(data & 0xFF));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (data & 0x80));
     END_OPCODE()
@@ -773,7 +776,7 @@ int opcode_DEY(int cycle, addressing_mode_t address_mode)
 
 int opcode_EOR(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -784,12 +787,13 @@ int opcode_EOR(int cycle, addressing_mode_t address_mode)
 
 int opcode_INC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA();
     data++;
-    memmap_write(data);
+    mos6507_set_data_bus(data);
+    memmap_write();
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(data & 0xFF));
     mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (data & 0x80));
     END_OPCODE()
@@ -871,7 +875,7 @@ int opcode_JMP(int cycle, addressing_mode_t address_mode)
 
 int opcode_JSR(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, pcl, pch, data, S = 0;
+    static uint8_t adl, adh, pcl, pch, S = 0;
     uint16_t address = 0;
 
     switch(cycle) {
@@ -915,7 +919,7 @@ int opcode_JSR(int cycle, addressing_mode_t address_mode)
 
 int opcode_LDA(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -928,7 +932,7 @@ int opcode_LDA(int cycle, addressing_mode_t address_mode)
 
 int opcode_LDX(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -941,7 +945,7 @@ int opcode_LDX(int cycle, addressing_mode_t address_mode)
 
 int opcode_LDY(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -954,7 +958,7 @@ int opcode_LDY(int cycle, addressing_mode_t address_mode)
 
 int opcode_LSR(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data, address = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     if (OPCODE_ADDRESSING_MODE_ACCUMULATOR == address_mode) {
@@ -976,6 +980,7 @@ int opcode_LSR(int cycle, addressing_mode_t address_mode)
     FETCH_DATA()
     mos6507_LSR(&data);
     END_OPCODE()
+    return 0;
 }
 
 int opcode_NOP(int cycle, addressing_mode_t address_mode)
@@ -997,7 +1002,7 @@ int opcode_NOP(int cycle, addressing_mode_t address_mode)
 
 int opcode_ORA(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -1128,7 +1133,7 @@ int opcode_PLP(int cycle, addressing_mode_t address_mode)
 
 int opcode_ROL(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     if (OPCODE_ADDRESSING_MODE_ACCUMULATOR == address_mode) {
@@ -1155,7 +1160,7 @@ int opcode_ROL(int cycle, addressing_mode_t address_mode)
 
 int opcode_ROR(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bah, bal, data, address = 0;
+    static uint8_t adl, adh, ial, bah, bal, data = 0;
     uint8_t X, Y, c = 0;
 
     if (OPCODE_ADDRESSING_MODE_ACCUMULATOR == address_mode) {
@@ -1255,7 +1260,7 @@ int opcode_RTS(int cycle, addressing_mode_t address_mode)
 
 int opcode_SBC(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh, ial, iah, bal, bah, data = 0;
+    static uint8_t adl, adh, ial, bal, bah, data = 0;
     uint8_t X, Y, c = 0;
 
     FETCH_DATA()
@@ -1266,7 +1271,6 @@ int opcode_SBC(int cycle, addressing_mode_t address_mode)
 
 int opcode_SEC(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1285,7 +1289,6 @@ int opcode_SEC(int cycle, addressing_mode_t address_mode)
 
 int opcode_SED(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1304,7 +1307,6 @@ int opcode_SED(int cycle, addressing_mode_t address_mode)
 
 int opcode_SEI(int cycle, addressing_mode_t address_mode)
 {
-    uint8_t value = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */

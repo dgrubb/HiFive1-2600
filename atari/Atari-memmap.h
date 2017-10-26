@@ -18,7 +18,7 @@
 #define MEMMAP_CART_START 0x1000
 #define MEMMAP_CART_END   0x1FFF
 
-void memmap_write();
+void memmap_write(void);
 void memmap_read(uint8_t *data);
 void memmap_map_address(uint16_t *address);
 
