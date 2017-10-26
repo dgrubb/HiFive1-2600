@@ -52,6 +52,15 @@
 #define PWM_SCALE       0x01
 #endif /* STANDALONE */
 
+#if 0
+/*
+ * (300MHz / 2^1) / 3580000 = ~42 (0x2A in hex)
+ */
+#define PWM_FREQ        0x2A
+#define PWM_FREQ_DIV    0x15 /* PWM_FREQ/2 for 50% duty */
+#define PWM_SCALE       0x01
+#endif
+
 #define CLOCK_INPUT PIN_19_OFFSET
 
 /* I/O masks */
