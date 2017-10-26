@@ -15,7 +15,17 @@ TARGET = HiFive1-2600
 # Compilation flags
 ###############################################################################
 
-CFLAGS += -O2 -fno-builtin-printf -DUSE_PLIC -DUSE_M_TIME
+# Set optimisation level
+CFLAGS += -O3
+
+# Warn that printf is custom implementation
+CFLAGS += -fno-builtin-printf
+
+# Use PLIC to control external interrupts
+CFLAGS += -DUSE_PLIC
+
+# Use timer interrupt callback
+CFLAGS += -DUSE_M_TIME
 
 # Enable compilation and execution of test suite
 CFLAGS += -DEXEC_TESTS
