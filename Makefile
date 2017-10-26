@@ -3,11 +3,16 @@ CFLAGS += -O2 -fno-builtin-printf -DUSE_PLIC -DUSE_M_TIME
 
 # Enable compilation and execution of test suite
 CFLAGS += -DEXEC_TESTS
+
 # Enable manual stepping through a cartridge, requires EXEC_TESTS for
 # debug helper functions
 CFLAGS += -DMANUAL_STEP
+
 # Run program without the requirement of a slave TIA device
 #CFLAGS += -DSTANDALONE
+
+# Allow for printing the emulator state to UART
+CFLAGS += -DPRINT_STATE
 
 CFLAGS += -I./
 

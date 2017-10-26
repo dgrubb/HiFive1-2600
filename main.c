@@ -60,8 +60,6 @@ static const uint32_t GREEN_LED_MASK   = (0x1 << GREEN_LED_OFFSET);
 static const uint32_t CLOCK_INPUT_MASK = (0x1 << CLOCK_INPUT);
 
 /* Globals */
-static plic_instance_t g_plic;
-volatile uint8_t system_clock = 0;
 static const char atari_logo[] = "\n\r"
 "\n\r"
 "             HiFive1-2600\n\r"
@@ -97,19 +95,10 @@ static const char atari_logo[] = "\n\r"
 
 void handle_m_time_interrupt()
 {
-    puts("Timer interrupt");
 }
 
 void handle_m_ext_interrupt()
 {
-    plic_source int_num = PLIC_claim_interrupt(&g_plic);
-    switch (int_num) {
-        case PIN_19_OFFSET:
-            GPIO_REG(GPIO_RISE_IP) = (0x1 << CLOCK_INPUT);
-            system_clock = 1;
-            break;
-    }
-    PLIC_complete_interrupt(&g_plic, int_num);
 }
 
 /******************************************************************************
@@ -118,12 +107,6 @@ void handle_m_ext_interrupt()
 
 void init_clock()
 {
-    /* Setup interrupt using PWM1 as the source */
-    PLIC_init(&g_plic, PLIC_CTRL_ADDR, PLIC_NUM_INTERRUPTS, PLIC_NUM_PRIORITIES);
-    PLIC_enable_interrupt(&g_plic, INT_PWM1_BASE);
-    PLIC_set_threshold(&g_plic, 0);
-    PLIC_set_priority(&g_plic, INT_PWM1_BASE, 7);
-
     /* Clear PWM configuration register */
     PWM1_REG(PWM_CFG) = 0;
 
@@ -133,13 +116,11 @@ void init_clock()
      * https://www.sifive.com/documentation/freedom-soc/freedom-e300-platform-reference-manual/
      */
     PWM1_REG(PWM_CFG) =
-        (PWM_CFG_ENALWAYS)   |
         (PWM_CFG_DEGLITCH)   |
         (PWM_CFG_CMP2CENTER) |
         (PWM_CFG_CMP3CENTER) |
         (PWM_CFG_ZEROCMP)    |
         (PWM_SCALE);
-    PWM1_REG(PWM_COUNT) = 0;
     PWM1_REG(PWM_CMP0) = PWM_FREQ;
     PWM1_REG(PWM_CMP3) = PWM_FREQ_DIV; /* Output a 50% duty cycle */
 
@@ -156,12 +137,6 @@ void init_GPIO ()
     /* Clock source ouput (PWM) */
     GPIO_REG(GPIO_IOF_SEL)     |=   GREEN_LED_MASK;
     GPIO_REG(GPIO_IOF_EN)      |=   GREEN_LED_MASK;
-
-    /* Clock source input */
-    GPIO_REG(GPIO_OUTPUT_EN)   &=  ~(0x1 << (CLOCK_INPUT - INT_GPIO_BASE));
-    GPIO_REG(GPIO_PULLUP_EN)   &=  ~(0x1 << (CLOCK_INPUT - INT_GPIO_BASE));
-    GPIO_REG(GPIO_INPUT_EN)    |=   (0x1 << (CLOCK_INPUT - INT_GPIO_BASE));
-    GPIO_REG(GPIO_RISE_IE)     |=   (0x1 << (CLOCK_INPUT - INT_GPIO_BASE));
 }
 
 void enable_interrupts()
@@ -193,17 +168,16 @@ int main()
 
     /* Setup FE310 peripherals */
     init_GPIO();
-    init_SPI();
     UART_init(115200, 0);
     init_clock();
     enable_interrupts();
 
 #ifdef MANUAL_STEP
     /* Executes a cartridge as normal, but instead of waiting on clock signal
-     * though a pin the program executes a clock per key press on the UART. 
-     * While in this mode the UART output will print status register and current
-     * execution state to a human-readable output. The intention is to allow
-     * for loading a proper Atari ROM dump and step through it manually.
+     * the program executes a clock per key press on the UART. While in this
+     * mode the UART output will print status register and current execution
+     * state to a human-readable output. The intention is to allow for loading
+     * a proper Atari ROM dump and step through it manually.
      */
     char wait;
     while (1) {
@@ -214,6 +188,7 @@ int main()
         GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
         mos6507_clock_tick();
     };
+#endif /* MANUAL_STEP */
 
 #ifdef EXEC_TESTS
     /* Program flow is different when testing the consistency of the 6502
@@ -224,17 +199,12 @@ int main()
     return 0;
 #endif /* EXEC_TESTS */
 
-#endif /* MANUAL_STEP */
-
     while (1) {
-        if(system_clock) {
-            GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
-            /* Fire a CPU clock tick */
-            mos6507_clock_tick();
-            /* Trasmit any changes in data and address bus to peripherals */
-            spi_transmit_bus_states();
-            system_clock = 0;
-        }
+        GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
+        PWM1_REG(PWM_CFG) |= PWM_CFG_ONESHOT;
+        /* Fire a CPU clock tick */
+        mos6507_clock_tick();
+        while (PWM1_REG(PWM_COUNT)) {}
     };
 
     return 0;
