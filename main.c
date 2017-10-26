@@ -9,6 +9,10 @@
 #include "platform.h"
 #include "plic/plic_driver.h"
 
+/* Custom HiFive1 includes*/
+#include "external/spi.h"
+#include "external/UART_driver.h"
+
 /* Atari and platform includes */
 #include "mos6507/mos6507.h"
 #include "atari/Atari-TIA.h"

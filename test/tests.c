@@ -14,8 +14,8 @@
 #include <stdio.h>
 #include "atari/Atari-cart.h"
 #include "atari/Atari-memmap.h"
-#include "cpu/mos6507.h"
-#include "memory/mos6532.h"
+#include "mos6507/mos6507.h"
+#include "mos6532/mos6532.h"
 #include "debug.h"
 #include "test-carts.h"
 

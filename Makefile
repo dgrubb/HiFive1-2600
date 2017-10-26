@@ -14,11 +14,11 @@ CFLAGS += -I./
 BSP_BASE = ../../bsp
 
 # CPU:
-C_SRCS += cpu/mos6507.c
-C_SRCS += cpu/mos6507-opcodes.c
-C_SRCS += cpu/mos6507-microcode.c
+C_SRCS += mos6507/mos6507.c
+C_SRCS += mos6507/mos6507-opcodes.c
+C_SRCS += mos6507/mos6507-microcode.c
 # Memory:
-C_SRCS += memory/mos6532.c
+C_SRCS += mos6532/mos6532.c
 # System architecture:
 C_SRCS += atari/Atari-memmap.c
 C_SRCS += atari/Atari-cart.c
