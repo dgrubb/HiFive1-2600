@@ -9,6 +9,8 @@ CFLAGS += -DMANUAL_STEP
 # Run program without the requirement of a slave TIA device
 #CFLAGS += -DSTANDALONE
 
+CFLAGS += -I./
+
 BSP_BASE = ../../bsp
 
 # CPU:

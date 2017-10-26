@@ -6,8 +6,8 @@
  * Provides implementations of the 6507 model.
  */
 
-#include "../atari/Atari-memmap.h"
-#include "../test/debug.h"
+#include "atari/Atari-memmap.h"
+#include "test/debug.h"
 #include "mos6507.h"
 
 /* Representation of our CPU */

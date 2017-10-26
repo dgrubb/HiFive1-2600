@@ -8,7 +8,7 @@
  */
 
 #include <string.h>
-#include "../cpu/mos6507.h"
+#include "mos6507/mos6507.h"
 #include "mos6532.h"
 
 /* Checks that a requested memory address is within the 

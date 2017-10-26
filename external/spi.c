@@ -7,7 +7,7 @@
  */
 
 #include "spi.h"
-#include "../cpu/mos6507.h"
+#include "mos6507/mos6507.h"
 
 void init_SPI()
 {

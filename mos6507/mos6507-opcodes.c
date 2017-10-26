@@ -12,7 +12,7 @@
  * http://www.obelisk.me.uk/6502/reference.html
  */
 
-#include "../atari/Atari-memmap.h"
+#include "atari/Atari-memmap.h"
 #include "mos6507.h"
 #include "mos6507-opcodes.h"
 #include "mos6507-microcode.h"

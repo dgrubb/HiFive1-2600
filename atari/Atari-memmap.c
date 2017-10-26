@@ -9,16 +9,8 @@
 #include "Atari-memmap.h"
 #include "Atari-cart.h"
 #include "Atari-TIA.h"
-#include "../cpu/mos6507.h"
-#include "../memory/mos6532.h"
-#include "../external/spi.h"
-
-// TODO: remove after debug
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include "../test/debug.h"
-#define MSG_LEN 300
+#include "mos6507/mos6507.h"
+#include "mos6532/mos6532.h"
 
 #define IS_TIA(x)  (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
 #define IS_RIOT(x) (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END)
