@@ -1,11 +1,26 @@
+# File: Makefile
+# Author: dgrubb
+# Date: 10/26/2017
+#
+# Usage:
+#
+# Incorporates into SiFive's freedom-e-sdk build process so no 
+# manual invocation is required. See freedom-e-sdk/Makefile for 
+# more information.
+
+# Output binary
 TARGET = HiFive1-2600
+
+###############################################################################
+# Compilation flags
+###############################################################################
+
 CFLAGS += -O2 -fno-builtin-printf -DUSE_PLIC -DUSE_M_TIME
 
 # Enable compilation and execution of test suite
 CFLAGS += -DEXEC_TESTS
 
-# Enable manual stepping through a cartridge, requires EXEC_TESTS for
-# debug helper functions
+# Enable manual stepping through a cartridge
 CFLAGS += -DMANUAL_STEP
 
 # Run program without the requirement of a slave TIA device
@@ -14,17 +29,24 @@ CFLAGS += -DMANUAL_STEP
 # Allow for printing the emulator state to UART
 CFLAGS += -DPRINT_STATE
 
+# Use a custom init routine
+CFLAGS += -DNO_INIT
+
+# Identify this directory for location of custom headers
 CFLAGS += -I./
 
-BSP_BASE = ../../bsp
+###############################################################################
+# Sources
+###############################################################################
 
-# CPU:
+BSP_BASE = ../../bsp
+# CPU emulation
 C_SRCS += mos6507/mos6507.c
 C_SRCS += mos6507/mos6507-opcodes.c
 C_SRCS += mos6507/mos6507-microcode.c
-# Memory:
+# Memory and I/O chip (RIOT) emulation
 C_SRCS += mos6532/mos6532.c
-# System architecture:
+# System architecture
 C_SRCS += atari/Atari-memmap.c
 C_SRCS += atari/Atari-cart.c
 C_SRCS += atari/Atari-TIA.c
