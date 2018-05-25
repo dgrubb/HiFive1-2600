@@ -66,28 +66,3 @@ void spi_write(uint8_t data)
     SPI_REG(SPI_REG_TXFIFO) = data;
 }
 
-void spi_transmit_bus_states()
-{
-    uint16_t address;
-    uint8_t data;
-
-    mos6507_get_data_bus(&data);
-    mos6507_get_address_bus(&address);
-
-    spi_write((uint8_t)address);
-    spi_write((uint8_t)(address >> 8));
-    spi_write(data);
-}
-
-void spi_read_TIA_register()
-{
-    spi_write(SPI_READ);
-    spi_transmit_bus_states();
-}
-
-void spi_write_TIA_register()
-{
-    spi_write(SPI_WRITE);
-    spi_transmit_bus_states();
-}
-

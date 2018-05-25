@@ -28,7 +28,7 @@ CFLAGS += -DUSE_PLIC
 CFLAGS += -DUSE_M_TIME
 
 # Enable compilation and execution of test suite
-CFLAGS += -DEXEC_TESTS
+# CFLAGS += -DEXEC_TESTS
 
 # Enable manual stepping through a cartridge
 CFLAGS += -DMANUAL_STEP

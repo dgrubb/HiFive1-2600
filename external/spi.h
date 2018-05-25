@@ -31,9 +31,6 @@ static const uint32_t SPI1_IOF_MASK =
 
 void init_SPI();
 void spi_write(uint8_t data);
-void spi_transmit_bus_states();
-void spi_read_TIA_register();
-void spi_write_TIA_register();
 
 #endif /* _SPI_H */
 
