@@ -16,10 +16,14 @@ TARGET = HiFive1-2600
 ###############################################################################
 
 # Set optimisation level
-CFLAGS += -O3
+CFLAGS += -Os
 
 # Warn that printf is custom implementation
 CFLAGS += -fno-builtin-printf
+
+CFLAGS += -mexplicit-relocs
+CFLAGS += -falign-functions=4
+CFLAGS += -DNOENUM
 
 # Use PLIC to control external interrupts
 CFLAGS += -DUSE_PLIC
@@ -31,13 +35,13 @@ CFLAGS += -DUSE_M_TIME
 # CFLAGS += -DEXEC_TESTS
 
 # Enable manual stepping through a cartridge
-CFLAGS += -DMANUAL_STEP
+# CFLAGS += -DMANUAL_STEP
 
 # Run program without the requirement of a slave TIA device
-#CFLAGS += -DSTANDALONE
+CFLAGS += -DSTANDALONE
 
 # Allow for printing the emulator state to UART
-CFLAGS += -DPRINT_STATE
+# CFLAGS += -DPRINT_STATE
 
 # Identify this directory for location of custom headers
 CFLAGS += -I./
