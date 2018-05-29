@@ -194,7 +194,7 @@ int main()
          * what key was pressed.
          */
         UART_get_char(&wait, 1);
-        GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
+        GPIO_REG(GPIO_OUTPUT_VAL) ^=  BLUE_LED_MASK;
         mos6507_clock_tick();
     };
 #endif /* MANUAL_STEP */
@@ -208,6 +208,9 @@ int main()
     return 0;
 #endif /* EXEC_TESTS */
 
+    /* This is the intended use-case, full speed clock source running a
+     * proper cart image.
+     */
     while (1) {
         GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
         PWM1_REG(PWM_CFG) |= PWM_CFG_ONESHOT;
@@ -218,4 +221,3 @@ int main()
 
     return 0;
 }
-
