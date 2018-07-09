@@ -95,9 +95,20 @@ typedef struct {
     uint8_t colour_clock;
 } atari_tia;
 
+typedef struct {
+    uint8_t R;
+    uint8_t G;
+    uint8_t B;
+} tia_pixel;
+
 /* This is the single instance of atari_tia type to represent
  * the TIA in this application */
 extern atari_tia tia;
+
+/* To allow for easier output to non-raster devices we'll build the image one
+ * line at a time into this buffer.
+ */
+extern tia_pixel tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 
 /* Interfacing functions */
 void TIA_init(void);

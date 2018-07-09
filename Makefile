@@ -64,6 +64,7 @@ C_SRCS += atari/Atari-TIA.c
 # uC hardware
 C_SRCS += external/spi.c
 C_SRCS += external/UART_driver.c
+C_SRCS += external/ili9341.c
 # Program logic
 C_SRCS += test/debug.c
 C_SRCS += test/test-carts.c
