@@ -8,13 +8,15 @@
 
 #include "Atari-TIA.h"
 
-/* Singleton representation of a TIA chip */
+int line_count;
+tia_pixel tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 atari_tia tia;
 
 /* Resets the TIA instance to default conditions with no state set.
  */
 void TIA_init(void)
 {
+    line_count = 0;
     int i = 0;
     // Data registers
     for (i=0; i<TIA_WRITE_REG_LEN; i++) {
@@ -49,15 +51,23 @@ void TIA_generate_colour(void)
 
 }
 
+void TIA_write_to_buffer(tia_pixel pixel, int pixel_index)
+{
+    if (TIA_COLOUR_CLOCK_TOTAL > pixel_index) {
+        tia_line_buffer[pixel_index] = pixel;
+    }
+}
+
 void TIA_clock_tick(void)
 {
     /* Vertical blanking periods */
-    /* TODO */
+    /* TODO: reset line_count after overscan */
 
-    /* Horizonal colour and blanking signals  */
+    /* Reset colour clock and prepare begin next line */
     if (tia.colour_clock == TIA_COLOUR_CLOCK_TOTAL) {
         tia.colour_clock = 0;
         tia.write_regs[TIA_WRITE_REG_WSYNC] = 0;
+        line_count++;
         return;
     }
     if (tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) {
@@ -68,7 +78,7 @@ void TIA_clock_tick(void)
     tia.colour_clock++;
 }
 
-bool TIA_get_WSYNC()
+int TIA_get_WSYNC()
 {
-    return (tia.write_regs[TIA_WRITE_REG_WSYNC] ? true : false);
+    return (tia.write_regs[TIA_WRITE_REG_WSYNC] ? 1 : 0);
 }

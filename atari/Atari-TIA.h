@@ -16,6 +16,16 @@
 #define TIA_COLOUR_CLOCK_HSYNC      68
 #define TIA_COLOUR_CLOCK_TOTAL      (TIA_COLOUR_CLOCK_VISIBLE + TIA_COLOUR_CLOCK_HSYNC)
 
+#define TIA_VERTICAL_PICTURE_LINES  192
+#define TIA_VERTICAL_SYNC_LINES     3
+#define TIA_VERTICAL_BLANK_LINES    37
+#define TIA_VERTICAL_OVERSCAN_LINES 30
+#define TIA_VERTICAL_TOTAL_LINES    (TIA_VERTICAL_PICTURE_LINES + \
+                                     TIA_VERTICAL_SYNC_LINES + \
+                                     TIA_VERTICAL_BLANK_LINES + \
+                                     TIA_VERTICAL_OVERSCAN_LINES)
+
+
 /* Define available memory registers semantically */
 /* Writable registers */
 typedef enum {
@@ -108,7 +118,7 @@ extern atari_tia tia;
 /* To allow for easier output to non-raster devices we'll build the image one
  * line at a time into this buffer.
  */
-extern tia_pixel tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
+tia_pixel tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 
 /* Interfacing functions */
 void TIA_init(void);
@@ -116,6 +126,7 @@ void TIA_read_register(uint8_t reg, uint8_t *value);
 void TIA_write_register(uint8_t reg, uint8_t value);
 void TIA_clock_tick(void);
 void TIA_generate_colour(void);
-bool TIA_get_WSYNC(void)
+int TIA_get_WSYNC(void);
+void TIA_write_to_buffer(tia_pixel pixel, int pixel_index);
 
 #endif /* _ATARI_TIA_H */
