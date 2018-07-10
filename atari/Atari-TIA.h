@@ -116,8 +116,6 @@ void TIA_read_register(uint8_t reg, uint8_t *value);
 void TIA_write_register(uint8_t reg, uint8_t value);
 void TIA_clock_tick(void);
 void TIA_generate_colour(void);
-void TIA_generate_hsync(void);
-void TIA_generate_vsync(void);
-void TIA_generate_vblank(void);
+bool TIA_get_WSYNC(void)
 
 #endif /* _ATARI_TIA_H */

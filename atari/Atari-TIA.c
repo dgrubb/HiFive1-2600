@@ -37,8 +37,7 @@ void TIA_read_register(uint8_t reg, uint8_t *value)
 
 /* Writes a value into a register location
  *
- * reg: register to write to (e.g., CXM0P, CXM1P etc ...).
- * value: value to place into register.
+ * reg: register to write to (e.g., CXM0P, CXM1P etc ...) value: value to place into register.
  */
 void TIA_write_register(uint8_t reg, uint8_t value)
 {
@@ -50,41 +49,26 @@ void TIA_generate_colour(void)
 
 }
 
-void TIA_generate_hsync(void)
-{
-}
-
-void TIA_generate_vsync(void)
-{
-}
-
-void TIA_generate_vblank(void)
-{
-}
-
 void TIA_clock_tick(void)
 {
     /* Vertical blanking periods */
-    if (tia.write_regs[TIA_WRITE_REG_VSYNC]) {
-        TIA_generate_vsync();
-        return;
-    }
-    if (tia.write_regs[TIA_WRITE_REG_VBLANK]) {
-        TIA_generate_vblank();
-        return;
-    }
+    /* TODO */
 
     /* Horizonal colour and blanking signals  */
     if (tia.colour_clock == TIA_COLOUR_CLOCK_TOTAL) {
         tia.colour_clock = 0;
+        tia.write_regs[TIA_WRITE_REG_WSYNC] = 0;
         return;
     }
-    if (tia.colour_clock <= TIA_COLOUR_CLOCK_VISIBLE) {
+    if (tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) {
         TIA_generate_colour();
-    }
-    if ((tia.colour_clock > TIA_COLOUR_CLOCK_VISIBLE) && (tia.colour_clock < TIA_COLOUR_CLOCK_TOTAL)) {
-        TIA_generate_hsync();
+    } else {
+        /* Horizontal sync time */
     }
     tia.colour_clock++;
 }
 
+bool TIA_get_WSYNC()
+{
+    return (tia.write_regs[TIA_WRITE_REG_WSYNC] ? true : false);
+}
