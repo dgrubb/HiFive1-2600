@@ -9,8 +9,22 @@
 #include "Atari-TIA.h"
 
 int line_count;
-tia_pixel tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
+tia_pixel_t tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 atari_tia tia;
+
+/* Usage note:
+ *
+ * This table is mapped to allow for lookup from a value in one of the colour
+ * registers. However, the colour reigsters don't use the least significant
+ * bit so the table locations assume the value has been shifted by one bit
+ * for easier alignment.
+ */
+tia_pixel_t tia_colour_map[] = {
+    { 0x00, 0x00, 0x00 }, /* 0x00 */
+    { 0x1A, 0x1A, 0x1A }, /* 0x01 */
+    { 0x39, 0x39, 0x39 }, /* 0x */
+
+}
 
 /* Resets the TIA instance to default conditions with no state set.
  */
@@ -48,14 +62,27 @@ void TIA_write_register(uint8_t reg, uint8_t value)
 
 void TIA_generate_colour(void)
 {
+    /* TODO check order of priority established in PFB bits
+     * to establish if playfield need to be rendered over player
+     * objects
+     */
 
+    
+
+
+    /* TODO check for collisions and set registers appropriately */
 }
 
-void TIA_write_to_buffer(tia_pixel pixel, int pixel_index)
+void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index)
 {
     if (TIA_COLOUR_CLOCK_TOTAL > pixel_index) {
         tia_line_buffer[pixel_index] = pixel;
     }
+}
+
+void TIA_colour_to_RGB(tia_pixel_t* pixel, )
+{
+
 }
 
 void TIA_clock_tick(void)

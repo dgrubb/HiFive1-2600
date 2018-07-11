@@ -109,7 +109,9 @@ typedef struct {
     uint8_t R;
     uint8_t G;
     uint8_t B;
-} tia_pixel;
+} tia_pixel_t;
+
+tia_pixel_t tia_colour_map[4096];
 
 /* This is the single instance of atari_tia type to represent
  * the TIA in this application */
@@ -118,7 +120,7 @@ extern atari_tia tia;
 /* To allow for easier output to non-raster devices we'll build the image one
  * line at a time into this buffer.
  */
-tia_pixel tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
+tia_pixel_t tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 
 /* Interfacing functions */
 void TIA_init(void);
@@ -127,6 +129,6 @@ void TIA_write_register(uint8_t reg, uint8_t value);
 void TIA_clock_tick(void);
 void TIA_generate_colour(void);
 int TIA_get_WSYNC(void);
-void TIA_write_to_buffer(tia_pixel pixel, int pixel_index);
+void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index);
 
 #endif /* _ATARI_TIA_H */
