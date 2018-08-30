@@ -134,12 +134,14 @@ int ili9341_init()
     ili9341_write_command(ILI9341_DISPON);      // Display on
 }
 
-int ili9341_write_command()
+int ili9341_write_command(uint8_t command)
 {
+    spi_write(command);
 }
 
-int ili9341_write_data()
+int ili9341_write_data(uint8_t data)
 {
+    spi_write(data);
 }
 
 int ili9341_draw_line(tia_pixel *line_data, int line_length)
