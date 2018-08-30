@@ -20,8 +20,10 @@
 #define SPI_REG(x) SPI1_REG(x)
 #define RTC_FREQUENCY 32768
 
-#define SPI_READ  0x01
-#define SPI_WRITE 0x00
+#define SPI_READ    0x01
+#define SPI_WRITE   0x00
+#define SPI_DC      (1 << PIN_2_OFFSET)
+#define SPI_CS      (1 << PIN_5_OFFSET)
 
 static const uint32_t SPI1_IOF_MASK =
     (1 << IOF_SPI1_SS0)  |
