@@ -13,6 +13,7 @@
 #include "atari/Atari-TIA.h"
 
 int ili9341_init();
+int ili9341_reset();
 int ili9341_write_command();
 int ili9341_write_data();
 int ili9341_draw_line(tia_pixel *line_data, int line_length);
