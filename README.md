@@ -2,11 +2,7 @@
 
 This project is an embedded cycle-accurate simulation of a MOS 6502 (technically, 6507)
 processor. Also included in the simulation is the memory map of an Atari 2600 
-video game console. I don't think the FE310 has sufficient resources to also 
-emulate the Atari TIA chip which would allow for a complete console simulator. 
-However, it may be possible to offload that functionality onto another device 
-and state between the two devices could be maintained over a connection such as 
-the SPI peripheral.
+video game console.
 
 [Hold onto your butts ...](https://www.youtube.com/watch?v=HKK4KmDlj8U)
 
