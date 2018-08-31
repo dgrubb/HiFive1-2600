@@ -21,3 +21,5 @@ Optionally, ensure that the flag -DEXEC_TESTS is set in the Makefile to run the
 unit test suites which will load test programs into the emulator and will verify 
 the correct functioning of the simulator.
 
+-DMANUAL_STEP disables automatic clocking and executes a clock cycle with each 
+press of the spacebar. Useful for step-by-step debugging.

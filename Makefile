@@ -37,9 +37,6 @@ CFLAGS += -DUSE_M_TIME
 # Enable manual stepping through a cartridge
 # CFLAGS += -DMANUAL_STEP
 
-# Run program without the requirement of a slave TIA device
-CFLAGS += -DSTANDALONE
-
 # Allow for printing the emulator state to UART
 # CFLAGS += -DPRINT_STATE
 
