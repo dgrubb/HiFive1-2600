@@ -33,14 +33,14 @@ int ili9341_init()
 
     ili9341_write_command(0xCF);
     ili9341_write_data(0x00);
-    ili9341_write_data(0XC1);
-    ili9341_write_data(0X30);
+    ili9341_write_data(0xC1);
+    ili9341_write_data(0x30);
 
     ili9341_write_command(0xED);
     ili9341_write_data(0x64);
     ili9341_write_data(0x03);
-    ili9341_write_data(0X12);
-    ili9341_write_data(0X81);
+    ili9341_write_data(0x12);
+    ili9341_write_data(0x81);
 
     ili9341_write_command(0xE8);
     ili9341_write_data(0x85);
