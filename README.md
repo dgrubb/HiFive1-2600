@@ -6,6 +6,10 @@ video game console.
 
 [Hold onto your butts ...](https://www.youtube.com/watch?v=HKK4KmDlj8U)
 
+## Preview
+
+![HiFive1-2600](./preview/HiFive1-2600-preview.png)
+
 ## Usage
 
 Checkout the [freedom-e-sdk](https://github.com/sifive/freedom-e-sdk) and clone 
