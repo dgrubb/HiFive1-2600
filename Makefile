@@ -35,10 +35,10 @@ CFLAGS += -DUSE_M_TIME
 # CFLAGS += -DEXEC_TESTS
 
 # Enable manual stepping through a cartridge
-# CFLAGS += -DMANUAL_STEP
+CFLAGS += -DMANUAL_STEP
 
 # Allow for printing the emulator state to UART
-# CFLAGS += -DPRINT_STATE
+CFLAGS += -DPRINT_STATE
 
 # Identify this directory for location of custom headers
 CFLAGS += -I./
