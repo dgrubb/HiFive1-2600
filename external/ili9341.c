@@ -144,7 +144,7 @@ int ili9341_write_data(uint8_t data)
     spi_write(data);
 }
 
-int ili9341_draw_line(tia_pixel *line_data, int line_length)
+int ili9341_draw_line(tia_pixel_t *line_data, int line_length)
 {
     int i;
     for (i=0; i<line_length; i++) {

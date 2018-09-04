@@ -111,7 +111,7 @@ typedef struct {
     uint8_t B;
 } tia_pixel_t;
 
-tia_pixel_t tia_colour_map[4096];
+tia_pixel_t tia_colour_map[128];
 
 /* This is the single instance of atari_tia type to represent
  * the TIA in this application */
@@ -130,5 +130,6 @@ void TIA_clock_tick(void);
 void TIA_generate_colour(void);
 int TIA_get_WSYNC(void);
 void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index);
+void TIA_colour_to_RGB(tia_pixel_t* pixel, uint32_t *rgb);
 
 #endif /* _ATARI_TIA_H */

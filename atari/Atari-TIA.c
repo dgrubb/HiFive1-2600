@@ -9,7 +9,7 @@
 #include "Atari-TIA.h"
 
 int line_count;
-tia_pixel_t tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
+//tia_pixel_t tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 atari_tia tia;
 
 /* Usage note:
@@ -23,8 +23,8 @@ tia_pixel_t tia_colour_map[] = {
     { 0x00, 0x00, 0x00 }, /* 0x00 */
     { 0x1A, 0x1A, 0x1A }, /* 0x01 */
     { 0x39, 0x39, 0x39 }, /* 0x */
-
-}
+    {}
+};
 
 /* Resets the TIA instance to default conditions with no state set.
  */
@@ -80,7 +80,7 @@ void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index)
     }
 }
 
-void TIA_colour_to_RGB(tia_pixel_t* pixel, )
+void TIA_colour_to_RGB(tia_pixel_t* pixel, uint32_t *rgb)
 {
 
 }
