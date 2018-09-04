@@ -136,12 +136,18 @@ int ili9341_init()
 
 int ili9341_write_command(uint8_t command)
 {
+    GPIO_REG(GPIO_OUTPUT_VAL)   &= ~SPI_DC;
+    GPIO_REG(GPIO_OUTPUT_VAL)   &= ~SPI_CS;
     spi_write(command);
+    GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_CS;
 }
 
 int ili9341_write_data(uint8_t data)
 {
+    GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_DC;
+    GPIO_REG(GPIO_OUTPUT_VAL)   &= ~SPI_CS;
     spi_write(data);
+    GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_CS;
 }
 
 int ili9341_draw_line(tia_pixel_t *line_data, int line_length)
