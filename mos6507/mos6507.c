@@ -20,7 +20,7 @@ static mos6507 cpu = {0};
  * required at least two clock cycles to execute an opcode, usually
  * more depending on the memory addressing mode invoked.
  */
-void mos6507_clock_tick(void)
+int mos6507_clock_tick(void)
 {
     /* If the CPU is still in the middle of decoing/executing an
      * operation then continue execution. Otherwise, read the next 
@@ -29,6 +29,12 @@ void mos6507_clock_tick(void)
     if (!cpu.current_instruction) {
         memmap_read(&cpu.current_instruction);
     }
+    if (opcode_validate(cpu.current_instruction)) {
+#ifdef PRINT_STATE
+        debug_print_illegal_opcode(cpu.current_instruction);
+#endif
+        return -1;
+    }
 #ifdef PRINT_STATE
     debug_print_execution_step();
 #endif
@@ -36,6 +42,7 @@ void mos6507_clock_tick(void)
     if(!cpu.current_clock) {
         cpu.current_instruction = 0;
     }
+    return 0;
 }
 
 void mos6507_reset(void)

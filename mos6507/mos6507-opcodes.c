@@ -47,6 +47,14 @@ int opcode_execute(uint8_t opcode)
     return cycle;
 }
 
+int opcode_validate(uint8_t opcode)
+{
+    if (ISA_table[opcode].opcode == opcode_ILL) {
+        return -1;
+    }
+    return 0;
+}
+
 /* Loads an array with function pointers to the corresponding
  * instruction. E.g., LDY is 0x0C so index 12 of the ISA table
  * would be loaded with a pointer to function opcode_LDY().

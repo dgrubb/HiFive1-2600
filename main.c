@@ -215,7 +215,12 @@ int main()
         GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
         PWM1_REG(PWM_CFG) |= PWM_CFG_ONESHOT;
         /* Fire a CPU clock tick */
-        mos6507_clock_tick();
+        if (mos6507_clock_tick()) {
+            /* There was a significant and unrecoverable problem executing
+             * the current ROM, breakout here
+             */
+            break;
+        }
         while (PWM1_REG(PWM_COUNT)) {}
     };
 

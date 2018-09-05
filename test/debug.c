@@ -327,6 +327,17 @@ void debug_print_instruction(void)
     puts(msg);
 }
 
+void debug_print_illegal_opcode(uint8_t opcode)
+{
+    char msg[MSG_LEN];
+    memset(msg, 0, MSG_LEN);
+
+    char * template = "Error: Illegal opcode [ 0x%X ]\n\r";
+
+    sprintf(msg, template, opcode);
+    puts(msg);
+}
+
 void debug_print_execution_step(void)
 {
     puts("\n\r----------------------------------------------------------------"
