@@ -299,15 +299,27 @@ void debug_print_buses(void)
 {
     char msg[MSG_LEN];
     memset(msg, 0, MSG_LEN);
-
-    char *template = "Address bus [ 0x%X ], data bus [ 0x%X ]\n\r";
-
+    char *template;
     uint16_t address;
     uint8_t data;
     mos6507_get_data_bus(&data);
     mos6507_get_address_bus(&address);
+    int rom_access = 0;
 
-    sprintf(msg, template, address, data);
+    if (address >= MEMMAP_CART_START && address <= MEMMAP_CART_END) {
+        rom_access = 1;
+    }
+    if (rom_access) {
+        template = "Address bus [ 0x%X ], data bus [ 0x%X ], ROM access [ 0x%X ]\n\r";
+    } else {
+        template = "Address bus [ 0x%X ], data bus [ 0x%X ]\n\r";
+    }
+
+    if (rom_access) {
+        sprintf(msg, template, address, data, (address - MEMMAP_CART_START));
+    } else {
+        sprintf(msg, template, address, data);
+    }
     puts(msg);
 }
 
