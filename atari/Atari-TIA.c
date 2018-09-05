@@ -207,9 +207,9 @@ void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index)
     }
 }
 
-void TIA_colour_to_RGB(tia_pixel_t* pixel, uint32_t *rgb)
+void TIA_colour_to_RGB(uint8_t tia_colour, tia_pixel_t* pixel)
 {
-
+    *pixel = tia_colour_map[tia_colour >>1];
 }
 
 void TIA_clock_tick(void)
