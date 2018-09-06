@@ -1219,7 +1219,7 @@ int opcode_RTI(int cycle, addressing_mode_t address_mode)
             return -1;
         case 5:
             mos6507_set_address_bus_hl(STACK_PAGE, S+3);
-            memmap_read(&pcl);
+            memmap_read(&pch);
             return -1;
         case 6:
             mos6507_set_address_bus_hl(pch, pcl);
