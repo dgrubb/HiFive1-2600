@@ -52,6 +52,10 @@ void mos6507_reset(void)
 
     /* Clear model representations */
     mos6507_init();
+    /* The interrupt disable flag is set by default to prevent spurious IRQ
+     * while external circuitry is settling after power reset.
+     */
+    mos6507_set_status_flag(MOS6507_STATUS_FLAG_INTERRUPT, 1);
 
     /* Now proceed through the 6507's regular startup sequence.
      * 1. Jump to reset vector 0xFFFC, read that byte as the 
