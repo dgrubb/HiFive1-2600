@@ -1252,7 +1252,7 @@ int opcode_RTS(int cycle, addressing_mode_t address_mode)
             return -1;
         case 4:
             mos6507_set_address_bus_hl(STACK_PAGE, S+2);
-            memmap_read(&pcl);
+            memmap_read(&pch);
             return -1;
         case 5:
             mos6507_set_address_bus_hl(pch, pcl);
