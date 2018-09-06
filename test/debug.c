@@ -26,6 +26,10 @@
 
 #define MSG_LEN 300
 
+#define IS_TIA(x)  (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
+#define IS_RIOT(x) (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END)
+#define IS_CART(x) (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END)
+
 debug_opcode_t debug_opcodes[] = {
     { 0x00, "None"},
     /* LDA */
@@ -299,27 +303,31 @@ void debug_print_buses(void)
 {
     char msg[MSG_LEN];
     memset(msg, 0, MSG_LEN);
-    char *template;
     uint16_t address;
+    uint16_t offset_address;
     uint8_t data;
+    char *subsystem;
     mos6507_get_data_bus(&data);
     mos6507_get_address_bus(&address);
-    int rom_access = 0;
 
-    if (address >= MEMMAP_CART_START && address <= MEMMAP_CART_END) {
-        rom_access = 1;
+    memmap_map_address(&address);
+
+    if (IS_TIA(address)) {
+        subsystem = "TIA";
+        offset_address = address - MEMMAP_TIA_START;
     }
-    if (rom_access) {
-        template = "Address bus [ 0x%X ], data bus [ 0x%X ], ROM access [ 0x%X ]\n\r";
-    } else {
-        template = "Address bus [ 0x%X ], data bus [ 0x%X ]\n\r";
+    if (IS_RIOT(address)) {
+        subsystem = "RIOT";
+        offset_address = address - MEMMAP_RIOT_START;
+    }
+    if (IS_CART(address)) {
+        subsystem = "CART";
+        offset_address = address - MEMMAP_CART_START;
     }
 
-    if (rom_access) {
-        sprintf(msg, template, address, data, (address - MEMMAP_CART_START));
-    } else {
-        sprintf(msg, template, address, data);
-    }
+    char *template = "Address bus [ 0x%X, %s access: 0x%X ], data bus [ 0x%X ]\n\r";
+
+    sprintf(msg, template, address, subsystem, offset_address, data);
     puts(msg);
 }
 
@@ -344,7 +352,7 @@ void debug_print_illegal_opcode(uint8_t opcode)
     char msg[MSG_LEN];
     memset(msg, 0, MSG_LEN);
 
-    char * template = "Error: Illegal opcode [ 0x%X ]!\n\r";
+    char * template = "\n\r!!! Error: Illegal opcode [ 0x%X ] !!!\n\r";
 
     sprintf(msg, template, opcode);
     puts(msg);
