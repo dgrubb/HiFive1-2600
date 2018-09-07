@@ -587,6 +587,35 @@ int opcode_BPL(int cycle, addressing_mode_t address_mode)
 
 int opcode_BRK(int cycle, addressing_mode_t address_mode)
 {
+    static uint8_t adl, adh = 0;
+    switch(cycle) {
+        case 0:
+            /* Consume clock cycle for fetching op-code */
+            return -1;
+        case 1:
+            mos6507_increment_PC();
+            return -1;
+        case 2:
+            return -1;
+        case 3:
+            return -1;
+        case 4:
+            return -1;
+        case 5:
+            mos6507_set_address_bus(0xFFFE);
+            memmap_read(&adl);
+            return -1;
+        case 6:
+            mos6507_set_address_bus(0xFFFF);
+            memmap_read(&adh);
+            mos6507_set_PC_hl(adh, adl);
+            /* Intentional fall-through */
+        default:
+            /* End of op-code execution */
+            break;
+    }
+
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
@@ -1222,6 +1251,7 @@ int opcode_RTI(int cycle, addressing_mode_t address_mode)
             memmap_read(&pch);
             return -1;
         case 6:
+            mos6507_set_PC((pch << 8) | pcl);
             mos6507_set_address_bus_hl(pch, pcl);
             /* Intentional fall-through */
         default:
@@ -1255,6 +1285,7 @@ int opcode_RTS(int cycle, addressing_mode_t address_mode)
             memmap_read(&pch);
             return -1;
         case 5:
+            mos6507_set_PC((pch << 8) | pcl);
             mos6507_set_address_bus_hl(pch, pcl);
             /* Intentional fall-through */
         default:

@@ -35,7 +35,7 @@ CFLAGS += -DUSE_M_TIME
 # CFLAGS += -DEXEC_TESTS
 
 # Enable manual stepping through a cartridge
-#CFLAGS += -DMANUAL_STEP
+# CFLAGS += -DMANUAL_STEP
 
 # Allow for printing the emulator state to UART
 CFLAGS += -DPRINT_STATE
@@ -62,6 +62,7 @@ C_SRCS += atari/Atari-TIA.c
 C_SRCS += external/spi.c
 C_SRCS += external/UART_driver.c
 C_SRCS += external/ili9341.c
+C_SRCS += external/platform_util.c
 # Program logic
 C_SRCS += test/debug.c
 C_SRCS += test/test-carts.c

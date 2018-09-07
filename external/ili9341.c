@@ -6,6 +6,7 @@
  * Drive display output of an ILI9341 SPI screen.
  */
 
+#include "platform_util.h"
 #include "ili9341.h"
 #include "spi.h"
 
@@ -130,7 +131,7 @@ int ili9341_init()
     ili9341_write_data(0x0F);
 
     ili9341_write_command(ILI9341_SLPOUT);      // Exit Sleep
-    // TODO: delay for 120ms here?
+    delay_10ms(12); // Delay for 120ms
     ili9341_write_command(ILI9341_DISPON);      // Display on
 }
 
