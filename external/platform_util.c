@@ -3,28 +3,11 @@
  * Author: dgrubb
  * Date: 09/07/2018
  *
- * Provides general utility and helper functions predicated on the platform 
+ * Provides general utility and helper functions predicated on the platform
  * hardware.
  */
 
 #include "platform_util.h"
-
-/* Calculation assumes a core frequency of ~262MHz and pwmscale of 1.
- * Integer value is a result of:
- *
- * (Clock source / divisor) / FREQUENCY
- *
- * Eg., 3.58MHz TIA input clock::
- *
- * (262MHz / 2^1) / 3580000 = 36 (0x24 in hex)
- */
-#define PWM_FREQ            0x24
-#define PWM_FREQ_DIV        0x0C /* PWM_FREQ/2 for 50% duty */
-#define PWM_SCALE           0x01
-
-#define PWM_TIMER_FREQ      0xFFDC
-#define PWM_TIMER_FREQ_DIV  0x7FEE /* PWM_TIMER_FREQ/2 for 50% duty */
-#define PWM_TIMER_SCALE     0x02
 
 /******************************************************************************
  * Hardware initialisation

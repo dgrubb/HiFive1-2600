@@ -94,5 +94,9 @@ int ili9341_reset();
 int ili9341_write_command(uint8_t command);
 int ili9341_write_data(uint8_t data);
 int ili9341_draw_line(tia_pixel_t *line_data, int line_length);
+int ili9341_fill_screen(uint16_t colour);
+int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t colour);
+int ili9341_set_address_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+uint16_t ili9341_colour_565(uint8_t r, uint8_t g, uint8_t b);
 
 #endif /* _ILI9341_H */

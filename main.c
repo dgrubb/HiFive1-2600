@@ -78,6 +78,7 @@ void handle_m_ext_interrupt()
 
 int main()
 {
+    int i;
     /* Display Atari's awesome logo */
     puts(atari_logo);
 
@@ -97,8 +98,12 @@ int main()
     UART_init(115200, 0);
     init_clock();
     init_timer();
+    init_SPI();
     enable_interrupts();
     ili9341_init();
+
+    // TODO: remove after testing
+    goto end;
 
 #ifdef MANUAL_STEP
     /* Executes a cartridge as normal, but instead of waiting on clock signal
@@ -133,20 +138,25 @@ int main()
     while (1) {
         GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
         PWM1_REG(PWM_CFG) |= PWM_CFG_ONESHOT;
-        TIA_clock_tick();
-        /* Fire a CPU clock tick */
-        if (!TIA_get_WSYNC()) {
-            if (mos6507_clock_tick()) {
-                /* There was a significant and unrecoverable problem executing
-                 * the current ROM, breakout here
-                 */
-                break;
+        for (i=0; i<TIA_COLOUR_CLOCK_TOTAL; i++) {
+            TIA_clock_tick();
+            /* Fire a CPU clock tick */
+            if (!TIA_get_WSYNC()) {
+                if (mos6507_clock_tick()) {
+                    /* There was a significant and unrecoverable problem executing
+                     * the current ROM, breakout here
+                     */
+                    goto end;
+                }
+            } else {
+                puts("WSYNC\n\r");
             }
-        } else {
-            puts("WSYNC\n\r");
         }
         while (PWM1_REG(PWM_COUNT)) {}
+        // TODO: after line timeout send data over SPI to screen
     };
+
+end: ;
 
     return 0;
 }

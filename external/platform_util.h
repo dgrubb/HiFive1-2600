@@ -25,14 +25,27 @@
  * Eg., 3.58MHz TIA input clock::
  *
  * (262MHz / 2^1) / 3580000 = 36 (0x24 in hex)
- */
-#define PWM_FREQ        0x24
-#define PWM_FREQ_DIV    0x0C /* PWM_FREQ/2 for 50% duty */
-#define PWM_SCALE       0x01
+ *
+ * #define PWM_FREQ            0x24
+ * #define PWM_FREQ_DIV        0x0C
+ * #define PWM_SCALE           0x01
+*/
 
+/* The Atari 2600 had 288 discrete colour clocks per line at a frequency of
+ * 3.58MHz. This timeout provides a period of 0.080446927ms, that is:
+ *
+ * (1/3.58MHz) * 288
+ */
+#define PWM_FREQ            0x104C
+#define PWM_FREQ_DIV        0x0826
+#define PWM_SCALE           0x0002
+
+/* Provides a timer which times out after 10ms, used for creating arbitary
+ * delays with lengths of multiples of 10ms. See delay_10ms().
+ */
 #define PWM_TIMER_FREQ      0xFFDC
 #define PWM_TIMER_FREQ_DIV  0x7FEE /* PWM_TIMER_FREQ/2 for 50% duty */
-#define PWM_TIMER_SCALE     0x02
+#define PWM_TIMER_SCALE     0x0002
 
 /* I/O masks */
 //extern static const uint32_t BLUE_LED_MASK    = (0x1 << BLUE_LED_OFFSET);
