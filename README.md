@@ -10,6 +10,11 @@ video game console.
 
 ![HiFive1-2600](./preview/HiFive1-2600-preview.png)
 
+## Hardware
+
+This project targets the [SiFive HiFive1](https://www.sifive.com/products/hifive1/) 
+development board paired with a 2.8" TFT[touchscreen from Adafruit/](https://www.adafruit.com/product/1651).
+
 ## Usage
 
 Checkout the [freedom-e-sdk](https://github.com/sifive/freedom-e-sdk) and clone 
