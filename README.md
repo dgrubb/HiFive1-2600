@@ -13,7 +13,7 @@ video game console.
 ## Hardware
 
 This project targets the [SiFive HiFive1](https://www.sifive.com/products/hifive1/) 
-development board paired with a 2.8" TFT[touchscreen from Adafruit/](https://www.adafruit.com/product/1651).
+development board paired with a 2.8" TFT [touchscreen from Adafruit](https://www.adafruit.com/product/1651).
 
 ## Usage
 
