@@ -27,6 +27,8 @@ int ili9341_init()
 {
     ili9341_reset();
 
+    spi_begin();
+
     ili9341_write_command(0xEF);
     ili9341_write_data(0x03);
     ili9341_write_data(0x80);
@@ -131,12 +133,16 @@ int ili9341_init()
     ili9341_write_data(0x0F);
 
     ili9341_write_command(ILI9341_SLPOUT);      // Exit Sleep
+    spi_end();
     delay_10ms(12); // Delay for 120ms
+    spi_begin();
     ili9341_write_command(ILI9341_DISPON);      // Display on
+    spi_end();
 
     // TODO: Remove after testing, set the screen to ensure we're up and talking
     delay_10ms(100);
-    uint16_t screen_colour = ili9341_colour_565(0x3F, 0x89, 0xFF);
+//    uint16_t screen_colour = ili9341_colour_565(0x0, 0x0, 0xFF);
+    uint16_t screen_colour = ILI9341_CYAN;
     ili9341_fill_screen(screen_colour);
 }
 
@@ -174,6 +180,8 @@ int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, 
     ili9341_set_address_window(x, y, x+width-1, y+height-1);
     uint8_t hi = (colour >> 8), lo = colour;
 
+    spi_begin();
+
     GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_DC;
     GPIO_REG(GPIO_OUTPUT_VAL)   &= ~SPI_CS;
 
@@ -185,6 +193,8 @@ int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, 
     }
 
     GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_CS;
+
+    spi_end();
 }
 
 int ili9341_set_address_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
@@ -204,5 +214,5 @@ int ili9341_set_address_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
 
 uint16_t ili9341_colour_565(uint8_t r, uint8_t g, uint8_t b)
 {
-    return (((r & 0xF8) << 8) | (g & 0xFC) | (b >> 3));
+    return (((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3));
 }

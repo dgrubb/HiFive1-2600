@@ -22,16 +22,18 @@
 
 #define SPI_READ    0x01
 #define SPI_WRITE   0x00
-#define SPI_DC      (1 << PIN_2_OFFSET)
-#define SPI_CS      (1 << PIN_5_OFFSET)
+#define SPI_DC      (1 << PIN_9_OFFSET)
+#define SPI_CS      (1 << PIN_10_OFFSET)
 
 static const uint32_t SPI1_IOF_MASK =
-    (1 << IOF_SPI1_SS0)  |
+//    (1 << IOF_SPI1_SS0)  |
     (1 << IOF_SPI1_SCK)  |
     (1 << IOF_SPI1_MOSI) |
     (1 << IOF_SPI1_MISO);
 
 void init_SPI();
+void spi_begin();
+void spi_end();
 void spi_write(uint8_t data);
 
 #endif /* _SPI_H */

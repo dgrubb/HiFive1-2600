@@ -55,14 +55,28 @@ void init_SPI()
      * 262MHz / 2(3+1) = 32.75MHz
      * 262MHz / 2(2+1) = 43.67MHz
      */
-    SPI_REG(SPI_REG_SCKDIV) = 0x03;
+    SPI_REG(SPI_REG_SCKDIV) = 0x0;
 
     /* The Adafruit ILI9341 TFT screen has a few extra non-standard control pins
      * (such as reset and data/command selector). We'll be controlling these
      * through manual GPIO selection.
      */
     GPIO_REG(GPIO_OUTPUT_EN)   |=   (SPI_DC | SPI_CS);
+    GPIO_REG(GPIO_IOF_SEL)     &=   ~(SPI_DC | SPI_CS);
     GPIO_REG(GPIO_OUTPUT_VAL)  &=  ~(SPI_DC | SPI_CS);
+}
+
+void spi_begin()
+{
+    return;
+    GPIO_REG(GPIO_IOF_SEL) &=  ~SPI1_IOF_MASK;
+    GPIO_REG(GPIO_IOF_EN)  |=   SPI1_IOF_MASK;
+}
+
+void spi_end()
+{
+    return;
+    GPIO_REG(GPIO_IOF_EN)  &=   ~SPI1_IOF_MASK;
 }
 
 void spi_write(uint8_t data)
