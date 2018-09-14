@@ -99,8 +99,8 @@ int main()
     init_clock();
     init_timer();
     init_SPI();
-    enable_interrupts();
     ili9341_init();
+    enable_interrupts();
 
 #ifdef MANUAL_STEP
     /* Executes a cartridge as normal, but instead of waiting on clock signal

@@ -8,6 +8,7 @@
  */
 
 #include "platform_util.h"
+#include "spi.h"
 
 /******************************************************************************
  * Hardware initialisation
@@ -61,6 +62,18 @@ void init_GPIO()
     /* Clock source ouput (PWM) */
     GPIO_REG(GPIO_IOF_SEL)     |=   GREEN_LED_MASK;
     GPIO_REG(GPIO_IOF_EN)      |=   GREEN_LED_MASK;
+
+    /* The Adafruit ILI9341 TFT screen has a few extra non-standard control pins
+     * (such as reset and data/command selector). We'll be controlling these
+     * through manual GPIO selection.
+     */
+    GPIO_REG(GPIO_OUTPUT_XOR)  &=   ~(SPI_DC | SPI_CS);
+    GPIO_REG(GPIO_IOF_EN)      &=   ~(SPI_DC | SPI_CS);
+    GPIO_REG(GPIO_INPUT_EN)    &=   ~(SPI_DC | SPI_CS);
+    GPIO_REG(GPIO_OUTPUT_EN)   |=    (SPI_DC | SPI_CS);
+    GPIO_REG(GPIO_PULLUP_EN)   &=   ~(SPI_DC | SPI_CS);
+    GPIO_REG(GPIO_OUTPUT_VAL)  &=   ~(SPI_DC | SPI_CS);
+
 }
 
 /******************************************************************************

@@ -48,8 +48,6 @@
 #define PWM_TIMER_SCALE     0x0002
 
 /* I/O masks */
-//extern static const uint32_t BLUE_LED_MASK    = (0x1 << BLUE_LED_OFFSET);
-//extern static const uint32_t GREEN_LED_MASK   = (0x1 << GREEN_LED_OFFSET);
 #define BLUE_LED_MASK     0x1 << BLUE_LED_OFFSET
 #define GREEN_LED_MASK    0x1 << GREEN_LED_OFFSET
 

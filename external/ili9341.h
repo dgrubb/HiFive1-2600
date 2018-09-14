@@ -90,7 +90,6 @@
 #define ILI9341_PINK        0xF81F
 
 int ili9341_init();
-int ili9341_reset();
 int ili9341_write_command(uint8_t command);
 int ili9341_write_data(uint8_t data);
 int ili9341_draw_line(tia_pixel_t *line_data, int line_length);

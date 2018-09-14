@@ -10,25 +10,8 @@
 #include "ili9341.h"
 #include "spi.h"
 
-int ili9341_reset()
-{
-
-    /*
-    digitalWrite(_rst, HIGH);
-    delay(5);
-    digitalWrite(_rst, LOW);
-    delay(20);
-    digitalWrite(_rst, HIGH);
-    delay(150);
-    */
-}
-
 int ili9341_init()
 {
-    ili9341_reset();
-
-    spi_begin();
-
     ili9341_write_command(0xEF);
     ili9341_write_data(0x03);
     ili9341_write_data(0x80);
@@ -64,20 +47,20 @@ int ili9341_init()
     ili9341_write_data(0x00);
     ili9341_write_data(0x00);
 
-    ili9341_write_command(ILI9341_PWCTR1);      // Power control
-    ili9341_write_data(0x23);                   // VRH[5:0]
+    ili9341_write_command(ILI9341_PWCTR1);      /* Power control */
+    ili9341_write_data(0x23);                   /* VRH[5:0] */
 
-    ili9341_write_command(ILI9341_PWCTR2);      // Power control
-    ili9341_write_data(0x10);                   // SAP[2:0];BT[3:0]
+    ili9341_write_command(ILI9341_PWCTR2);      /* Power control */
+    ili9341_write_data(0x10);                   /* SAP[2:0];BT[3:0] */
 
-    ili9341_write_command(ILI9341_VMCTR1);      // VCM control
+    ili9341_write_command(ILI9341_VMCTR1);      /* VCM control */
     ili9341_write_data(0x3e);
     ili9341_write_data(0x28);
 
-    ili9341_write_command(ILI9341_VMCTR2);      // VCM control2
-    ili9341_write_data(0x86);                   // --
+    ili9341_write_command(ILI9341_VMCTR2);      /* VCM control2 */
+    ili9341_write_data(0x86);                   /* -- */
 
-    ili9341_write_command(ILI9341_MADCTL);      // Memory Access Control
+    ili9341_write_command(ILI9341_MADCTL);      /* Memory Access Control */
     ili9341_write_data(0x48);
 
     ili9341_write_command(ILI9341_PIXFMT);
@@ -87,18 +70,18 @@ int ili9341_init()
     ili9341_write_data(0x00);
     ili9341_write_data(0x18);
 
-    ili9341_write_command(ILI9341_DFUNCTR);     // Display Function Control
+    ili9341_write_command(ILI9341_DFUNCTR);     /* Display Function Control */
     ili9341_write_data(0x08);
     ili9341_write_data(0x82);
     ili9341_write_data(0x27);
 
-    ili9341_write_command(0xF2);                // 3Gamma Function Disable
+    ili9341_write_command(0xF2);                /* 3Gamma Function Disable */
     ili9341_write_data(0x00);
 
-    ili9341_write_command(ILI9341_GAMMASET);    // Gamma curve selected
+    ili9341_write_command(ILI9341_GAMMASET);    /* Gamma curve selected */
     ili9341_write_data(0x01);
 
-    ili9341_write_command(ILI9341_GMCTRP1);     // Set Gamma
+    ili9341_write_command(ILI9341_GMCTRP1);     /* Set Gamma */
     ili9341_write_data(0x0F);
     ili9341_write_data(0x31);
     ili9341_write_data(0x2B);
@@ -115,7 +98,7 @@ int ili9341_init()
     ili9341_write_data(0x09);
     ili9341_write_data(0x00);
 
-    ili9341_write_command(ILI9341_GMCTRN1);    // Set Gamma
+    ili9341_write_command(ILI9341_GMCTRN1);    /* Set Gamma */
     ili9341_write_data(0x00);
     ili9341_write_data(0x0E);
     ili9341_write_data(0x14);
@@ -132,18 +115,15 @@ int ili9341_init()
     ili9341_write_data(0x36);
     ili9341_write_data(0x0F);
 
-    ili9341_write_command(ILI9341_SLPOUT);      // Exit Sleep
-    spi_end();
-    delay_10ms(12); // Delay for 120ms
-    spi_begin();
-    ili9341_write_command(ILI9341_DISPON);      // Display on
-    spi_end();
+    ili9341_write_command(ILI9341_SLPOUT);      /* Exit Sleep */
+    delay_10ms(12);                             /* Delay for 120ms, let everything settle */
+    ili9341_write_command(ILI9341_DISPON);      /* Display on */
 
-    // TODO: Remove after testing, set the screen to ensure we're up and talking
-    delay_10ms(100);
-//    uint16_t screen_colour = ili9341_colour_565(0x0, 0x0, 0xFF);
-    uint16_t screen_colour = ILI9341_CYAN;
-    ili9341_fill_screen(screen_colour);
+    /* Finish intialisation by filling the screen with bright blue. Provides a 
+     * visual indication that everything up until now is functioning.
+     */
+    delay_10ms(10);
+    ili9341_fill_screen(ILI9341_CYAN);
 }
 
 int ili9341_write_command(uint8_t command)
@@ -177,10 +157,10 @@ int ili9341_fill_screen(uint16_t colour)
 
 int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t colour)
 {
-    ili9341_set_address_window(x, y, x+width-1, y+height-1);
     uint8_t hi = (colour >> 8), lo = colour;
-
-    spi_begin();
+    if((x + width - 1) >= ILI9341_TFTWIDTH) width = ILI9341_TFTWIDTH - x;
+    if((y + height - 1) >= ILI9341_TFTHEIGHT) height = ILI9341_TFTHEIGHT - y;
+    ili9341_set_address_window(x, y, x+width-1, y+height-1);
 
     GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_DC;
     GPIO_REG(GPIO_OUTPUT_VAL)   &= ~SPI_CS;
@@ -188,13 +168,11 @@ int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, 
     for (y=height; y>0; y--) {
         for (x=width; x>0; x--) {
             spi_write(hi);
+            spi_write(lo);
         }
-        spi_write(lo);
     }
 
     GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_CS;
-
-    spi_end();
 }
 
 int ili9341_set_address_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
@@ -210,6 +188,8 @@ int ili9341_set_address_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
     ili9341_write_data(y0);
     ili9341_write_data(y1 >> 8);
     ili9341_write_data(y1);
+
+    ili9341_write_command(ILI9341_RAMWR);
 }
 
 uint16_t ili9341_colour_565(uint8_t r, uint8_t g, uint8_t b)

@@ -36,13 +36,14 @@ void init_SPI()
     SPI_REG(SPI_REG_FMT) =
         SPI_FMT_PROTO(SPI_PROTO_S)     |
         SPI_FMT_ENDIAN(SPI_ENDIAN_MSB) |
-        SPI_FMT_DIR(SPI_DIR_TX)        |
+        SPI_FMT_DIR(SPI_DIR_RX)        |
         SPI_FMT_LEN(8); // 8 bit long packets
 
     /* Set CS mode auto
      * SPI_CSMODE_AUTO - Assert/de-assert CS at beginning and end of each frame
      */
-    SPI_REG(SPI_REG_CSMODE) = SPI_CSMODE_AUTO;
+//    SPI_REG(SPI_REG_CSMODE) = SPI_CSMODE_AUTO;
+      SPI_REG(SPI_REG_CSMODE) = 0x00;
 
     /* Clock divider
      * Original clock is coreclk (the main CPU clock) where the resulting SPI
@@ -55,28 +56,7 @@ void init_SPI()
      * 262MHz / 2(3+1) = 32.75MHz
      * 262MHz / 2(2+1) = 43.67MHz
      */
-    SPI_REG(SPI_REG_SCKDIV) = 0x0;
-
-    /* The Adafruit ILI9341 TFT screen has a few extra non-standard control pins
-     * (such as reset and data/command selector). We'll be controlling these
-     * through manual GPIO selection.
-     */
-    GPIO_REG(GPIO_OUTPUT_EN)   |=   (SPI_DC | SPI_CS);
-    GPIO_REG(GPIO_IOF_SEL)     &=   ~(SPI_DC | SPI_CS);
-    GPIO_REG(GPIO_OUTPUT_VAL)  &=  ~(SPI_DC | SPI_CS);
-}
-
-void spi_begin()
-{
-    return;
-    GPIO_REG(GPIO_IOF_SEL) &=  ~SPI1_IOF_MASK;
-    GPIO_REG(GPIO_IOF_EN)  |=   SPI1_IOF_MASK;
-}
-
-void spi_end()
-{
-    return;
-    GPIO_REG(GPIO_IOF_EN)  &=   ~SPI1_IOF_MASK;
+    SPI_REG(SPI_REG_SCKDIV) = 0x03;
 }
 
 void spi_write(uint8_t data)
@@ -85,5 +65,8 @@ void spi_write(uint8_t data)
     while (SPI_REG(SPI_REG_TXFIFO) & SPI_TXFIFO_FULL);
     /* Send a recognisable bit-pattern */
     SPI_REG(SPI_REG_TXFIFO) = data;
+
+    volatile int32_t x;
+    while ((x = SPI_REG(SPI_REG_RXFIFO)) & SPI_RXFIFO_EMPTY);
 }
 
