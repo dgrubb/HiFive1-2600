@@ -155,7 +155,7 @@ int ili9341_draw_line(tia_pixel_t *line_data, int y, int line_length)
         /* TODO: format each pixel value to an ILI pizel write command */
         ili9341_fill_rectangle(
             (i*pixel_width),
-            y,
+            ili9341_scale_height(y),
             ili9341_scale_width(pixel_width),
             ili9341_scale_width(1),
             ili9341_colour_565(line_data[i].R, line_data[i].G, line_data[i].B)
