@@ -147,11 +147,19 @@ int ili9341_write_data(uint8_t data)
     GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_CS;
 }
 
-int ili9341_draw_line(tia_pixel_t *line_data, int line_length)
+int ili9341_draw_line(tia_pixel_t *line_data, int y, int line_length)
 {
-    int i;
+    int i, pixel_width, pixel_count = 0;
+    pixel_width = ILI9341_TFTWIDTH/line_length;
     for (i=0; i<line_length; i++) {
         /* TODO: format each pixel value to an ILI pizel write command */
+        ili9341_fill_rectangle(
+            (i*pixel_width),
+            y,
+            ili9341_scale_width(pixel_width),
+            ili9341_scale_width(1),
+            ili9341_colour_565(line_data[i].R, line_data[i].G, line_data[i].B)
+        );
     }
 }
 

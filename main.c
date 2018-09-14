@@ -102,6 +102,13 @@ int main()
     ili9341_init();
     enable_interrupts();
 
+    int line_count=0;
+    while(1) {
+        for (line_count=0; line_count<192; line_count++) {
+            ili9341_draw_line(test_line, line_count, 160);
+        }
+    }
+
 #ifdef MANUAL_STEP
     /* Executes a cartridge as normal, but instead of waiting on clock signal
      * the program executes a clock per key press on the UART. While in this

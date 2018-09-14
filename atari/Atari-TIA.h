@@ -117,6 +117,8 @@ tia_pixel_t tia_colour_map[128];
  * the TIA in this application */
 extern atari_tia tia;
 
+extern tia_pixel_t test_line[160];
+
 /* To allow for easier output to non-raster devices we'll build the image one
  * line at a time into this buffer.
  */
