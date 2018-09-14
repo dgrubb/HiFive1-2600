@@ -10,6 +10,8 @@ video game console.
 
 ![HiFive1-2600](./preview/HiFive1-2600-preview.png)
 
+![HiFive1-2600](./preview/HiFive1-2600-Rainbow-test.jpg)
+
 ## Hardware
 
 This project targets the [SiFive HiFive1](https://www.sifive.com/products/hifive1/) 
