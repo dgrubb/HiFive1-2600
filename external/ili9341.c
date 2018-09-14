@@ -115,6 +115,10 @@ int ili9341_init()
     ili9341_write_data(0x36);
     ili9341_write_data(0x0F);
 
+    /* Make origin (0, 0) the top-left of screen, i.e., close to the RESET button corner*/
+    ili9341_write_command(ILI9341_MADCTL);
+    ili9341_write_data(MADCTL_MV | MADCTL_BGR);
+
     ili9341_write_command(ILI9341_SLPOUT);      /* Exit Sleep */
     delay_10ms(12);                             /* Delay for 120ms, let everything settle */
     ili9341_write_command(ILI9341_DISPON);      /* Display on */
@@ -123,7 +127,8 @@ int ili9341_init()
      * visual indication that everything up until now is functioning.
      */
     delay_10ms(10);
-    ili9341_fill_screen(ILI9341_CYAN);
+    uint16_t screen_colour = ili9341_colour_565(0x05, 0x79, 0xC8); /* TIA colour index 0x96 */
+    ili9341_fill_screen(screen_colour);
 }
 
 int ili9341_write_command(uint8_t command)
@@ -173,6 +178,35 @@ int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, 
     }
 
     GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_CS;
+}
+
+uint16_t ili9341_map_scale(uint16_t input_val, uint16_t target_min_range,
+    uint16_t target_max_range, uint16_t input_min_range, uint16_t input_max_range)
+{
+    uint16_t scaled_value = (target_max_range - target_min_range) * (input_val - input_min_range)/(input_max_range-input_min_range) + target_min_range;
+    return scaled_value;
+}
+
+uint16_t ili9341_scale_width(uint16_t unscaled_width)
+{
+    return ili9341_map_scale(
+        unscaled_width,
+        0,
+        ILI9341_TFTWIDTH,
+        0,
+        ATARI_RESOLUTION_WIDTH
+    );
+}
+
+uint16_t ili9341_scale_height(uint16_t unscaled_height)
+{
+    return ili9341_map_scale(
+        unscaled_height,
+        0,
+        ILI9341_TFTHEIGHT,
+        0,
+        ATARI_RESOLUTION_HEIGHT
+    );
 }
 
 int ili9341_set_address_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)

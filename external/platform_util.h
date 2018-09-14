@@ -51,6 +51,9 @@
 #define BLUE_LED_MASK     0x1 << BLUE_LED_OFFSET
 #define GREEN_LED_MASK    0x1 << GREEN_LED_OFFSET
 
+#define ATARI_RESOLUTION_WIDTH  160
+#define ATARI_RESOLUTION_HEIGHT 192
+
 void init_clock();
 void init_timer();
 void init_GPIO();

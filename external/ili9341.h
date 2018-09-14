@@ -12,8 +12,8 @@
 
 #include "atari/Atari-TIA.h"
 
-#define ILI9341_TFTWIDTH    240
-#define ILI9341_TFTHEIGHT   320
+#define ILI9341_TFTWIDTH    320
+#define ILI9341_TFTHEIGHT   240
 
 #define ILI9341_NOP         0x00
 #define ILI9341_SWRESET     0x01
@@ -89,6 +89,14 @@
 #define ILI9341_GREENYELLOW 0xAFE5      /* 173, 255,  47 */
 #define ILI9341_PINK        0xF81F
 
+#define MADCTL_MY  0x80
+#define MADCTL_MX  0x40
+#define MADCTL_MV  0x20
+#define MADCTL_ML  0x10
+#define MADCTL_RGB 0x00
+#define MADCTL_BGR 0x08
+#define MADCTL_MH  0x04
+
 int ili9341_init();
 int ili9341_write_command(uint8_t command);
 int ili9341_write_data(uint8_t data);
@@ -97,5 +105,9 @@ int ili9341_fill_screen(uint16_t colour);
 int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t colour);
 int ili9341_set_address_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 uint16_t ili9341_colour_565(uint8_t r, uint8_t g, uint8_t b);
+uint16_t ili9341_map_scale(uint16_t input_val, uint16_t target_min_range,
+    uint16_t target_max_range, uint16_t input_min_range, uint16_t input_max_range);
+uint16_t ili9341_scale_width(uint16_t unscaled_width);
+uint16_t ili9341_scale_height(uint16_t unscaled_height);
 
 #endif /* _ILI9341_H */
