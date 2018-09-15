@@ -188,7 +188,7 @@ int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, 
     GPIO_REG(GPIO_OUTPUT_VAL)   |= SPI_CS;
 }
 
-uint16_t ili9341_map_scale(uint16_t input_val, uint16_t target_min_range,
+uint16_t ili9341_scale_to_range(uint16_t input_val, uint16_t target_min_range,
     uint16_t target_max_range, uint16_t input_min_range, uint16_t input_max_range)
 {
     uint16_t scaled_value = (target_max_range - target_min_range) * (input_val - input_min_range)/(input_max_range-input_min_range) + target_min_range;
@@ -197,7 +197,7 @@ uint16_t ili9341_map_scale(uint16_t input_val, uint16_t target_min_range,
 
 uint16_t ili9341_scale_horizontal(uint16_t unscaled_length)
 {
-    return ili9341_map_scale(
+    return ili9341_scale_to_range(
         unscaled_width,
         0,
         ILI9341_TFTWIDTH,
@@ -208,7 +208,7 @@ uint16_t ili9341_scale_horizontal(uint16_t unscaled_length)
 
 uint16_t ili9341_scale_vertical(uint16_t unscaled_length)
 {
-    return ili9341_map_scale(
+    return ili9341_scale_to_range(
         unscaled_length,
         0,
         ILI9341_TFTHEIGHT,
