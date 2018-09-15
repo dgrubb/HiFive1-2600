@@ -195,7 +195,7 @@ uint16_t ili9341_map_scale(uint16_t input_val, uint16_t target_min_range,
     return scaled_value;
 }
 
-uint16_t ili9341_scale_width(uint16_t unscaled_width)
+uint16_t ili9341_scale_horizontal(uint16_t unscaled_length)
 {
     return ili9341_map_scale(
         unscaled_width,
@@ -206,10 +206,10 @@ uint16_t ili9341_scale_width(uint16_t unscaled_width)
     );
 }
 
-uint16_t ili9341_scale_height(uint16_t unscaled_height)
+uint16_t ili9341_scale_vertical(uint16_t unscaled_length)
 {
     return ili9341_map_scale(
-        unscaled_height,
+        unscaled_length,
         0,
         ILI9341_TFTHEIGHT,
         0,

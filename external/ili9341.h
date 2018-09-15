@@ -107,7 +107,7 @@ int ili9341_set_address_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
 uint16_t ili9341_colour_565(uint8_t r, uint8_t g, uint8_t b);
 uint16_t ili9341_map_scale(uint16_t input_val, uint16_t target_min_range,
     uint16_t target_max_range, uint16_t input_min_range, uint16_t input_max_range);
-uint16_t ili9341_scale_width(uint16_t unscaled_width);
-uint16_t ili9341_scale_height(uint16_t unscaled_height);
+uint16_t ili9341_scale_horizontal(uint16_t unscaled_length);
+uint16_t ili9341_scale_vertical(uint16_t unscaled_length);
 
 #endif /* _ILI9341_H */
