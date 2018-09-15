@@ -2,7 +2,7 @@
 
 This project is an embedded cycle-accurate simulation of a MOS 6502 (technically, 6507)
 processor. Also included is an abstraction of the Atari's RIOT (RAM I/O-Timer) chip 
-and [Jay Miner's](https://en.wikipedia.com/wiki/Jay_Miner) Television Interface 
+and [Jay Miner's](https://en.wikipedia.org/wiki/Jay_Miner) Television Interface 
 Adapter (TIA) IC. The end goal is to create an emulator capable of executing Atari 
 2600 games on a modern micro-controller level device.
 
