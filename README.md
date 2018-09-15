@@ -1,8 +1,10 @@
 # HiFive1-2600
 
 This project is an embedded cycle-accurate simulation of a MOS 6502 (technically, 6507)
-processor. Also included in the simulation is the memory map of an Atari 2600 
-video game console.
+processor. Also included is an abstraction of the Atari's RIOT (RAM I/O-Timer) chip 
+and [Jay Miner's](https://en.wikipedia.com/wiki/Jay_Miner) Television Interface 
+Adapter (TIA) IC. The end goal is to create an emulator capable of executing Atari 
+2600 games on a modern micro-controller level device.
 
 [Hold onto your butts ...](https://www.youtube.com/watch?v=HKK4KmDlj8U)
 
@@ -11,6 +13,17 @@ video game console.
 ![HiFive1-2600](./preview/HiFive1-2600-preview.png)
 
 ![HiFive1-2600](./preview/HiFive1-2600-Rainbow-test.jpg)
+
+## Why?
+
+[Just for fun.](https://www.amazon.com/Just-Fun-Story-Accidental-Revolutionary/dp/0066620732)
+
+## No, really. Why?
+
+Because I'm personally interested in learning about how the Atari 2600 worked, 
+understanding the 6502 processor and wanted to build a project which would use 
+a RISC-V micro-controller. Writing an emulator is a great way to practice programming 
+and doing so in a resource constrained environment presents interesting problems.
 
 ## Hardware
 
