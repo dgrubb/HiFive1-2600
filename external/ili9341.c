@@ -127,12 +127,7 @@ int ili9341_init()
      * visual indication that everything up until now is functioning.
      */
     delay_10ms(10);
-    uint16_t screen_colour = ili9341_colour_565(
-        tia_colour_map[65].R,
-        tia_colour_map[65].G,
-        tia_colour_map[65].B
-    );
-    ili9341_fill_screen(screen_colour);
+    ili9341_clear_screen();
 }
 
 int ili9341_write_command(uint8_t command)
@@ -165,6 +160,11 @@ int ili9341_draw_line(tia_pixel_t *line_data, int y, int line_length)
             ili9341_colour_565(line_data[i].R, line_data[i].G, line_data[i].B)
         );
     }
+}
+
+int ili9341_clear_screen()
+{
+    return ili9341_fill_screen(0x0000);
 }
 
 int ili9341_fill_screen(uint16_t colour)

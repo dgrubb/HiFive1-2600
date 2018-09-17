@@ -109,5 +109,6 @@ uint16_t ili9341_scale_to_range(uint16_t input_val, uint16_t target_min_range,
     uint16_t target_max_range, uint16_t input_min_range, uint16_t input_max_range);
 uint16_t ili9341_scale_horizontal(uint16_t unscaled_length);
 uint16_t ili9341_scale_vertical(uint16_t unscaled_length);
+int ili9341_clear_screen();
 
 #endif /* _ILI9341_H */
