@@ -59,5 +59,8 @@ void init_timer();
 void init_GPIO();
 void delay_10ms(uint32_t multiplier);
 void enable_interrupts();
+#ifdef COLOUR_TEST
+void colour_test();
+#endif /* COLOUR_TEST*/
 
 #endif /* _PLATFORM_UTIL_H */

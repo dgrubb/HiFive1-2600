@@ -78,7 +78,11 @@ void handle_m_ext_interrupt()
 
 int main()
 {
-    int i;
+    int i, line_count = 0;
+#ifdef MANUAL_STEP
+    char wait;
+#endif /* MANUAL_STEP*/
+
     /* Display Atari's awesome logo */
     puts(atari_logo);
 
@@ -102,41 +106,15 @@ int main()
     ili9341_init();
     enable_interrupts();
 
-#ifdef MANUAL_STEP
-    /* Executes a cartridge as normal, but instead of waiting on clock signal
-     * the program executes a clock per key press on the UART. While in this
-     * mode the UART output will print status register and current execution
-     * state to a human-readable output. The intention is to allow for loading
-     * a proper Atari ROM dump and step through it manually.
-     */
-    char wait;
-    while (1) {
-        /* UART_get_char() has a blocking option, but we don't really care
-         * what key was pressed.
-         */
-        UART_get_char(&wait, 1);
-        GPIO_REG(GPIO_OUTPUT_VAL) ^=  BLUE_LED_MASK;
-        mos6507_clock_tick();
-    };
-#endif /* MANUAL_STEP */
-
 #ifdef EXEC_TESTS
-    /* Program flow is different when testing the consistency of the 6502
-     * state model. Rather than awaiting an external clock tick we simply step
-     * through automatically. Exit with the test result once we're finished.
-     */
     execute_tests();
     return 0;
 #endif /* EXEC_TESTS */
 
 
 #ifdef COLOUR_TEST
-    int line_count=0;
-    while(1) {
-        for (line_count=0; line_count<192; line_count++) {
-            ili9341_draw_line(tia_test_line, line_count, 160);
-        }
-    }
+    colour_test();
+    return 0;
 #endif /* COLOUR_TEST */
 
     /* This is the intended use-case, full speed clock source running a
@@ -144,7 +122,11 @@ int main()
      */
     while (1) {
         GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
+#ifdef MANUAL_STEP
+        UART_get_char(&wait, 1);
+#else
         PWM1_REG(PWM_CFG) |= PWM_CFG_ONESHOT;
+#endif /* MANUAL_STEP*/
         for (i=0; i<TIA_COLOUR_CLOCK_TOTAL; i++) {
             TIA_clock_tick();
             /* Fire a CPU clock tick */
@@ -159,8 +141,18 @@ int main()
                 puts("WSYNC\n\r");
             }
         }
+#ifdef MANUAL_STEP
+#else
         while (PWM1_REG(PWM_COUNT)) {}
+#endif /* MANUAL_STEP*/
         // TODO: after line timeout send data over SPI to screen
+        if (line_count < TIA_VERTICAL_PICTURE_LINES) {
+            ili9341_draw_line(tia_line_buffer, line_count, ATARI_RESOLUTION_WIDTH);
+        }
+        line_count++;
+        if (line_count > TIA_VERTICAL_TOTAL_LINES) {
+            line_count = 0;
+        }
     };
 
 end: ;

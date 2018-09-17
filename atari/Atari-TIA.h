@@ -38,7 +38,7 @@ typedef enum {
     TIA_WRITE_REG_COLUP0, /* 0x06: Colour lumenance, player 0 */
     TIA_WRITE_REG_COLUP1, /* 0x07: Colour lumenance, player 1 */
     TIA_WRITE_REG_COLUPF, /* 0x08: Colour lumenance, playfield */
-    TIA_WRITE_REG_COLUBG, /* 0x09: Colour lumenance, background */
+    TIA_WRITE_REG_COLUBK, /* 0x09: Colour lumenance, background */
     TIA_WRITE_REG_CTRLPF, /* 0x0A: Playfield size and collision control */
     TIA_WRITE_REG_REFP0,  /* 0x0B: Reflect player 0 */
     TIA_WRITE_REG_REFP1,  /* 0x0C: Reflect player 1 */
@@ -132,6 +132,8 @@ void TIA_write_register(uint8_t reg, uint8_t value);
 void TIA_clock_tick(void);
 void TIA_generate_colour(void);
 int TIA_get_WSYNC(void);
+int TIA_get_VSYNC(void);
+int TIA_get_VBLANK(void);
 void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index);
 void TIA_colour_to_RGB(uint8_t tia_colour, tia_pixel_t* pixel);
 

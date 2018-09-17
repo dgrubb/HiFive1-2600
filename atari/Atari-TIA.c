@@ -8,7 +8,6 @@
 
 #include "Atari-TIA.h"
 
-int line_count;
 //tia_pixel_t tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 atari_tia tia;
 
@@ -322,7 +321,6 @@ tia_pixel_t tia_test_line[] = {
  */
 void TIA_init(void)
 {
-    line_count = 0;
     int i = 0;
     // Data registers
     for (i=0; i<TIA_WRITE_REG_LEN; i++) {
@@ -359,8 +357,9 @@ void TIA_generate_colour(void)
      * objects
      */
 
-    
-
+    tia_pixel_t pixel = {0};
+    TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUBK], &pixel);
+    TIA_write_to_buffer(pixel, tia.colour_clock);
 
     /* TODO check for collisions and set registers appropriately */
 }
@@ -379,20 +378,18 @@ void TIA_colour_to_RGB(uint8_t tia_colour, tia_pixel_t* pixel)
 
 void TIA_clock_tick(void)
 {
-    /* Vertical blanking periods */
-    /* TODO: reset line_count after overscan */
-
     /* Reset colour clock and prepare begin next line */
     if (tia.colour_clock == TIA_COLOUR_CLOCK_TOTAL) {
         tia.colour_clock = 0;
         tia.write_regs[TIA_WRITE_REG_WSYNC] = 0;
-        line_count++;
         return;
     }
-    if (tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) {
+    if ((tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) &&
+         !TIA_get_VSYNC() &&
+         !TIA_get_VBLANK()) {
         TIA_generate_colour();
     } else {
-        /* Horizontal sync time */
+        /* Horizontal or vertical sync time, no need to generate a colour */
     }
     tia.colour_clock++;
 }
@@ -400,4 +397,14 @@ void TIA_clock_tick(void)
 int TIA_get_WSYNC()
 {
     return (tia.write_regs[TIA_WRITE_REG_WSYNC] ? 1 : 0);
+}
+
+int TIA_get_VSYNC()
+{
+    return (tia.write_regs[TIA_WRITE_REG_VSYNC] ? 1 : 0);
+}
+
+int TIA_get_VBLANK()
+{
+    return (tia.write_regs[TIA_WRITE_REG_VBLANK] ? 1 : 0);
 }

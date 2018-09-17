@@ -8,6 +8,8 @@
  */
 
 #include "platform_util.h"
+#include "ili9341.h"
+#include "atari/Atari-TIA.h"
 #include "spi.h"
 
 /******************************************************************************
@@ -95,4 +97,15 @@ void enable_interrupts()
     set_csr(mstatus, MSTATUS_MIE);
 }
 
+#ifdef COLOUR_TEST
+void colour_test()
+{
+    int line_count=0;
+    while(1) {
+        for (line_count=0; line_count<ATARI_RESOLUTION_HEIGHT; line_count++) {
+            ili9341_draw_line(tia_test_line, line_count, ATARI_RESOLUTION_WIDTH);
+        }
+    }
 
+}
+#endif /* COLOUR_TEST */
