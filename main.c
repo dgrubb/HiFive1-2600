@@ -105,7 +105,7 @@ int main()
     int line_count=0;
     while(1) {
         for (line_count=0; line_count<192; line_count++) {
-            ili9341_draw_line(test_line, line_count, 160);
+            ili9341_draw_line(tia_test_line, line_count, 160);
         }
     }
 

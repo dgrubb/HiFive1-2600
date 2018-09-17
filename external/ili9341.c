@@ -127,7 +127,11 @@ int ili9341_init()
      * visual indication that everything up until now is functioning.
      */
     delay_10ms(10);
-    uint16_t screen_colour = ili9341_colour_565(0x05, 0x79, 0xC8); /* TIA colour index 0x96 */
+    uint16_t screen_colour = ili9341_colour_565(
+        tia_colour_map[65].R,
+        tia_colour_map[65].G,
+        tia_colour_map[65].B
+    );
     ili9341_fill_screen(screen_colour);
 }
 
@@ -155,9 +159,9 @@ int ili9341_draw_line(tia_pixel_t *line_data, int y, int line_length)
         /* TODO: format each pixel value to an ILI pizel write command */
         ili9341_fill_rectangle(
             (i*pixel_width),
-            ili9341_scale_height(y),
-            ili9341_scale_width(pixel_width),
-            ili9341_scale_width(1),
+            ili9341_scale_vertical(y),
+            ili9341_scale_horizontal(pixel_width),
+            ili9341_scale_horizontal(1),
             ili9341_colour_565(line_data[i].R, line_data[i].G, line_data[i].B)
         );
     }
@@ -191,14 +195,16 @@ int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, 
 uint16_t ili9341_scale_to_range(uint16_t input_val, uint16_t target_min_range,
     uint16_t target_max_range, uint16_t input_min_range, uint16_t input_max_range)
 {
-    uint16_t scaled_value = (target_max_range - target_min_range) * (input_val - input_min_range)/(input_max_range-input_min_range) + target_min_range;
+    uint16_t scaled_value = (target_max_range - target_min_range) * 
+        (input_val - input_min_range)/(input_max_range-input_min_range) +
+        target_min_range;
     return scaled_value;
 }
 
 uint16_t ili9341_scale_horizontal(uint16_t unscaled_length)
 {
     return ili9341_scale_to_range(
-        unscaled_width,
+        unscaled_length,
         0,
         ILI9341_TFTWIDTH,
         0,

@@ -111,7 +111,7 @@ typedef struct {
     uint8_t B;
 } tia_pixel_t;
 
-tia_pixel_t tia_colour_map[128];
+extern tia_pixel_t tia_colour_map[128];
 
 /* This is the single instance of atari_tia type to represent
  * the TIA in this application */
