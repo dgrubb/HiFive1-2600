@@ -112,12 +112,13 @@ typedef struct {
 } tia_pixel_t;
 
 extern tia_pixel_t tia_colour_map[128];
+#ifdef COLOUR_TEST
+extern tia_pixel_t tia_test_line[160];
+#endif /* COLOUR_TEST */
 
 /* This is the single instance of atari_tia type to represent
  * the TIA in this application */
 extern atari_tia tia;
-
-extern tia_pixel_t test_line[160];
 
 /* To allow for easier output to non-raster devices we'll build the image one
  * line at a time into this buffer.

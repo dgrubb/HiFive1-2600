@@ -37,6 +37,9 @@ CFLAGS += -DUSE_M_TIME
 # Enable manual stepping through a cartridge
 # CFLAGS += -DMANUAL_STEP
 
+# Enable displaying the TIA colour map on screen
+# CFLAGS += -DCOLOUR_MAP
+
 # Allow for printing the emulator state to UART
 CFLAGS += -DPRINT_STATE
 

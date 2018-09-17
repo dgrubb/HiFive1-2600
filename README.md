@@ -41,9 +41,15 @@ upload as with any other freedom-e-sdk program:
  $ make upload PROGRAM=HiFive1-2600 BOARD=freedom-e300-hifive1
 ```
 
-Optionally, ensure that the flag -DEXEC_TESTS is set in the Makefile to run the 
-unit test suites which will load test programs into the emulator and will verify 
-the correct functioning of the simulator.
+## Compilation flags
 
--DMANUAL_STEP disables automatic clocking and executes a clock cycle with each 
+Optionally, uncommment in the Makefile:
+
+* -DEXEC_TESTS run the unit test suites which will load test programs into the 
+emulator and verify the correct functioning of the simulation.
+
+* -DMANUAL_STEP disables automatic clocking and executes a clock cycle with each 
 press of the spacebar. Useful for step-by-step debugging.
+
+* -DCOLOUR_TEST Executes a simple test where the TIA colour map is displayed on 
+screen.

@@ -153,6 +153,7 @@ tia_pixel_t tia_colour_map[] = {
     { 0xFE, 0xDF, 0x70 }  /* 0xFE, 0x7F, 117 */
 };
 
+#ifdef COLOUR_TEST
 tia_pixel_t tia_test_line[] = {
     { 0x00, 0x00, 0x00 }, /* 0x00, 0x00, 0 */
     { 0x1A, 0x1A, 0x1A }, /* 0x02, 0x01, 1 */
@@ -315,6 +316,7 @@ tia_pixel_t tia_test_line[] = {
     { 0xFE, 0x9C, 0x81 }, /* 0x3C, 0x1E, 30 */
     { 0xFE, 0xC6, 0xBB } /* 0x3E, 0x1F, 31 */
 };
+#endif /* COLOUR_TEST */
 
 /* Resets the TIA instance to default conditions with no state set.
  */
