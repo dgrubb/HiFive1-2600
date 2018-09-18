@@ -36,10 +36,14 @@
  *
  * (1/3.58MHz) * 288
  */
+/*
 #define PWM_FREQ            0x104C
 #define PWM_FREQ_DIV        0x0826
 #define PWM_SCALE           0x0002
-
+*/
+#define PWM_FREQ            0x104C
+#define PWM_FREQ_DIV        0x0826
+#define PWM_SCALE           0x0002
 /* Provides a timer which times out after 10ms, used for creating arbitary
  * delays with lengths of multiples of 10ms. See delay_10ms().
  */
@@ -62,5 +66,6 @@ void enable_interrupts();
 #ifdef COLOUR_TEST
 void colour_test();
 #endif /* COLOUR_TEST*/
+int raster_line();
 
 #endif /* _PLATFORM_UTIL_H */

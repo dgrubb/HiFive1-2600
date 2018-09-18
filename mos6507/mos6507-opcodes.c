@@ -587,7 +587,7 @@ int opcode_BPL(int cycle, addressing_mode_t address_mode)
 
 int opcode_BRK(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t adl, adh = 0;
+    static uint8_t adl, adh, pcl, pch, S, P = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -596,10 +596,23 @@ int opcode_BRK(int cycle, addressing_mode_t address_mode)
             mos6507_increment_PC();
             return -1;
         case 2:
+            mos6507_get_register(MOS6507_REG_S, &S);
+            mos6507_set_address_bus_hl(STACK_PAGE, S);
+            pch = (uint8_t)(mos6507_get_PC() >> 8);
+            mos6507_set_data_bus(pch);
+            memmap_write();
             return -1;
         case 3:
+            pcl = (uint8_t)mos6507_get_PC();
+            mos6507_set_address_bus_hl(STACK_PAGE, S-1);
+            mos6507_set_data_bus(pcl);
+            memmap_write();
             return -1;
         case 4:
+            mos6507_get_register(MOS6507_REG_P, &P);
+            mos6507_set_address_bus_hl(STACK_PAGE, S-2);
+            mos6507_set_data_bus(P);
+            memmap_write();
             return -1;
         case 5:
             mos6507_set_address_bus(0xFFFE);
@@ -608,13 +621,13 @@ int opcode_BRK(int cycle, addressing_mode_t address_mode)
         case 6:
             mos6507_set_address_bus(0xFFFF);
             memmap_read(&adh);
-            mos6507_set_PC_hl(adh, adl);
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
             break;
     }
 
+    mos6507_set_PC_hl(adh, adl);
     mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
@@ -839,7 +852,7 @@ int opcode_INC(int cycle, addressing_mode_t address_mode)
 
 int opcode_INX(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t value = 0;
+    uint8_t value = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -862,7 +875,7 @@ int opcode_INX(int cycle, addressing_mode_t address_mode)
 
 int opcode_INY(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t value = 0;
+    uint8_t value = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -906,6 +919,7 @@ int opcode_JMP(int cycle, addressing_mode_t address_mode)
             break;
     }
 
+    mos6507_set_PC_hl(adh, adl);
     mos6507_set_address_bus_hl(adh, adl);
     return 0;
 }

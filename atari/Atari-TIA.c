@@ -7,9 +7,12 @@
  */
 
 #include "Atari-TIA.h"
+#include "external/ili9341.h"
+#include "external/platform_util.h"
 
-//tia_pixel_t tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 atari_tia tia;
+
+tia_pixel_t tia_line_buffer[];
 
 /* Usage note:
  *
@@ -30,7 +33,7 @@ tia_pixel_t tia_colour_map[] = {
     { 0xA2, 0xA2, 0xA2 }, /* 0x0A, 0x05, 5 */
     { 0xC7, 0xC7, 0xC7 }, /* 0x0C, 0x06, 6 */
     { 0xED, 0xED, 0xED }, /* 0x0E, 0x07, 7 */
-    { 0x19, 0x92, 0x00 }, /* 0x10, 0x08, 8 */
+    { 0x19, 0x02, 0x00 }, /* 0x10, 0x08, 8 */
     { 0x3A, 0x1F, 0x00 }, /* 0x12, 0x09, 9 */
     { 0x5D, 0x41, 0x00 }, /* 0x14, 0x0A, 10 */
     { 0x82, 0x64, 0x00 }, /* 0x16, 0x0B, 11 */
@@ -322,12 +325,17 @@ tia_pixel_t tia_test_line[] = {
 void TIA_init(void)
 {
     int i = 0;
-    // Data registers
+    /* Data registers */
     for (i=0; i<TIA_WRITE_REG_LEN; i++) {
         tia.write_regs[i] = 0;
     }
     for (i=0; i<TIA_READ_REG_LEN; i++) {
         tia.read_regs[i] = 0;
+    }
+    for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
+        tia_line_buffer[i].R = 0x0;
+        tia_line_buffer[i].G = 0x0;
+        tia_line_buffer[i].B = 0x0;
     }
 }
 
@@ -347,7 +355,17 @@ void TIA_read_register(uint8_t reg, uint8_t *value)
  */
 void TIA_write_register(uint8_t reg, uint8_t value)
 {
-    tia.write_regs[reg] = value;
+    /* Perform special state logic on strobing registers which influence
+     * state regardless of value written. E.g., writing a 0 to WSYNC still
+     * results in the processor clock suspending
+     */
+    switch (reg) {
+        case TIA_WRITE_REG_WSYNC:
+            tia.write_regs[TIA_WRITE_REG_WSYNC] = 1;
+            break;
+        default:
+            tia.write_regs[reg] = value;
+    }
 }
 
 void TIA_generate_colour(void)
@@ -359,39 +377,48 @@ void TIA_generate_colour(void)
 
     tia_pixel_t pixel = {0};
     TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUBK], &pixel);
-    TIA_write_to_buffer(pixel, tia.colour_clock);
+    TIA_write_to_buffer(pixel, tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC);
 
     /* TODO check for collisions and set registers appropriately */
 }
 
 void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index)
 {
-    if (TIA_COLOUR_CLOCK_TOTAL > pixel_index) {
-        tia_line_buffer[pixel_index] = pixel;
+    if (pixel_index < TIA_COLOUR_CLOCK_VISIBLE) {
+        tia_line_buffer[pixel_index].R = pixel.R;
+        tia_line_buffer[pixel_index].G = pixel.G;
+        tia_line_buffer[pixel_index].B = pixel.B;
     }
 }
 
 void TIA_colour_to_RGB(uint8_t tia_colour, tia_pixel_t* pixel)
 {
-    *pixel = tia_colour_map[tia_colour >>1];
+    int index = tia_colour >> 1;
+    pixel->R = tia_colour_map[index].R;
+    pixel->G = tia_colour_map[index].G;
+    pixel->B = tia_colour_map[index].B;
 }
 
-void TIA_clock_tick(void)
+int TIA_clock_tick()
 {
     /* Reset colour clock and prepare begin next line */
-    if (tia.colour_clock == TIA_COLOUR_CLOCK_TOTAL) {
+    if (tia.colour_clock >= TIA_COLOUR_CLOCK_TOTAL) {
         tia.colour_clock = 0;
         tia.write_regs[TIA_WRITE_REG_WSYNC] = 0;
-        return;
+        return 0;
     }
-    if ((tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) &&
-         !TIA_get_VSYNC() &&
-         !TIA_get_VBLANK()) {
+    if (tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) {
         TIA_generate_colour();
     } else {
         /* Horizontal or vertical sync time, no need to generate a colour */
     }
     tia.colour_clock++;
+    return tia.colour_clock;
+}
+
+int TIA_draw_line(int line_count)
+{
+    ili9341_draw_line(tia_line_buffer, line_count, ATARI_RESOLUTION_WIDTH);
 }
 
 int TIA_get_WSYNC()
@@ -407,4 +434,14 @@ int TIA_get_VSYNC()
 int TIA_get_VBLANK()
 {
     return (tia.write_regs[TIA_WRITE_REG_VBLANK] ? 1 : 0);
+}
+
+int TIA_reset_buffer()
+{
+    int i;
+    for (i=0; i<ATARI_RESOLUTION_WIDTH; i++) {
+        tia_line_buffer[i].R = 0x0;
+        tia_line_buffer[i].G = 0x0;
+        tia_line_buffer[i].B = 0x0;
+    }
 }

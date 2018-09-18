@@ -102,7 +102,7 @@ typedef struct {
     // Data registers
     uint8_t write_regs[TIA_WRITE_REG_LEN];
     uint8_t read_regs[TIA_READ_REG_LEN];
-    uint8_t colour_clock;
+    uint32_t colour_clock;
 } atari_tia;
 
 typedef struct {
@@ -113,7 +113,7 @@ typedef struct {
 
 extern tia_pixel_t tia_colour_map[128];
 #ifdef COLOUR_TEST
-extern tia_pixel_t tia_test_line[160];
+extern tia_pixel_t tia_test_line[TIA_COLOUR_CLOCK_VISIBLE];
 #endif /* COLOUR_TEST */
 
 /* This is the single instance of atari_tia type to represent
@@ -123,18 +123,20 @@ extern atari_tia tia;
 /* To allow for easier output to non-raster devices we'll build the image one
  * line at a time into this buffer.
  */
-tia_pixel_t tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
+extern tia_pixel_t tia_line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 
 /* Interfacing functions */
 void TIA_init(void);
 void TIA_read_register(uint8_t reg, uint8_t *value);
 void TIA_write_register(uint8_t reg, uint8_t value);
-void TIA_clock_tick(void);
+int TIA_clock_tick(void);
 void TIA_generate_colour(void);
 int TIA_get_WSYNC(void);
 int TIA_get_VSYNC(void);
 int TIA_get_VBLANK(void);
 void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index);
 void TIA_colour_to_RGB(uint8_t tia_colour, tia_pixel_t* pixel);
+int TIA_draw_line(int line_count);
+int TIA_reset_buffer();
 
 #endif /* _ATARI_TIA_H */

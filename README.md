@@ -53,3 +53,28 @@ press of the spacebar. Useful for step-by-step debugging.
 
 * -DCOLOUR_TEST Executes a simple test where the TIA colour map is displayed on 
 screen.
+
+## ROM usage
+
+At the moment ROMs are handled as inline uint8_t arrays. These can be generated 
+from binary ROM images using _xxd_, e.g.,:
+
+```
+ $ xxd -i some_file.bin
+```
+
+will generate a .c file with an array containing each byte value and a variable 
+denoting the array length, e.g.,:
+
+```
+char some_file_bin[] = {
+  0xa9, 0x00, 0x85, 0x01, 0xa9, 0x02, 0x85, 0x00, 0x85, 0x02, 0x85, 0x02,
+  0x85, 0x02, 0xa9, 0x00, 0x85, 0x00, 0x85, 0x02, 0x85, 0x02, 0x85, 0x02,
+  0x85, 0x02, 0x85, 0x02, 0x85, 0x02, 0x85, 0x02, 0x85, 0x02, 0x85, 0x02,
+  etc ...
+
+[...]
+};
+int some_file_bin_len = 4096;
+```
+

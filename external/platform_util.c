@@ -9,6 +9,7 @@
 
 #include "platform_util.h"
 #include "ili9341.h"
+#include "mos6507/mos6507.h"
 #include "atari/Atari-TIA.h"
 #include "spi.h"
 
@@ -109,3 +110,18 @@ void colour_test()
 
 }
 #endif /* COLOUR_TEST */
+
+int raster_line()
+{
+    int i, clock_count;
+    for (i=0; i<TIA_COLOUR_CLOCK_TOTAL; i++) {
+        clock_count = TIA_clock_tick();
+        if (!TIA_get_WSYNC() && !((clock_count+1) % 3)) {
+            if (mos6507_clock_tick()) {
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
+

@@ -148,15 +148,13 @@ int ili9341_write_data(uint8_t data)
 
 int ili9341_draw_line(tia_pixel_t *line_data, int y, int line_length)
 {
-    int i, pixel_width, pixel_count = 0;
-    pixel_width = ILI9341_TFTWIDTH/line_length;
+    int i;
     for (i=0; i<line_length; i++) {
-        /* TODO: format each pixel value to an ILI pizel write command */
         ili9341_fill_rectangle(
-            (i*pixel_width),
+            ili9341_scale_horizontal(i),
             ili9341_scale_vertical(y),
-            ili9341_scale_horizontal(pixel_width),
             ili9341_scale_horizontal(1),
+            ili9341_scale_vertical(1),
             ili9341_colour_565(line_data[i].R, line_data[i].G, line_data[i].B)
         );
     }

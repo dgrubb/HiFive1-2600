@@ -28,7 +28,7 @@
     #include "test/debug.h"
 #endif
 /* Game cart data */
-#include "carts/halo2600.h"
+#include "carts/kernel_11.h"
 
 /* Globals */
 static const char atari_logo[] = "\n\r"
@@ -78,7 +78,7 @@ void handle_m_ext_interrupt()
 
 int main()
 {
-    int i, line_count = 0;
+    int i;
 #ifdef MANUAL_STEP
     char wait;
 #endif /* MANUAL_STEP*/
@@ -94,7 +94,7 @@ int main()
     TIA_init();
 
     /* Emulation is ready to start so load cartridge and reset CPU */
-    cartridge_load(Halo_2600);
+    cartridge_load(kernel_11);
     mos6507_reset();
 
     /* Setup FE310 peripherals */
@@ -120,40 +120,38 @@ int main()
     /* This is the intended use-case, full speed clock source running a
      * proper cart image.
      */
-    while (1) {
+    uint32_t vblank = 0;
+    uint32_t vsync = 0;
+    uint32_t line_count = 0;
+    while(1) {
         GPIO_REG(GPIO_OUTPUT_VAL)  ^=  BLUE_LED_MASK;
 #ifdef MANUAL_STEP
         UART_get_char(&wait, 1);
 #else
         PWM1_REG(PWM_CFG) |= PWM_CFG_ONESHOT;
-#endif /* MANUAL_STEP*/
-        for (i=0; i<TIA_COLOUR_CLOCK_TOTAL; i++) {
-            TIA_clock_tick();
-            /* Fire a CPU clock tick */
-            if (!TIA_get_WSYNC()) {
-                if (mos6507_clock_tick()) {
-                    /* There was a significant and unrecoverable problem executing
-                     * the current ROM, breakout here
-                     */
-                    goto end;
-                }
-            } else {
-                puts("WSYNC\n\r");
-            }
+#endif
+        if (raster_line()) {
+            /* Error in emulation encountered */
+            goto end;
         }
 #ifdef MANUAL_STEP
 #else
         while (PWM1_REG(PWM_COUNT)) {}
-#endif /* MANUAL_STEP*/
-        // TODO: after line timeout send data over SPI to screen
-        if (line_count < TIA_VERTICAL_PICTURE_LINES) {
-            ili9341_draw_line(tia_line_buffer, line_count, ATARI_RESOLUTION_WIDTH);
-        }
-        line_count++;
-        if (line_count > TIA_VERTICAL_TOTAL_LINES) {
+#endif
+        if (vsync && !TIA_get_VSYNC()) {
             line_count = 0;
+            vblank = TIA_VERTICAL_BLANK_LINES;
         }
-    };
+        vsync = TIA_get_VSYNC();
+        if (!vsync && !vblank && (line_count < TIA_VERTICAL_PICTURE_LINES)) {
+            TIA_draw_line(line_count);
+            TIA_reset_buffer();
+            line_count++;
+        }
+        if (vblank) {
+            vblank--;
+        }
+    }
 
 end: ;
 
