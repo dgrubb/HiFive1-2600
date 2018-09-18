@@ -1271,7 +1271,7 @@ int opcode_RTI(int cycle, addressing_mode_t address_mode)
         default:
             /* End of op-code execution */
             break;
-    }    END_OPCODE()
+    }
     return 0;
 }
 
