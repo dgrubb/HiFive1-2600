@@ -42,8 +42,7 @@ void init_SPI()
     /* Set CS mode auto
      * SPI_CSMODE_AUTO - Assert/de-assert CS at beginning and end of each frame
      */
-//    SPI_REG(SPI_REG_CSMODE) = SPI_CSMODE_AUTO;
-      SPI_REG(SPI_REG_CSMODE) = 0x00;
+    SPI_REG(SPI_REG_CSMODE) = SPI_CSMODE_AUTO;
 
     /* Clock divider
      * Original clock is coreclk (the main CPU clock) where the resulting SPI
@@ -56,7 +55,7 @@ void init_SPI()
      * 262MHz / 2(3+1) = 32.75MHz
      * 262MHz / 2(2+1) = 43.67MHz
      */
-    SPI_REG(SPI_REG_SCKDIV) = 0x03;
+    SPI_REG(SPI_REG_SCKDIV) = 0x01;
 }
 
 void spi_write(uint8_t data)
