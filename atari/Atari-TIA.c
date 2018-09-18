@@ -398,14 +398,34 @@ void TIA_write_register(uint8_t reg, uint8_t value)
 
 void TIA_generate_colour(void)
 {
+    /* Grab the background. If there's an element on the same clock count
+     * we'll overwrite it
+     */
+    tia_pixel_t pixel = {0};
+    TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUBK], &pixel);
+ 
     /* TODO check order of priority established in PFB bits
      * to establish if playfield need to be rendered over player
      * objects
      */
+    if (tia.read_regs[TIA_WRITE_REG] & 0x02) {
+        /* Control register is specifying that priority be remapped to:
+         * Highest: PF, BL
+         * Second:  P0, M0
+         * Third:   P1, M1
+         * Lowest:  BK
+         */
+    } else {
+        /* Default priority control:
+         * Highest: P0, M0
+         * Second:  P1, M1
+         * Third:   PF, BL
+         * Lowest:  BK
+         */
+    }
+dd
 
-    tia_pixel_t pixel = {0};
-    TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUBK], &pixel);
-    TIA_write_to_buffer(pixel, tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC);
+    TIA_write_to_buffer(pixel, (tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC));
 
     /* TODO check for collisions and set registers appropriately */
 }
