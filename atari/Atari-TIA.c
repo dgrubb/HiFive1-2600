@@ -364,7 +364,7 @@ void TIA_write_register(uint8_t reg, uint8_t value)
             tia.write_regs[TIA_WRITE_REG_WSYNC] = 1;
             break;
         case TIA_WRITE_REG_RSYNC:
-            tia.clock_count = 0;
+            tia.colour_clock = 0;
             break;
         case TIA_WRITE_REG_RESP0:
             break;
@@ -408,7 +408,7 @@ void TIA_generate_colour(void)
      * to establish if playfield need to be rendered over player
      * objects
      */
-    if (tia.read_regs[TIA_WRITE_REG] & 0x02) {
+    if (tia.write_regs[TIA_WRITE_REG_CTRLPF] & 0x02) {
         /* Control register is specifying that priority be remapped to:
          * Highest: PF, BL
          * Second:  P0, M0
@@ -423,7 +423,6 @@ void TIA_generate_colour(void)
          * Lowest:  BK
          */
     }
-dd
 
     TIA_write_to_buffer(pixel, (tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC));
 
