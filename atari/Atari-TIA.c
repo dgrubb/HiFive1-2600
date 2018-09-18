@@ -363,6 +363,34 @@ void TIA_write_register(uint8_t reg, uint8_t value)
         case TIA_WRITE_REG_WSYNC:
             tia.write_regs[TIA_WRITE_REG_WSYNC] = 1;
             break;
+        case TIA_WRITE_REG_RSYNC:
+            tia.clock_count = 0;
+            break;
+        case TIA_WRITE_REG_RESP0:
+            break;
+        case TIA_WRITE_REG_RESP1:
+            break;
+        case TIA_WRITE_REG_RESM0:
+            break;
+        case TIA_WRITE_REG_RESM1:
+            break;
+        case TIA_WRITE_REG_RESBL:
+            break;
+        case TIA_WRITE_REG_HMOVE:
+            break;
+        case TIA_WRITE_REG_HMCLR:
+            break;
+        case TIA_WRITE_REG_CXCLR:
+            /* Reset all collision latches*/
+            tia.read_regs[TIA_READ_REG_CXM0P] = 0;
+            tia.read_regs[TIA_READ_REG_CXM1P] = 0;
+            tia.read_regs[TIA_READ_REG_CXP0FB] = 0;
+            tia.read_regs[TIA_READ_REG_CXP1FB] = 0;
+            tia.read_regs[TIA_READ_REG_CXM0FB] = 0;
+            tia.read_regs[TIA_READ_REG_CXM1FB] = 0;
+            tia.read_regs[TIA_READ_REG_CXBLPF] = 0;
+            tia.read_regs[TIA_READ_REG_CXPPMM] = 0;
+            break;
         default:
             tia.write_regs[reg] = value;
     }
