@@ -1,6 +1,5 @@
 *.swp
 *.swo
 HiFive1-2600
-carts/*
 *.o
 *.a
