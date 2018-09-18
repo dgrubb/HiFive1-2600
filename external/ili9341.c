@@ -123,7 +123,7 @@ int ili9341_init()
     delay_10ms(12);                             /* Delay for 120ms, let everything settle */
     ili9341_write_command(ILI9341_DISPON);      /* Display on */
 
-    /* Finish intialisation by filling the screen with bright blue. Provides a 
+    /* Finish intialisation by filling the screen with bright blue. Provides a
      * visual indication that everything up until now is functioning.
      */
     delay_10ms(10);
@@ -193,8 +193,8 @@ int ili9341_fill_rectangle(int16_t x, int16_t y, int16_t width, int16_t height, 
 uint16_t ili9341_scale_to_range(uint16_t input_val, uint16_t target_min_range,
     uint16_t target_max_range, uint16_t input_min_range, uint16_t input_max_range)
 {
-    uint16_t scaled_value = (target_max_range - target_min_range) * 
-        (input_val - input_min_range)/(input_max_range-input_min_range) +
+    uint16_t scaled_value = ((target_max_range - target_min_range) *
+        (input_val - input_min_range)/(input_max_range-input_min_range)) +
         target_min_range;
     return scaled_value;
 }
