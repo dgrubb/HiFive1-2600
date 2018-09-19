@@ -138,5 +138,9 @@ void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index);
 void TIA_colour_to_RGB(uint8_t tia_colour, tia_pixel_t* pixel);
 int TIA_draw_line(int line_count);
 int TIA_reset_buffer();
+uint8_t TIA_reverse_bits(uint8_t byte);
+int TIA_test_playfield_bit();
+void TIA_get_playfield(uint32_t *playfield);
+
 
 #endif /* _ATARI_TIA_H */

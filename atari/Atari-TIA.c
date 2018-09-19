@@ -6,6 +6,9 @@
  * Implements the TIA memory map.
  */
 
+// TODO remove
+#include <stdio.h>
+
 #include "Atari-TIA.h"
 #include "external/ili9341.h"
 #include "external/platform_util.h"
@@ -396,6 +399,48 @@ void TIA_write_register(uint8_t reg, uint8_t value)
     }
 }
 
+uint8_t TIA_reverse_bits(uint8_t byte)
+{
+    byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
+    byte = (byte & 0x33) >> 2 | (byte & 0x33) << 2;
+    byte = (byte & 0xAA) >> 1 | (byte & 0x55) << 1;
+    return byte;
+}
+
+int TIA_test_playfield_bit()
+{
+    uint32_t i, tmp, playfield, visible_colour_clock, index = 0;
+    TIA_get_playfield(&playfield);
+    visible_colour_clock = tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC;
+    /* Each playfield pixel covers 4 colour clocks */
+    if (visible_colour_clock < (ATARI_RESOLUTION_WIDTH/2)) {
+        index = visible_colour_clock / 4;
+    } else {
+        // TODO revisit and clean this up, for now it's functional
+        if (tia.write_regs[TIA_WRITE_REG_CTRLPF] & 0x1) {
+            /* Playfield is being mirrored */
+            tmp = 0;
+            for (i=0; i<20; i++) {
+                if ((1<<i) & playfield) {
+                    tmp |= (0x80000 >> i);
+                }
+            }
+            playfield = tmp;
+        }
+        index = (visible_colour_clock - (ATARI_RESOLUTION_WIDTH/2)) / 4;
+    }
+    return (playfield &= (1 << index));
+}
+
+void TIA_get_playfield(uint32_t *playfield)
+{
+    static int count = 0;
+    *playfield = 0;
+    *playfield |= (TIA_reverse_bits(tia.write_regs[TIA_WRITE_REG_PF0]) & 0x0F);
+    *playfield |= tia.write_regs[TIA_WRITE_REG_PF1] << 4;
+    *playfield |= TIA_reverse_bits(tia.write_regs[TIA_WRITE_REG_PF2]) << 12;
+}
+
 void TIA_generate_colour(void)
 {
     /* Grab the background. If there's an element on the same clock count
@@ -403,7 +448,14 @@ void TIA_generate_colour(void)
      */
     tia_pixel_t pixel = {0};
     TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUBK], &pixel);
- 
+
+    if (TIA_test_playfield_bit()) {
+        /* The playfield always has a higher priority than the background, so 
+         * it's safe to simply overwrite the background colour if enabled.
+         */
+        TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUPF], &pixel);
+    }
+
     /* TODO check order of priority established in PFB bits
      * to establish if playfield need to be rendered over player
      * objects
