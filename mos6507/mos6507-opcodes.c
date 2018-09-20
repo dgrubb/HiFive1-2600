@@ -613,6 +613,7 @@ int opcode_BRK(int cycle, addressing_mode_t address_mode)
             mos6507_set_address_bus_hl(STACK_PAGE, S-2);
             mos6507_set_data_bus(P);
             memmap_write();
+            mos6507_set_register(MOS6507_REG_S, S-2);
             return -1;
         case 5:
             mos6507_set_address_bus(0xFFFE);
@@ -958,7 +959,7 @@ int opcode_JSR(int cycle, addressing_mode_t address_mode)
             mos6507_set_address_bus(mos6507_get_PC());
             memmap_read(&adh);
             /* Decrement stack */
-            mos6507_set_register(MOS6507_REG_S, S-1);
+            mos6507_set_register(MOS6507_REG_S, S-2);
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1067,7 +1068,7 @@ int opcode_ORA(int cycle, addressing_mode_t address_mode)
 
 int opcode_PHA(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t value, destination = 0;
+    static uint8_t value, S = 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1080,13 +1081,13 @@ int opcode_PHA(int cycle, addressing_mode_t address_mode)
         case 2:
             /* Fetch value of Accumulator register and stack pointer */
             mos6507_get_register(MOS6507_REG_A, &value);
-            mos6507_get_register(MOS6507_REG_S, &destination);
+            mos6507_get_register(MOS6507_REG_S, &S);
             /* Write status register value to stack address */
-            mos6507_set_address_bus_hl(STACK_PAGE, destination);
+            mos6507_set_address_bus_hl(STACK_PAGE, S);
             mos6507_set_data_bus(value);
             memmap_write();
             /* Decrement stack */
-            mos6507_set_register(MOS6507_REG_S, destination-1);
+            mos6507_set_register(MOS6507_REG_S, S-1);
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1098,7 +1099,7 @@ int opcode_PHA(int cycle, addressing_mode_t address_mode)
 
 int opcode_PHP(int cycle, addressing_mode_t address_mode)
 {
-    static uint8_t value, destination = 0;
+    static uint8_t value, S= 0;
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1111,13 +1112,13 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
         case 2:
             /* Fetch value of status register and stack pointer */
             mos6507_get_register(MOS6507_REG_P, &value);
-            mos6507_get_register(MOS6507_REG_S, &destination);
+            mos6507_get_register(MOS6507_REG_S, &S);
             /* Write status register value to stack address */
-            mos6507_set_address_bus_hl(STACK_PAGE, destination);
+            mos6507_set_address_bus_hl(STACK_PAGE, S);
             mos6507_set_data_bus(value);
             memmap_write();
             /* Decrement stack */
-            mos6507_set_register(MOS6507_REG_S, destination-1);
+            mos6507_set_register(MOS6507_REG_S, S-1);
             /* Intentional fall-through */
         default:
             /* End of op-code execution */
@@ -1144,10 +1145,11 @@ int opcode_PLA(int cycle, addressing_mode_t address_mode)
             mos6507_set_address_bus_hl(STACK_PAGE, source);
             return -1;
         case 3:
-            source++;
-            mos6507_set_address_bus_hl(STACK_PAGE, source);
+            mos6507_set_address_bus_hl(STACK_PAGE, source+1);
             memmap_read(&value);
             mos6507_set_register(MOS6507_REG_A, value);
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_NEGATIVE, (value & 0x80));
+            mos6507_set_status_flag(MOS6507_STATUS_FLAG_ZERO, !(value & 0xFF));
             /* Increment stack */
             mos6507_set_register(MOS6507_REG_S, source+1);
             /* Intentional fall-through */
@@ -1177,8 +1179,7 @@ int opcode_PLP(int cycle, addressing_mode_t address_mode)
             mos6507_set_address_bus_hl(STACK_PAGE, source);
             return -1;
         case 3:
-            source++;
-            mos6507_set_address_bus_hl(STACK_PAGE, source);
+            mos6507_set_address_bus_hl(STACK_PAGE, source+1);
             memmap_read(&value);
             mos6507_set_register(MOS6507_REG_P, value);
             /* Increment stack */
@@ -1276,7 +1277,7 @@ int opcode_RTI(int cycle, addressing_mode_t address_mode)
             memmap_read(&pch);
             return -1;
         case 6:
-            mos6507_set_PC((pch << 8) | pcl);
+            mos6507_set_PC_hl(pch, pcl);
             mos6507_set_address_bus_hl(pch, pcl);
             /* Intentional fall-through */
         default:
@@ -1296,6 +1297,7 @@ int opcode_RTS(int cycle, addressing_mode_t address_mode)
             return -1;
         case 1:
             mos6507_increment_PC();
+            mos6507_set_address_bus(mos6507_get_PC());
             return -1;
         case 2:
             mos6507_get_register(MOS6507_REG_S, &S);
@@ -1310,7 +1312,7 @@ int opcode_RTS(int cycle, addressing_mode_t address_mode)
             memmap_read(&pch);
             return -1;
         case 5:
-            mos6507_set_PC((pch << 8) | pcl);
+            mos6507_set_PC_hl(pch, pcl);
             mos6507_set_address_bus_hl(pch, pcl);
             /* Increment stack */
             mos6507_set_register(MOS6507_REG_S, S+2);
