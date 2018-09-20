@@ -91,7 +91,7 @@ void mos6507_init(void)
     cpu.Y =  0;
     cpu.X =  0;
     cpu.PC = 0;
-    cpu.S =  0xFF;
+    cpu.S =  0xFD;
     cpu.P =  0;
     cpu.data_bus = 0;
     cpu.address_bus = 0;
