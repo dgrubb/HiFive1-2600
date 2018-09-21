@@ -105,6 +105,33 @@ debug_opcode_t debug_opcodes[] = {
     {0xCA, "DEX - Implied"},
     /* DEY */
     {0x88, "DEY - Implied"},
+    /* AND */
+    {0x21, "AND - Indirect X indexed"},
+    {0x25, "AND - Zero page"},
+    {0x29, "AND - Immediate"},
+    {0x2D, "AND - Absolute"},
+    {0x31, "AND - Indirect Y indexed"},
+    {0x35, "AND - Zero page X indexed"},
+    {0x39, "AND - Absolute Y indexed"},
+    {0x3D, "AND - Absolute X indexed"},
+    /* ORA */
+    {0x01, "ORA - Indirect X indexed"},
+    {0x05, "ORA - Zero page"},
+    {0x09, "ORA - Immediate"},
+    {0x0D, "ORA - Absolute"},
+    {0x11, "ORA - Indirect Y indexed"},
+    {0x15, "ORA - Zero page X indexed"},
+    {0x19, "ORA - Absolute Y indexed"},
+    {0x1D, "ORA - Absolute X indexed"},
+    /* EOR */
+    {0x41, "EOR - Indirect X indexed"},
+    {0x45, "EOR - Zero page"},
+    {0x49, "EOR - Immediate"},
+    {0x4D, "EOR - Absolute"},
+    {0x51, "EOR - Indirect Y indexed"},
+    {0x55, "EOR - Zero page X indexed"},
+    {0x59, "EOR - Absolute Y indexed"},
+    {0x5D, "EOR - Absolute X indexed"},
     /* JMP */
     {0x4C, "JMP - Absolute"},
     {0x6C, "JMP - Indirect"},
@@ -338,8 +365,8 @@ void debug_print_instruction(void)
 
     uint8_t instruction, cycle;
 
-    mos5607_get_current_instruction(&instruction);
-    mos5607_get_current_instruction_cycle(&cycle);
+    mos6507_get_current_instruction(&instruction);
+    mos6507_get_current_instruction_cycle(&cycle);
 
     char * template = "Instruction [ 0x%X, %s ], cycle: %d\n\r";
 
@@ -359,6 +386,61 @@ void debug_print_illegal_opcode(uint8_t opcode)
     debug_print_execution_step();
 }
 
+void debug_print_stack_action(debug_stack_action_t action)
+{
+    char msg[MSG_LEN];
+    memset(msg, 0, MSG_LEN);
+    uint16_t address;
+    uint8_t data;
+    char * template = "%s stack ..\n\r%s\tStack address: 0x%X, data: 0x%X\n\r";
+
+    mos6507_get_address_bus(&address);
+    mos6507_get_data_bus(&data);
+
+    puts("----------------------\n\r");
+    if (action == DEBUG_STACK_ACTION_PUSH) {
+        sprintf(msg, template, "Pushing to", "-->", address, data);
+    }
+    if (action == DEBUG_STACK_ACTION_PULL) {
+        sprintf(msg, template, "Pulling from", "<--", address, data);
+    }
+    puts(msg);
+}
+
+void debug_print_stack()
+{
+    char msg[MSG_LEN];
+    memset(msg, 0, MSG_LEN);
+
+    char * template = "[ 0x%X ]\tData: 0x%X\n\r";
+
+    uint16_t address_bus;
+    uint8_t i, sp, data_bus, data;
+    mos6507_get_address_bus(&address_bus);
+    mos6507_get_data_bus(&data_bus);
+    mos6507_get_register(MOS6507_REG_S, &sp);
+
+    puts("----------------------\n\r");
+
+    sprintf(msg, "Stack pointer: 0x%X\n\r", sp);
+    puts(msg);
+    memset(msg, 0, MSG_LEN);
+
+    if (sp == 0xFF) {
+        puts("Stack empty\n\r");
+    } else {
+        for (i=0xFF; i>sp; i--) {
+            mos6507_set_address_bus_hl(STACK_PAGE, i);
+            memmap_read(&data);
+            sprintf(msg, template, i, data);
+            puts(msg);
+        }
+    }
+
+    mos6507_set_address_bus(address_bus);
+    mos6507_set_data_bus(data_bus);
+}
+
 void debug_print_execution_step(void)
 {
     puts("\n\r----------------------------------------------------------------"
@@ -368,9 +450,11 @@ void debug_print_execution_step(void)
     debug_print_buses();
     debug_print_special_register(MOS6507_REG_PC);
     debug_print_special_register(MOS6507_REG_A);
+    debug_print_special_register(MOS6507_REG_S);
     debug_print_special_register(MOS6507_REG_X);
     debug_print_special_register(MOS6507_REG_Y);
     debug_print_status_flags();
+    debug_print_stack();
 }
 
 const char * debug_lookup_opcode_str(uint8_t opcode)
@@ -384,4 +468,4 @@ const char * debug_lookup_opcode_str(uint8_t opcode)
     return "Unknown";
 }
 
-#endif /* EXEC_TESTS */
+#endif /* PRINT_STATE */

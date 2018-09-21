@@ -62,5 +62,7 @@ void memmap_read(uint8_t *data)
     if (IS_TIA(address)) TIA_read_register(address - MEMMAP_TIA_START, data);
     if (IS_RIOT(address)) mos6532_read(address - MEMMAP_RIOT_START, data);
     if (IS_CART(address)) cartridge_read(address - MEMMAP_CART_START, data);
+
+    mos6507_set_data_bus(*data);
 }
 

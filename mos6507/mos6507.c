@@ -91,7 +91,7 @@ void mos6507_init(void)
     cpu.Y =  0;
     cpu.X =  0;
     cpu.PC = 0;
-    cpu.S =  0xFD;
+    cpu.S =  0xFF;
     cpu.P =  0;
     cpu.data_bus = 0;
     cpu.address_bus = 0;
@@ -204,12 +204,37 @@ int mos6507_get_status_flag(mos6507_status_flag_t flag) {
     return (status & flag) ? 1 : 0;
 }
 
-void mos5607_get_current_instruction(uint8_t *instruction)
+void mos6507_get_current_instruction(uint8_t *instruction)
 {
     *instruction = cpu.current_instruction;
 }
 
-void mos5607_get_current_instruction_cycle(uint8_t *instruction_cycle)
+void mos6507_get_current_instruction_cycle(uint8_t *instruction_cycle)
 {
     *instruction_cycle = cpu.current_clock;
+}
+
+void mos6507_push_stack(uint8_t byte)
+{
+    uint8_t S;
+    mos6507_get_register(MOS6507_REG_S, &S);
+    mos6507_set_address_bus_hl(STACK_PAGE, S);
+    mos6507_set_data_bus(byte);
+    memmap_write();
+    mos6507_set_register(MOS6507_REG_S, S-1);
+#ifdef PRINT_STATE
+    debug_print_stack_action(DEBUG_STACK_ACTION_PUSH);
+#endif
+}
+
+void mos6507_pull_stack(uint8_t *byte)
+{
+    uint8_t S;
+    mos6507_get_register(MOS6507_REG_S, &S);
+    mos6507_set_address_bus_hl(STACK_PAGE, S+1);
+    memmap_read(byte);
+    mos6507_set_register(MOS6507_REG_S, S+1);
+#ifdef PRINT_STATE
+    debug_print_stack_action(DEBUG_STACK_ACTION_PULL);
+#endif /* PRINT_STATE */
 }

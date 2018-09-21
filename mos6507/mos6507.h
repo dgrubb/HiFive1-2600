@@ -12,6 +12,8 @@
 #include <stdint.h>
 #include "mos6507-opcodes.h"
 
+#define STACK_PAGE 0x01
+
 typedef enum {
     MOS6507_STATUS_FLAG_NEGATIVE  = 0x80,
     MOS6507_STATUS_FLAG_OVERFLOW  = 0x40,
@@ -63,7 +65,9 @@ void mos6507_set_PC_hl(uint8_t pch, uint8_t pcl);
 void mos6507_set_status_flag(mos6507_status_flag_t flag, int value);
 int mos6507_get_status_flag(mos6507_status_flag_t flag);
 char * mos6507_get_register_str(mos6507_register_t reg);
-void mos5607_get_current_instruction(uint8_t *instruction);
-void mos5607_get_current_instruction_cycle(uint8_t *instruction_cycle);
+void mos6507_get_current_instruction(uint8_t *instruction);
+void mos6507_get_current_instruction_cycle(uint8_t *instruction_cycle);
+void mos6507_push_stack(uint8_t byte);
+void mos6507_pull_stack(uint8_t *byte);
 
 #endif /* _MOS6507_H */

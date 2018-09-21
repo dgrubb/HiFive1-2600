@@ -6,9 +6,6 @@
  * Implements the TIA memory map.
  */
 
-// TODO remove
-#include <stdio.h>
-
 #include "Atari-TIA.h"
 #include "external/ili9341.h"
 #include "external/platform_util.h"
