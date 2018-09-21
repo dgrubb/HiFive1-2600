@@ -103,6 +103,9 @@ typedef struct {
     uint8_t write_regs[TIA_WRITE_REG_LEN];
     uint8_t read_regs[TIA_READ_REG_LEN];
     uint32_t colour_clock;
+    uint8_t hmove_set;
+    uint8_t missile_0_position;
+    uint8_t missile_0_scanline;
 } atari_tia;
 
 typedef struct {

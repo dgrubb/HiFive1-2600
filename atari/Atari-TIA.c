@@ -337,6 +337,8 @@ void TIA_init(void)
         tia_line_buffer[i].G = 0x0;
         tia_line_buffer[i].B = 0x0;
     }
+    tia.hmove_set = 0;
+    tia.missile_0_position = 0;
 }
 
 /* Retrieves a value in a specified register
@@ -371,14 +373,24 @@ void TIA_write_register(uint8_t reg, uint8_t value)
         case TIA_WRITE_REG_RESP1:
             break;
         case TIA_WRITE_REG_RESM0:
+            if (tia.colour_clock < TIA_COLOUR_CLOCK_HSYNC) {
+                tia.missile_0_position = 0;
+            } else {
+                tia.missile_0_position = tia.colour_clock;
+            }
+            tia.missile_0_scanline = 1;
             break;
         case TIA_WRITE_REG_RESM1:
             break;
         case TIA_WRITE_REG_RESBL:
             break;
         case TIA_WRITE_REG_HMOVE:
+            if (tia.colour_clock < TIA_COLOUR_CLOCK_HSYNC) {
+                tia.hmove_set = 1;
+            }
             break;
         case TIA_WRITE_REG_HMCLR:
+            tia.hmove_set = 0;
             break;
         case TIA_WRITE_REG_CXCLR:
             /* Reset all collision latches*/
@@ -438,6 +450,22 @@ void TIA_get_playfield(uint32_t *playfield)
     *playfield |= TIA_reverse_bits(tia.write_regs[TIA_WRITE_REG_PF2]) << 12;
 }
 
+int TIA_test_missile_0_visible(void)
+{
+    uint8_t size = 0;
+    if (!tia.write_regs[TIA_WRITE_REG_ENAM0]) {
+        return 0;
+    }
+    size = (tia.write_regs[TIA_WRITE_REG_NUSIZ0] >> 4);
+    if (!tia.hmove_set) {
+        if ((tia.colour_clock >= tia.missile_0_position) &&
+            (tia.colour_clock <= (tia.missile_0_position + size))) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void TIA_generate_colour(void)
 {
     /* Grab the background. If there's an element on the same clock count
@@ -447,9 +475,6 @@ void TIA_generate_colour(void)
     TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUBK], &pixel);
 
     if (TIA_test_playfield_bit()) {
-        /* The playfield always has a higher priority than the background, so 
-         * it's safe to simply overwrite the background colour if enabled.
-         */
         TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUPF], &pixel);
     }
 
@@ -464,6 +489,11 @@ void TIA_generate_colour(void)
          * Third:   P1, M1
          * Lowest:  BK
          */
+        // TODO test P1 register
+        // TODO test P0 register
+        if (TIA_test_playfield_bit()) {
+            TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUPF], &pixel);
+        }
     } else {
         /* Default priority control:
          * Highest: P0, M0
@@ -471,6 +501,11 @@ void TIA_generate_colour(void)
          * Third:   PF, BL
          * Lowest:  BK
          */
+        if (TIA_test_playfield_bit()) {
+            TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUPF], &pixel);
+        }
+        // TODO test P1 register
+        // TODO test P0 register
     }
 
     TIA_write_to_buffer(pixel, (tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC));
@@ -501,6 +536,8 @@ int TIA_clock_tick()
     if (tia.colour_clock >= TIA_COLOUR_CLOCK_TOTAL) {
         tia.colour_clock = 0;
         tia.write_regs[TIA_WRITE_REG_WSYNC] = 0;
+        tia.missile_0_scanline = 0;
+        tia.hmove_set = 0;
         return 0;
     }
     if (tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) {
