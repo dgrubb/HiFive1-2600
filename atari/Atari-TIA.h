@@ -96,6 +96,14 @@ typedef enum {
     TIA_READ_REG_LEN
 } tia_readable_register_t;
 
+typedef struct {
+    uint8_t scanline_reset;
+    uint8_t enabled;
+    uint8_t position_clock;
+    uint8_t width;
+    uint8_t horizontal_offset;
+    uint8_t line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
+} tia_missile_t;
 
 /* Define a structure type to represent the state of a TIA chip */
 typedef struct {
@@ -104,8 +112,7 @@ typedef struct {
     uint8_t read_regs[TIA_READ_REG_LEN];
     uint32_t colour_clock;
     uint8_t hmove_set;
-    uint8_t missile_0_position;
-    uint8_t missile_0_scanline;
+    tia_missile_t missiles[2];
 } atari_tia;
 
 typedef struct {
