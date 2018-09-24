@@ -6,6 +6,9 @@
  * Implements the TIA memory map.
  */
 
+// TODO remove
+#include <stdio.h>
+
 #include "Atari-TIA.h"
 #include "external/ili9341.h"
 #include "external/platform_util.h"
@@ -333,13 +336,11 @@ void TIA_init(void)
         tia.read_regs[i] = 0;
     }
     for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
-        tia_line_buffer[i].R = 0x0;
-        tia_line_buffer[i].G = 0x0;
-        tia_line_buffer[i].B = 0x0;
+        tia_line_buffer[i] = (tia_pixel_t){0};
     }
     tia.hmove_set = 0;
-    tia.missiles[0] = {0};
-    tia.missiles[1] = {0};
+    tia.missiles[0] = (tia_missile_t){0};
+    tia.missiles[1] = (tia_missile_t){0};
 }
 
 /* Retrieves a value in a specified register
@@ -363,6 +364,20 @@ void TIA_write_register(uint8_t reg, uint8_t value)
      * results in the processor clock suspending
      */
     switch (reg) {
+        case TIA_WRITE_REG_COLUBK:
+            printf("BACKGROUND COLOUR WRITE!! 0x%X\n\r", value);
+            tia.write_regs[reg] = value;
+            break;
+        case TIA_WRITE_REG_PF0:
+            /* Intentional fallthrough */
+        case TIA_WRITE_REG_PF1:
+            /* Intentional fallthrough */
+        case TIA_WRITE_REG_PF2:
+            /* Intentional fallthrough */
+        case TIA_WRITE_REG_CTRLPF:
+            tia.write_regs[reg] = value;
+            TIA_update_playfield();
+            break;
         case TIA_WRITE_REG_WSYNC:
             tia.write_regs[TIA_WRITE_REG_WSYNC] = 1;
             break;
@@ -385,6 +400,8 @@ void TIA_write_register(uint8_t reg, uint8_t value)
             if (tia.colour_clock < TIA_COLOUR_CLOCK_HSYNC) {
                 tia.hmove_set = 1;
             }
+            TIA_update_missile_buffer(0);
+            TIA_update_missile_buffer(1);
             break;
         case TIA_WRITE_REG_HMCLR:
             tia.hmove_set = 0;
@@ -408,17 +425,18 @@ void TIA_write_register(uint8_t reg, uint8_t value)
 void TIA_reset_missile(uint8_t missile)
 {
     tia.missiles[missile].scanline_reset = 1;
-    tia.missiles[missile].position = 0;
+    tia.missiles[missile].position_clock = 0;
     if (tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) {
-        tia.missiles[missile].position = tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC;
+        tia.missiles[missile].position_clock = tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC;
     }
     TIA_update_missile_buffer(missile);
 }
 
 void TIA_update_missile_buffer(uint8_t missile)
 {
-    tia_writeable_register_t enable_reg, size_reg;
-    int i, size_shift, bit_set;
+    tia_writable_register_t enable_reg, size_reg, offset_reg;
+    unsigned int i, size_shift, offset_shift, bit_set;
+    uint8_t negative_offset = 0;
 
     /* Clear the line buffer in preparation for re-calculating it */
     for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
@@ -428,18 +446,28 @@ void TIA_update_missile_buffer(uint8_t missile)
     if (missile == 0) {
         enable_reg = TIA_WRITE_REG_ENAM0;
         size_reg = TIA_WRITE_REG_NUSIZ0;
+        offset_reg = TIA_WRITE_REG_HMM0;
     }
     if (missile == 1) {
         enable_reg = TIA_WRITE_REG_ENAM1;
         size_reg = TIA_WRITE_REG_NUSIZ1;
+        offset_reg = TIA_WRITE_REG_HMM0;
     }
 
-    if ((missile == 0 && !tia.write_regs[enable_reg]) ||) {
+    if (!tia.write_regs[enable_reg]) {
         return;
     }
     tia.missiles[missile].width = (1 << (tia.write_regs[size_reg] >> 4));
     if (tia.hmove_set) {
         /* Applies horizontal move register for intra-cycle offset */
+        offset_shift = (tia.write_regs[offset_reg] >> 4);
+        negative_offset = (offset_shift & 0x8);
+        offset_shift &= 0x7;
+        if (negative_offset) {
+            tia.missiles[missile].position_clock = tia.missiles[missile].position_clock - offset_shift;
+        } else {
+            tia.missiles[missile].position_clock = tia.missiles[missile].position_clock + offset_shift;
+        }
     }
     for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
         bit_set = 0;
@@ -451,62 +479,56 @@ void TIA_update_missile_buffer(uint8_t missile)
     }
 }
 
-uint8_t TIA_reverse_bits(uint8_t byte)
+uint8_t TIA_reverse_byte(uint8_t byte)
 {
     byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
-    byte = (byte & 0x33) >> 2 | (byte & 0x33) << 2;
+    byte = (byte & 0xCC) >> 2 | (byte & 0x33) << 2;
     byte = (byte & 0xAA) >> 1 | (byte & 0x55) << 1;
     return byte;
 }
 
+void TIA_get_playfield_pattern(uint32_t *playfield)
+{
+    *playfield = 0;
+    *playfield |= (tia.write_regs[TIA_WRITE_REG_PF0] >> 4);
+    *playfield |= (tia.write_regs[TIA_WRITE_REG_PF1] << 4);
+    *playfield |= (tia.write_regs[TIA_WRITE_REG_PF2] << 12);
+}
+
+void TIA_update_playfield()
+{
+    uint32_t pattern, i, bit_set;
+    TIA_get_playfield_pattern(&pattern);
+    tia.playfield.mirror_enable = (tia.write_regs[TIA_WRITE_REG_CTRLPF] & 0x01);
+    /* Fill in the first half of the screen */
+    for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE_HALF; i++) {
+        /* N.B divide by four as each playfield bit covers four TIA clock cycles */
+        tia.playfield.line_buffer[i] = ((pattern & (1 << (i/4))) ? 1 : 0);
+    }
+    /* Now fill in the second-half, compensating if mirroring has been enabled */
+    for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE_HALF; i++) {
+        if (tia.playfield.mirror_enable) {
+            tia.playfield.line_buffer[i+TIA_COLOUR_CLOCK_VISIBLE_HALF] = ((pattern & (0x80000 >> (i/4))) ? 1 : 0);
+        } else {
+            tia.playfield.line_buffer[i+TIA_COLOUR_CLOCK_VISIBLE_HALF] = ((pattern & (1 << (i/4))) ? 1 : 0);
+        }
+    }
+}
+
 int TIA_test_playfield_bit()
 {
-    uint32_t i, tmp, playfield, visible_colour_clock, index = 0;
-    TIA_get_playfield(&playfield);
-    visible_colour_clock = tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC;
-    /* Each playfield pixel covers 4 colour clocks */
-    if (visible_colour_clock < (ATARI_RESOLUTION_WIDTH/2)) {
-        index = visible_colour_clock / 4;
-    } else {
-        // TODO revisit and clean this up, for now it's functional
-        if (tia.write_regs[TIA_WRITE_REG_CTRLPF] & 0x1) {
-            /* Playfield is being mirrored */
-            tmp = 0;
-            for (i=0; i<20; i++) {
-                if ((1<<i) & playfield) {
-                    tmp |= (0x80000 >> i);
-                }
-            }
-            playfield = tmp;
-        }
-        index = (visible_colour_clock - (ATARI_RESOLUTION_WIDTH/2)) / 4;
-    }
-    return (playfield &= (1 << index));
-}
-
-void TIA_get_playfield(uint32_t *playfield)
-{
-    static int count = 0;
-    *playfield = 0;
-    *playfield |= (TIA_reverse_bits(tia.write_regs[TIA_WRITE_REG_PF0]) & 0x0F);
-    *playfield |= tia.write_regs[TIA_WRITE_REG_PF1] << 4;
-    *playfield |= TIA_reverse_bits(tia.write_regs[TIA_WRITE_REG_PF2]) << 12;
-}
-
-int TIA_test_missile_0_visible(void)
-{
-    uint8_t size = 0;
-    if (!tia.write_regs[TIA_WRITE_REG_ENAM0]) {
+    if (tia.colour_clock < TIA_COLOUR_CLOCK_HSYNC) {
         return 0;
     }
-    size = (tia.write_regs[TIA_WRITE_REG_NUSIZ0] >> 4);
-    if (!tia.hmove_set) {
-        if ((tia.colour_clock >= tia.missile_0_position) &&
-            (tia.colour_clock <= (tia.missile_0_position + size))) {
-            return 1;
-        }
+    return (tia.playfield.line_buffer[tia.colour_clock - TIA_COLOUR_CLOCK_HSYNC] ? 1 : 0);
+}
+
+int TIA_test_missile_bit(uint8_t missile)
+{
+    if (tia.colour_clock < TIA_COLOUR_CLOCK_HSYNC) {
+        return 0;
     }
-    return 0;
+    return (tia.missiles[missile].line_buffer[tia.colour_clock - TIA_COLOUR_CLOCK_HSYNC] ? 1 : 0);
 }
 
 void TIA_generate_colour(void)
@@ -551,6 +573,13 @@ void TIA_generate_colour(void)
         // TODO test P0 register
     }
 
+    if (TIA_test_missile_bit(0)) {
+        TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUP0], &pixel);
+    }
+    if (TIA_test_missile_bit(1)) {
+        TIA_colour_to_RGB(tia.write_regs[TIA_WRITE_REG_COLUP1], &pixel);
+    }
+
     TIA_write_to_buffer(pixel, (tia.colour_clock-TIA_COLOUR_CLOCK_HSYNC));
 
     /* TODO check for collisions and set registers appropriately */
@@ -579,7 +608,7 @@ int TIA_clock_tick()
     if (tia.colour_clock >= TIA_COLOUR_CLOCK_TOTAL) {
         tia.colour_clock = 0;
         tia.write_regs[TIA_WRITE_REG_WSYNC] = 0;
-        tia.missile_0_scanline = 0;
+        tia.missiles[0].scanline_reset = 0;
         tia.hmove_set = 0;
         return 0;
     }

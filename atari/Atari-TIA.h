@@ -13,6 +13,7 @@
 
 /* Ref: Stella Programmer's Guide, Pg. 4 */
 #define TIA_COLOUR_CLOCK_VISIBLE    160
+#define TIA_COLOUR_CLOCK_VISIBLE_HALF (TIA_COLOUR_CLOCK_VISIBLE / 2)
 #define TIA_COLOUR_CLOCK_HSYNC      68
 #define TIA_COLOUR_CLOCK_TOTAL      (TIA_COLOUR_CLOCK_VISIBLE + TIA_COLOUR_CLOCK_HSYNC)
 
@@ -105,6 +106,11 @@ typedef struct {
     uint8_t line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 } tia_missile_t;
 
+typedef struct {
+    uint8_t  mirror_enable;
+    uint8_t line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
+} tia_playfield_t;
+
 /* Define a structure type to represent the state of a TIA chip */
 typedef struct {
     // Data registers
@@ -113,6 +119,7 @@ typedef struct {
     uint32_t colour_clock;
     uint8_t hmove_set;
     tia_missile_t missiles[2];
+    tia_playfield_t playfield;
 } atari_tia;
 
 typedef struct {
@@ -148,9 +155,11 @@ void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index);
 void TIA_colour_to_RGB(uint8_t tia_colour, tia_pixel_t* pixel);
 int TIA_draw_line(int line_count);
 int TIA_reset_buffer();
-uint8_t TIA_reverse_bits(uint8_t byte);
+uint8_t TIA_reverse_byte(uint8_t byte);
 int TIA_test_playfield_bit();
-void TIA_get_playfield(uint32_t *playfield);
-
+void TIA_get_playfield_pattern(uint32_t *playfield);
+void TIA_reset_missile(uint8_t missile);
+void TIA_update_missile_buffer(uint8_t missile);
+void TIA_update_playfield();
 
 #endif /* _ATARI_TIA_H */

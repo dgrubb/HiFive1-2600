@@ -12,6 +12,14 @@
 #include "mos6532.h"
 
 static uint8_t memory[MEM_SIZE];
+mos6532_timer_t timer;
+
+void mos6532_init(void)
+{
+    timer = (mos6532_timer_t){0};
+    timer.timer_set = MOS6532_TIMER_DIVISOR_NONE;
+    mos6532_clear_memory();
+}
 
 /* Checks that a requested memory address is within the 
  * RAM space.
@@ -43,6 +51,12 @@ void mos6532_clear_memory(void)
  */
 int mos6532_read(uint16_t address, uint8_t *data)
 {
+    /* Check whether special peripheral registers are the target of the read
+     * before passing over to the general RAM area.
+     */
+    switch (address) {
+        default:
+    }
     if (-1 == mos6532_bounds_check(address)) {
         /* Error, attempting to write outside memory */
         return -1;
@@ -67,4 +81,17 @@ int mos6532_write(uint16_t address,uint8_t data)
 
 void mos6532_clock_tick(void)
 {
+    switch (timer.timer_set) {
+        case MOS6532_TIMER_DIVISOR_T1:
+            break;
+        case MOS6532_TIMER_DIVISOR_T8:
+            break;
+        case MOS6532_TIMER_DIVISOR_T64:
+            break;
+        case MOS6532_TIMER_DIVISOR_T1024:
+            break;
+        case MOS6532_TIMER_DIVISOR_NONE:
+            /* Intentional fall-through */
+        default:
+    }
 }

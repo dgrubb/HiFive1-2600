@@ -18,9 +18,27 @@
 #define MOS6532_TIM64T_INTERVAL 64
 #define MOS6532_T1024T_INTERVAL 1024
 
+typedef enum {
+    MOS6532_TIMER_DIVISOR_NONE = 0,
+    MOS6532_TIMER_DIVISOR_T1,
+    MOS6532_TIMER_DIVISOR_T8,
+    MOS6532_TIMER_DIVISOR_T64,
+    MOS6532_TIMER_DIVISOR_T1024
+} mos6532_timer_divsor_t;
+
+typedef struct {
+    uint8_t counter;
+    uint8_t setting;
+    uint8_t interrupt;
+    mos6532_timer_divsor_t timer_set;
+} mos6532_timer_t;
+
+mos6532_timer_t timer;
+
 /* Utility functions */
 int mos6532_bounds_check(uint8_t address);
 void mos6532_clear_memory(void);
+void mos6532_init(void);
 /* External memory access */
 int mos6532_read(uint16_t address, uint8_t *data);
 int mos6532_write(uint16_t address, uint8_t data);
