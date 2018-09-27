@@ -28,7 +28,7 @@
     #include "test/debug.h"
 #endif
 /* Game cart data */
-#include "carts/pacman.h"
+#include "carts/kernel_22.h"
 
 /* Globals */
 static const char atari_logo[] = "\n\r"
@@ -90,11 +90,11 @@ int main()
      * hardware: memory, CPU, TIA etc ...
      */
     opcode_populate_ISA_table();
-    mos6532_clear_memory();
+    mos6532_init();
     TIA_init();
 
     /* Emulation is ready to start so load cartridge and reset CPU */
-    cartridge_load(pacman);
+    cartridge_load(kernel_22);
     mos6507_reset();
 
     /* Setup FE310 peripherals */

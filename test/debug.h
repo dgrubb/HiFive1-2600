@@ -36,6 +36,7 @@ void debug_print_illegal_opcode(uint8_t opcode);
 const char * debug_lookup_opcode_str(uint8_t opcode);
 void debug_print_stack_action(debug_stack_action_t action);
 void debug_print_stack();
+void debug_print_timer();
 
 #endif /* PRINT_STATE */
 

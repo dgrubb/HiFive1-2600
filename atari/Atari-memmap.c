@@ -13,7 +13,10 @@
 #include "mos6532/mos6532.h"
 
 #define IS_TIA(x)  (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
-#define IS_RIOT(x) (x >= MEMMAP_RIOT_START && x <= MEMMAP_RIOT_END)
+#define IS_RIOT(x) ((x >= MEMMAP_RIOT_RAM_START && x <= MEMMAP_RIOT_RAM_END) || \
+                    (x >= MEMMAP_RIOT_RAM_MIRROR_START && x <= MEMMAP_RIOT_RAM_MIRROR_END) || \
+                    (x >= MEMMAP_RIOT_PERIPH_START && x <= MEMMAP_RIOT_PERIPH_END) || \
+                    (x >= MEMMAP_RIOT_PERIPH_MIRROR_START && x <= MEMMAP_RIOT_PERIPH_MIRROR_END))
 #define IS_CART(x) (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END)
 
 void memmap_map_address(uint16_t *address)
@@ -35,7 +38,7 @@ void memmap_map_address(uint16_t *address)
 void memmap_write(void)
 {
     /* Fetch data and address from CPU */
-    uint16_t address;
+    uint16_t address, address_offset;
     uint8_t data;
     mos6507_get_data_bus(&data);
     mos6507_get_address_bus(&address);
@@ -43,7 +46,10 @@ void memmap_write(void)
 
     /* Access particular device */
     if (IS_TIA(address)) TIA_write_register(address - MEMMAP_TIA_START, data);
-    if (IS_RIOT(address)) mos6532_write(address - MEMMAP_RIOT_START, data);
+    if (IS_RIOT(address)) {
+        memmap_map_riot_address(&address);
+        mos6532_write(address, data);
+    }
     if (IS_CART(address)) {
         /* Cartridges are read-only. Are there hardware peripherals which 
          * use this space for extending functionality? E.g., SuperCharger?
@@ -60,9 +66,27 @@ void memmap_read(uint8_t *data)
 
     /* Access particular device */
     if (IS_TIA(address)) TIA_read_register(address - MEMMAP_TIA_START, data);
-    if (IS_RIOT(address)) mos6532_read(address - MEMMAP_RIOT_START, data);
+    if (IS_RIOT(address)) {
+        memmap_map_riot_address(&address);
+        mos6532_read(address, data);
+    }
     if (IS_CART(address)) cartridge_read(address - MEMMAP_CART_START, data);
 
     mos6507_set_data_bus(*data);
 }
 
+void memmap_map_riot_address(uint16_t *address)
+{
+    if (*address >= MEMMAP_RIOT_RAM_START && *address <= MEMMAP_RIOT_RAM_END) {
+        *address = *address - MEMMAP_RIOT_RAM_START;
+    }
+    if (*address >= MEMMAP_RIOT_RAM_MIRROR_START && *address <= MEMMAP_RIOT_RAM_MIRROR_END) {
+        *address = *address - MEMMAP_RIOT_RAM_MIRROR_START;
+    }
+    if (*address >= MEMMAP_RIOT_PERIPH_START && *address <= MEMMAP_RIOT_PERIPH_END) {
+        *address = *address - MEMMAP_RIOT_PERIPH_START;
+    }
+    if (*address >= MEMMAP_RIOT_PERIPH_MIRROR_START && *address <= MEMMAP_RIOT_PERIPH_MIRROR_END) {
+        *address = *address - MEMMAP_RIOT_PERIPH_MIRROR_START;
+    }
+}

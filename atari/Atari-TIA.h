@@ -107,9 +107,18 @@ typedef struct {
 } tia_missile_t;
 
 typedef struct {
-    uint8_t  mirror_enable;
+    uint8_t mirror_enable;
     uint8_t line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
 } tia_playfield_t;
+
+typedef struct {
+    uint8_t scanline_reset;
+    uint8_t position_clock;
+    uint8_t horizontal_offset;
+    uint8_t vertical_delay;
+    uint8_t pattern;
+    uint8_t line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
+} tia_player_t;
 
 /* Define a structure type to represent the state of a TIA chip */
 typedef struct {
@@ -119,6 +128,7 @@ typedef struct {
     uint32_t colour_clock;
     uint8_t hmove_set;
     tia_missile_t missiles[2];
+    tia_player_t players[2];
     tia_playfield_t playfield;
 } atari_tia;
 
@@ -155,11 +165,19 @@ void TIA_write_to_buffer(tia_pixel_t pixel, int pixel_index);
 void TIA_colour_to_RGB(uint8_t tia_colour, tia_pixel_t* pixel);
 int TIA_draw_line(int line_count);
 int TIA_reset_buffer();
+void TIA_reset_line_buffer(uint8_t line_buffer[]);
 uint8_t TIA_reverse_byte(uint8_t byte);
 int TIA_test_playfield_bit();
 void TIA_get_playfield_pattern(uint32_t *playfield);
 void TIA_reset_missile(uint8_t missile);
 void TIA_update_missile_buffer(uint8_t missile);
+void TIA_update_player_buffer(uint8_t player);
 void TIA_update_playfield();
+int TIA_test_player_bit(uint8_t player);
+void TIA_reset_player(uint8_t player);
+void TIA_get_player_registers(uint8_t player, tia_writable_register_t *reflect,
+        tia_writable_register_t *graphics, tia_writable_register_t *offset,
+        tia_writable_register_t *vertical, tia_writable_register_t size_reg);
+void TIA_apply_HMOVE(tia_writable_register_t offset_reg, int *position);
 
 #endif /* _ATARI_TIA_H */

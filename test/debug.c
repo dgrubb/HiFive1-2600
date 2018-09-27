@@ -27,7 +27,7 @@
 #define MSG_LEN 300
 
 #define IS_TIA(x)  (x >= MEMMAP_TIA_START && x <= MEMMAP_TIA_END)
-#define IS_RIOT(x) (x >= MEMMAP_RIOT_START && x <= MEMMAP_TIA_END)
+#define IS_RIOT(x) (x >= MEMMAP_RIOT_RAM_START && x <= MEMMAP_RIOT_PERIPH_MIRROR_END)
 #define IS_CART(x) (x >= MEMMAP_CART_START && x <= MEMMAP_CART_END)
 
 debug_opcode_t debug_opcodes[] = {
@@ -345,7 +345,7 @@ void debug_print_buses(void)
     }
     if (IS_RIOT(address)) {
         subsystem = "RIOT";
-        offset_address = address - MEMMAP_RIOT_START;
+        offset_address = address - MEMMAP_RIOT_RAM_START;
     }
     if (IS_CART(address)) {
         subsystem = "CART";
@@ -441,6 +441,28 @@ void debug_print_stack()
     mos6507_set_data_bus(data_bus);
 }
 
+void debug_print_timer()
+{
+    char msg[MSG_LEN];
+    memset(msg, 0, MSG_LEN);
+
+    uint8_t counter, interrupt;
+    mos6532_timer_divisor_t divisor;
+
+    char * template = "Timer [ %s SET: %d ], interrupt [ %s ], interval: %s\n\r";
+
+    mos6532_get_counter(&counter);
+    mos6532_get_interval(&divisor);
+    mos6532_get_interrupt(&interrupt);
+
+    sprintf(msg, template,
+            (counter ? "" : "NOT"),
+            counter,
+            (interrupt ? "FIRED" : "PENDING"),
+            mos6532_get_divisor_str(divisor));
+    puts(msg);
+}
+
 void debug_print_execution_step(void)
 {
     puts("\n\r----------------------------------------------------------------"
@@ -453,6 +475,7 @@ void debug_print_execution_step(void)
     debug_print_special_register(MOS6507_REG_S);
     debug_print_special_register(MOS6507_REG_X);
     debug_print_special_register(MOS6507_REG_Y);
+    debug_print_timer();
     debug_print_status_flags();
     debug_print_stack();
 }

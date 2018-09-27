@@ -10,6 +10,7 @@
 #include "platform_util.h"
 #include "ili9341.h"
 #include "mos6507/mos6507.h"
+#include "mos6532/mos6532.h"
 #include "atari/Atari-TIA.h"
 #include "spi.h"
 
@@ -117,6 +118,7 @@ int raster_line()
     for (i=0; i<TIA_COLOUR_CLOCK_TOTAL; i++) {
         clock_count = TIA_clock_tick();
         if (!TIA_get_WSYNC() && !((clock_count+1) % 3)) {
+            mos6532_clock_tick();
             if (mos6507_clock_tick()) {
                 return -1;
             }
