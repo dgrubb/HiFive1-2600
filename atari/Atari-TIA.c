@@ -16,6 +16,17 @@
 atari_tia tia;
 
 tia_pixel_t tia_line_buffer[];
+/* See page 40 of docs/Stella Programmer's Guide.pdf */
+uint8_t tia_player_size_map[] = {
+    0x80, /* 0: One copy */
+    0xA0, /* 1: Two copies - close */
+    0x90, /* 2: Two copies - medium */
+    0xA8, /* 3: Three copies - close */
+    0x81, /* 4: Two copies - wide */
+    0xC0, /* 5: Double size player */
+    0x89, /* 6: Three copies medium */
+    0xF0  /* 7: Quad-sized player */
+};
 
 /* Usage note:
  *
@@ -443,7 +454,7 @@ void TIA_reset_player(uint8_t player)
 
 void TIA_update_player_buffer(uint8_t player)
 {
-    int position, mirror, pattern, i, pixel_clock;
+    int position, mirror, pattern, i, pixel_clock, size_mask, draw_count;
     tia_writable_register_t reflect_reg, graphics_reg, offset_reg, vertical_reg, size_reg;
 
     TIA_reset_line_buffer(tia.players[player].line_buffer);
@@ -465,10 +476,20 @@ void TIA_update_player_buffer(uint8_t player)
         pattern = tia.write_regs[graphics_reg];
     }
 
+    size_mask = tia_player_size_map[(tia.write_regs[size_reg] & 0x7)];
+    draw_count = 8;
+    pixel_clock = 0;
+
     for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
-        if (i >= position && (pixel_clock < 8)) {
-            tia.players[player].line_buffer[i] = (pattern & (1 << pixel_clock) ? 1 : 0);
-            pixel_clock++;
+        if (i >= position) {
+            if (size_mask & (1 << draw_count)) {
+                tia.players[player].line_buffer[i] = (pattern & (1 << pixel_clock) ? 1 : 0);
+                pixel_clock++;
+            }
+            if (pixel_clock >= 8) {
+                draw_count--;
+                pixel_clock = 0;
+            }
         }
     }
 }

@@ -141,6 +141,7 @@ extern tia_pixel_t tia_colour_map[128];
 #ifdef COLOUR_TEST
 extern tia_pixel_t tia_test_line[TIA_COLOUR_CLOCK_VISIBLE];
 #endif /* COLOUR_TEST */
+extern uint8_t tia_player_size_map[8];
 
 /* This is the single instance of atari_tia type to represent
  * the TIA in this application */
