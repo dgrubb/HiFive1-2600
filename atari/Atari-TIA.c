@@ -473,17 +473,6 @@ void TIA_update_player_buffer(uint8_t player)
     }
 }
 
-void TIA_apply_HMOVE(tia_writable_register_t offset_reg, int *position)
-{
-    uint8_t offset = (tia.write_regs[offset_reg] >> 4);
-    if (offset & 0x8) {
-        *position -= (offset & 0x7) + 1;
-    } else {
-        *position += offset;
-    }
-    if (*position < 0) *position = 0;
-}
-
 void TIA_get_player_registers(uint8_t player, tia_writable_register_t *reflect,
         tia_writable_register_t *graphics, tia_writable_register_t *offset,
         tia_writable_register_t *vertical, tia_writable_register_t *size)
@@ -538,14 +527,6 @@ void TIA_update_missile_buffer(uint8_t missile)
     }
 }
 
-uint8_t TIA_reverse_byte(uint8_t byte)
-{
-    byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
-    byte = (byte & 0xCC) >> 2 | (byte & 0x33) << 2;
-    byte = (byte & 0xAA) >> 1 | (byte & 0x55) << 1;
-    return byte;
-}
-
 void TIA_get_playfield_pattern(uint32_t *playfield)
 {
     *playfield = 0;
@@ -596,6 +577,25 @@ int TIA_test_player_bit(uint8_t player)
         return 0;
     }
     return (tia.players[player].line_buffer[tia.colour_clock - TIA_COLOUR_CLOCK_HSYNC] ? 1 : 0);
+}
+
+void TIA_apply_HMOVE(tia_writable_register_t offset_reg, int *position)
+{
+    uint8_t offset = (tia.write_regs[offset_reg] >> 4);
+    if (offset & 0x8) {
+        *position -= (offset & 0x7) + 1;
+    } else {
+        *position += offset;
+    }
+    if (*position < 0) *position = 0;
+}
+
+uint8_t TIA_reverse_byte(uint8_t byte)
+{
+    byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
+    byte = (byte & 0xCC) >> 2 | (byte & 0x33) << 2;
+    byte = (byte & 0xAA) >> 1 | (byte & 0x55) << 1;
+    return byte;
 }
 
 void TIA_generate_colour(void)
@@ -689,7 +689,6 @@ int TIA_clock_tick()
         tia.missiles[1].scanline_reset = 0;
         tia.hmove_set = 0;
         tia.write_regs[TIA_WRITE_REG_HMOVE] = 0;
-        //TIA_reset_buffer();
         return 0;
     }
     if (tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) {
