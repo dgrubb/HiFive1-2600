@@ -486,13 +486,21 @@ void TIA_apply_HMOVE(tia_writable_register_t offset_reg, int *position)
 
 void TIA_get_player_registers(uint8_t player, tia_writable_register_t *reflect,
         tia_writable_register_t *graphics, tia_writable_register_t *offset,
-        tia_writable_register_t *vertical)
+        tia_writable_register_t *vertical, tia_writable_register_t *size)
 {
-    player ? (*reflect = TIA_WRITE_REG_REFP1) : (*reflect = TIA_WRITE_REG_REFP0);
-    player ? (*graphics = TIA_WRITE_REG_GRP1) : (*graphics = TIA_WRITE_REG_GRP0);
-    player ? (*offset = TIA_WRITE_REG_HMP1) : (*offset = TIA_WRITE_REG_HMP0);
+    player ? (*reflect = TIA_WRITE_REG_REFP1)   : (*reflect = TIA_WRITE_REG_REFP0);
+    player ? (*graphics = TIA_WRITE_REG_GRP1)   : (*graphics = TIA_WRITE_REG_GRP0);
+    player ? (*offset = TIA_WRITE_REG_HMP1)     : (*offset = TIA_WRITE_REG_HMP0);
     player ? (*vertical = TIA_WRITE_REG_VDELP1) : (*vertical = TIA_WRITE_REG_VDELP0);
-    player ? (*size = TIA_WRITE_REG_NUSIZ1) : (*vertical = TIA_WRITE_REG_NUSIZ0);
+    player ? (*size = TIA_WRITE_REG_NUSIZ1)     : (*size = TIA_WRITE_REG_NUSIZ0);
+}
+
+void TIA_get_missile_registers(uint8_t missile, tia_writable_register_t *enable,
+        tia_writable_register_t *size, tia_writable_register_t *offset)
+{
+    missile ? (*enable = TIA_WRITE_REG_ENAM1) : (*enable = TIA_WRITE_REG_ENAM0);
+    missile ? (*size = TIA_WRITE_REG_NUSIZ1)  : (*size = TIA_WRITE_REG_NUSIZ0);
+    missile ? (*offset = TIA_WRITE_REG_HMM1)  : (*offset = TIA_WRITE_REG_HMM0);
 }
 
 void TIA_reset_missile(uint8_t missile)
@@ -507,52 +515,26 @@ void TIA_reset_missile(uint8_t missile)
 
 void TIA_update_missile_buffer(uint8_t missile)
 {
+    int position, i;
     tia_writable_register_t enable_reg, size_reg, offset_reg;
-    unsigned int i, size_shift, offset_shift, bit_set;
-    uint8_t position, negative_offset = 0;
 
-    /* Clear the line buffer in preparation for re-calculating it */
-    for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
-        tia.missiles[missile].line_buffer[i] = 0;
-    }
-
-    if (missile == 0) {
-        enable_reg = TIA_WRITE_REG_ENAM0;
-        size_reg = TIA_WRITE_REG_NUSIZ0;
-        offset_reg = TIA_WRITE_REG_HMM0;
-    }
-    if (missile == 1) {
-        enable_reg = TIA_WRITE_REG_ENAM1;
-        size_reg = TIA_WRITE_REG_NUSIZ1;
-        offset_reg = TIA_WRITE_REG_HMM1;
-    }
+    TIA_reset_line_buffer(tia.missiles[missile].line_buffer);
+    TIA_get_missile_registers(missile, &enable_reg, &size_reg, &offset_reg);
 
     if (!tia.write_regs[enable_reg]) {
         return;
     }
+
     position = tia.missiles[missile].position_clock;
     tia.missiles[missile].width = (1 << (tia.write_regs[size_reg] >> 4));
     if (tia.hmove_set) {
-        /* Applies horizontal move register for intra-cycle offset */
-        offset_shift = (tia.write_regs[offset_reg] >> 4);
-        negative_offset = (offset_shift & 0x8);
-        offset_shift &= 0x7;
-        if (negative_offset) {
-            offset_shift += 1;
-        }
-        if (negative_offset) {
-            position = tia.missiles[missile].position_clock - offset_shift;
-        } else {
-            position = tia.missiles[missile].position_clock + offset_shift;
-        }
+        TIA_apply_HMOVE(offset_reg, &position);
     }
+
     for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
-        bit_set = 0;
-        if ((i >= position) &&
-            (i <= (position + tia.missiles[missile].width))) {
-            bit_set = 1;
+        if ((i >= position) && (i <= (position + tia.missiles[missile].width))) {
+            tia.missiles[missile].line_buffer[i] = 1;
         }
-        tia.missiles[missile].line_buffer[i] = bit_set;
     }
 }
 

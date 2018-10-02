@@ -26,7 +26,6 @@
                                      TIA_VERTICAL_BLANK_LINES + \
                                      TIA_VERTICAL_OVERSCAN_LINES)
 
-
 /* Define available memory registers semantically */
 /* Writable registers */
 typedef enum {
@@ -177,7 +176,9 @@ int TIA_test_player_bit(uint8_t player);
 void TIA_reset_player(uint8_t player);
 void TIA_get_player_registers(uint8_t player, tia_writable_register_t *reflect,
         tia_writable_register_t *graphics, tia_writable_register_t *offset,
-        tia_writable_register_t *vertical, tia_writable_register_t size_reg);
+        tia_writable_register_t *vertical, tia_writable_register_t *size_reg);
+void TIA_get_missile_registers(uint8_t missile, tia_writable_register_t *enable,
+        tia_writable_register_t *size, tia_writable_register_t *offset);
 void TIA_apply_HMOVE(tia_writable_register_t offset_reg, int *position);
 
 #endif /* _ATARI_TIA_H */
