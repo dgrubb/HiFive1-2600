@@ -482,10 +482,11 @@ void TIA_update_player_buffer(uint8_t player)
 
     for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
         if (i >= position) {
-            if (size_mask & (1 << draw_count)) {
+            if ((draw_count > -1) && (size_mask & (1 << draw_count))) {
                 tia.players[player].line_buffer[i] = (pattern & (1 << pixel_clock) ? 1 : 0);
-                pixel_clock++;
             }
+            /* Every 8 clock cycles reset and start testing bits over */
+            pixel_clock++;
             if (pixel_clock >= 8) {
                 draw_count--;
                 pixel_clock = 0;
