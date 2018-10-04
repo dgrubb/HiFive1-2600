@@ -427,6 +427,22 @@ void TIA_write_register(uint8_t reg, uint8_t value)
                 TIA_update_missile_buffer(1);
             }
             break;
+        case TIA_WRITE_REG_ENAM0:
+            tia.write_regs[reg] = value;
+            TIA_update_missile_buffer(0);
+            break;
+        case TIA_WRITE_REG_ENAM1:
+            tia.write_regs[reg] = value;
+            TIA_update_missile_buffer(1);
+            break;
+        case TIA_WRITE_REG_NUSIZ0:
+            tia.write_regs[reg] = value;
+            TIA_update_missile_buffer(0);
+            break;
+        case TIA_WRITE_REG_NUSIZ1:
+            tia.write_regs[reg] = value;
+            TIA_update_missile_buffer(1);
+            break;
         case TIA_WRITE_REG_HMCLR:
             tia.hmove_set = 0;
             TIA_update_player_buffer(0);
@@ -640,7 +656,7 @@ void TIA_generate_colour(void)
      * to establish if playfield need to be rendered over player
      * objects
      */
-    if (tia.write_regs[TIA_WRITE_REG_CTRLPF] & 0x02) {
+    if (tia.write_regs[TIA_WRITE_REG_CTRLPF] & 0x04) {
         /* Control register is specifying that priority be remapped to:
          * Highest: PF, BL
          * Second:  P0, M0
