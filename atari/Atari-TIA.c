@@ -410,6 +410,14 @@ void TIA_write_register(uint8_t reg, uint8_t value)
             break;
         case TIA_WRITE_REG_RESBL:
             break;
+        case TIA_WRITE_REG_GRP0:
+            tia.write_regs[reg] = value;
+            TIA_update_player_buffer(0);
+            break;
+        case TIA_WRITE_REG_GRP1:
+            tia.write_regs[reg] = value;
+            TIA_update_player_buffer(1);
+            break;
         case TIA_WRITE_REG_HMOVE:
             if (tia.colour_clock < TIA_COLOUR_CLOCK_HSYNC) {
                 tia.hmove_set = 1;
