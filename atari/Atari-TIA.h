@@ -99,7 +99,7 @@ typedef enum {
 typedef struct {
     uint8_t scanline_reset;
     uint8_t enabled;
-    uint8_t position_clock;
+    uint32_t position_clock;
     uint8_t width;
     uint8_t horizontal_offset;
     uint8_t line_buffer[TIA_COLOUR_CLOCK_VISIBLE];
@@ -112,7 +112,7 @@ typedef struct {
 
 typedef struct {
     uint8_t scanline_reset;
-    uint8_t position_clock;
+    uint32_t position_clock;
     uint8_t horizontal_offset;
     uint8_t vertical_delay;
     uint8_t pattern;

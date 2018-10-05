@@ -435,6 +435,14 @@ void TIA_write_register(uint8_t reg, uint8_t value)
             tia.write_regs[reg] = value;
             TIA_update_missile_buffer(1);
             break;
+        case TIA_WRITE_REG_HMP0:
+            tia.write_regs[reg] = value;
+            TIA_update_player_buffer(0);
+            break;
+        case TIA_WRITE_REG_HMP1:
+            tia.write_regs[reg] = value;
+            TIA_update_player_buffer(1);
+            break;
         case TIA_WRITE_REG_NUSIZ0:
             tia.write_regs[reg] = value;
             TIA_update_missile_buffer(0);
@@ -736,6 +744,12 @@ int TIA_clock_tick()
         tia.hmove_set = 0;
         tia.write_regs[TIA_WRITE_REG_HMOVE] = 0;
         return 0;
+    }
+    if (tia.colour_clock == TIA_COLOUR_CLOCK_HSYNC) {
+        TIA_update_player_buffer(0);
+        TIA_update_player_buffer(1);
+        TIA_update_missile_buffer(0);
+        TIA_update_missile_buffer(1);
     }
     if (tia.colour_clock > TIA_COLOUR_CLOCK_HSYNC) {
         TIA_generate_colour();

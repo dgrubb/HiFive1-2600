@@ -7,7 +7,7 @@
  * information.
  */
 
-#ifdef PRINT_STATE
+//#ifdef PRINT_STATE
 
 #include <stdio.h>
 #include <string.h>
@@ -241,6 +241,7 @@ debug_opcode_t debug_opcodes[] = {
 
 const uint8_t debug_opcode_table_size = sizeof debug_opcodes / sizeof debug_opcodes[0];
 
+#ifdef PRINT_STATE
 int debug_get_status_flag(uint8_t flag)
 {
     uint8_t p;
@@ -480,6 +481,7 @@ void debug_print_execution_step(void)
     debug_print_stack();
 }
 
+#endif /* PRINT_STATE */
 const char * debug_lookup_opcode_str(uint8_t opcode)
 {
     int i;
@@ -491,4 +493,4 @@ const char * debug_lookup_opcode_str(uint8_t opcode)
     return "Unknown";
 }
 
-#endif /* PRINT_STATE */
+//#endif /* PRINT_STATE */

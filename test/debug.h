@@ -10,7 +10,7 @@
 #ifndef _DEBUG_H
 #define _DEBUG_H
 
-#ifdef PRINT_STATE
+//#ifdef PRINT_STATE
 
 #include "mos6507/mos6507.h"
 
@@ -25,6 +25,8 @@ typedef struct {
     const char *str;
 } debug_opcode_t;
 
+const char * debug_lookup_opcode_str(uint8_t opcode);
+#ifdef PRINT_STATE
 void debug_print_status_flags(void);
 void debug_print_memory_contents(uint16_t address);
 void debug_print_special_register(mos6507_register_t reg);

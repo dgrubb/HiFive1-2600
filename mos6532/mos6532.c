@@ -75,7 +75,7 @@ int mos6532_read(uint16_t address, uint8_t *data)
             return 0;
     }
     if (-1 == mos6532_bounds_check(address)) {
-        /* Error, attempting to write outside memory */
+        /* Error, attempting to read outside memory */
         return -1;
     }
     *data = memory[address];

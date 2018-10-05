@@ -5,6 +5,9 @@
  *
  * Delegates access to memory mapped devices.
  */
+// TODO remove
+#include <stdio.h>
+
 
 #include "Atari-memmap.h"
 #include "Atari-cart.h"
@@ -83,10 +86,7 @@ void memmap_map_riot_address(uint16_t *address)
     if (*address >= MEMMAP_RIOT_RAM_MIRROR_START && *address <= MEMMAP_RIOT_RAM_MIRROR_END) {
         *address = *address - MEMMAP_RIOT_RAM_MIRROR_START;
     }
-    if (*address >= MEMMAP_RIOT_PERIPH_START && *address <= MEMMAP_RIOT_PERIPH_END) {
-        *address = *address - MEMMAP_RIOT_PERIPH_START;
-    }
     if (*address >= MEMMAP_RIOT_PERIPH_MIRROR_START && *address <= MEMMAP_RIOT_PERIPH_MIRROR_END) {
-        *address = *address - MEMMAP_RIOT_PERIPH_MIRROR_START;
+        *address = *address - 0x100;
     }
 }

@@ -12,6 +12,9 @@
  * http://www.obelisk.me.uk/6502/reference.html
  */
 
+// TODO remove after debugging
+#include <stdio.h>
+
 #include "atari/Atari-memmap.h"
 #include "mos6507.h"
 #include "mos6507-opcodes.h"
@@ -642,6 +645,7 @@ int opcode_BPL(int cycle, addressing_mode_t address_mode)
 int opcode_BRK(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t adl, adh, pcl, pch, S, P = 0;
+
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -676,6 +680,7 @@ int opcode_BRK(int cycle, addressing_mode_t address_mode)
 
     mos6507_set_PC_hl(adh, adl);
     mos6507_set_address_bus(mos6507_get_PC());
+
     return 0;
 }
 
@@ -1008,6 +1013,7 @@ int opcode_JSR(int cycle, addressing_mode_t address_mode)
     }
     mos6507_set_address_bus_hl(adh, adl);
     mos6507_set_PC_hl(adh, adl);
+
     return 0;
 }
 
@@ -1109,6 +1115,7 @@ int opcode_ORA(int cycle, addressing_mode_t address_mode)
 int opcode_PHA(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t value, S = 0;
+
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1128,12 +1135,14 @@ int opcode_PHA(int cycle, addressing_mode_t address_mode)
             break;
     }
     END_OPCODE();
+
     return 0;
 }
 
 int opcode_PHP(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t value, S= 0;
+
     switch(cycle) {
         case 0:
             /* Consume clock cycle for fetching op-code */
@@ -1153,6 +1162,7 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
             break;
     }
     END_OPCODE();
+
     return 0;
 }
 
@@ -1544,6 +1554,7 @@ int opcode_TXS(int cycle, addressing_mode_t address_mode)
             /* Consume clock cycle for fetching op-code */
             return -1;
         case 1:
+            // TODO remove
             mos6507_get_register(MOS6507_REG_X, &value);
             mos6507_set_register(MOS6507_REG_S, value);
             /* Intentional fall-through */

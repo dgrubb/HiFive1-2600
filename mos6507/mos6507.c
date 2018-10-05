@@ -6,6 +6,10 @@
  * Provides implementations of the 6507 model.
  */
 
+// TODO remove after test
+#include "test/debug.h"
+#include <stdio.h>
+
 #include "atari/Atari-memmap.h"
 #ifdef PRINT_STATE
     #include "test/debug.h"
@@ -22,9 +26,9 @@ static mos6507 cpu = {0};
  */
 int mos6507_clock_tick(void)
 {
-    /* If the CPU is still in the middle of decoing/executing an
+    /* If the CPU is still in the middle of decoding/executing an
      * operation then continue execution. Otherwise, read the next 
-     * opcode out of memory and beging decode.
+     * opcode out of memory and begin decode.
      */
     if (!cpu.current_instruction) {
         memmap_read(&cpu.current_instruction);
@@ -38,6 +42,10 @@ int mos6507_clock_tick(void)
 #ifdef PRINT_STATE
     debug_print_execution_step();
 #endif
+
+    // TODO remove after test
+    //printf("%s 0x%X\n\r", debug_lookup_opcode_str(cpu.current_instruction), cpu.current_instruction);
+
     cpu.current_clock = opcode_execute(cpu.current_instruction);
     if(!cpu.current_clock) {
         cpu.current_instruction = 0;

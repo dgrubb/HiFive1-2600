@@ -28,7 +28,7 @@
     #include "test/debug.h"
 #endif
 /* Game cart data */
-#include "carts/kernel_22.h"
+#include "carts/halo2600.h"
 
 /* Globals */
 static const char atari_logo[] = "\n\r"
@@ -94,7 +94,7 @@ int main()
     TIA_init();
 
     /* Emulation is ready to start so load cartridge and reset CPU */
-    cartridge_load(kernel_22);
+    cartridge_load(Halo_2600);
     mos6507_reset();
 
     /* Setup FE310 peripherals */
