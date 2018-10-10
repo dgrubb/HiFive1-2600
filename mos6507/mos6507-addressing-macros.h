@@ -23,7 +23,8 @@
                 return -1; \
             } \
             mos6507_set_PC(addr); \
-            break; \
+            mos6507_set_address_bus(addr); \
+            return 0; \
         case 3: \
             addr = 0xFF & (mos6507_get_PC() + offset); \
             mos6507_set_PC_hl((mos6507_get_PC() >> 8), addr); \

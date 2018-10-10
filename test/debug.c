@@ -450,16 +450,14 @@ void debug_print_timer()
     uint8_t counter, interrupt;
     mos6532_timer_divisor_t divisor;
 
-    char * template = "Timer [ %s SET: %d ], interrupt [ %s ], interval: %s\n\r";
+    char * template = "Timer [ %s SET: %d ], interval: %s\n\r";
 
     mos6532_get_counter(&counter);
     mos6532_get_interval(&divisor);
-    mos6532_get_interrupt(&interrupt);
 
     sprintf(msg, template,
             (counter ? "" : "NOT"),
             counter,
-            (interrupt ? "FIRED" : "PENDING"),
             mos6532_get_divisor_str(divisor));
     puts(msg);
 }

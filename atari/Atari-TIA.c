@@ -437,11 +437,11 @@ void TIA_write_register(uint8_t reg, uint8_t value)
             break;
         case TIA_WRITE_REG_HMP0:
             tia.write_regs[reg] = value;
-            TIA_update_player_buffer(0);
+            //TIA_update_player_buffer(0);
             break;
         case TIA_WRITE_REG_HMP1:
             tia.write_regs[reg] = value;
-            TIA_update_player_buffer(1);
+            //TIA_update_player_buffer(1);
             break;
         case TIA_WRITE_REG_NUSIZ0:
             tia.write_regs[reg] = value;
@@ -498,6 +498,8 @@ void TIA_update_player_buffer(uint8_t player)
     if (tia.hmove_set) {
         TIA_apply_HMOVE(offset_reg, &position);
     }
+
+    tia.players[player].position_clock = position;
 
     if (mirror) {
         pattern = 0;
@@ -636,10 +638,13 @@ int TIA_test_player_bit(uint8_t player)
 void TIA_apply_HMOVE(tia_writable_register_t offset_reg, int *position)
 {
     uint8_t offset = (tia.write_regs[offset_reg] >> 4);
+    uint8_t compliment;
     if (offset & 0x8) {
-        *position -= (offset & 0x7) + 1;
+        compliment = ~(offset & 0x7);
+        compliment++;
+        *position += (compliment & 0x7);
     } else {
-        *position += offset;
+        *position -= offset;
     }
     if (*position < 0) *position = 0;
 }
