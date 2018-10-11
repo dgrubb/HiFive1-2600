@@ -12,9 +12,6 @@
  * http://www.obelisk.me.uk/6502/reference.html
  */
 
-// TODO remove after debugging
-#include <stdio.h>
-
 #include "atari/Atari-memmap.h"
 #include "mos6507.h"
 #include "mos6507-opcodes.h"
@@ -1134,7 +1131,7 @@ int opcode_PHA(int cycle, addressing_mode_t address_mode)
             /* End of op-code execution */
             break;
     }
-    END_OPCODE();
+    mos6507_set_address_bus(mos6507_get_PC());
 
     return 0;
 }
@@ -1161,8 +1158,8 @@ int opcode_PHP(int cycle, addressing_mode_t address_mode)
             /* End of op-code execution */
             break;
     }
-    END_OPCODE();
 
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
@@ -1193,7 +1190,7 @@ int opcode_PLA(int cycle, addressing_mode_t address_mode)
             break;
     }
 
-    END_OPCODE()
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
@@ -1222,7 +1219,7 @@ int opcode_PLP(int cycle, addressing_mode_t address_mode)
             break;
     }
 
-    END_OPCODE()
+    mos6507_set_address_bus(mos6507_get_PC());
     return 0;
 }
 
@@ -1554,7 +1551,6 @@ int opcode_TXS(int cycle, addressing_mode_t address_mode)
             /* Consume clock cycle for fetching op-code */
             return -1;
         case 1:
-            // TODO remove
             mos6507_get_register(MOS6507_REG_X, &value);
             mos6507_set_register(MOS6507_REG_S, value);
             /* Intentional fall-through */

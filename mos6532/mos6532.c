@@ -6,8 +6,6 @@
  * Provides implementation of MOS 6532 RAM-I/O-Timer (RIOT) chip. This handles
  * both 128 bytes of RAM storage and digital I/O.
  */
-// TODO remove after test
-#include <stdio.h>
 
 #include <string.h>
 #include "mos6507/mos6507.h"

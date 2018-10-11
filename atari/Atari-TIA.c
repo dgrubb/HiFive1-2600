@@ -6,9 +6,6 @@
  * Implements the TIA memory map.
  */
 
-// TODO remove
-#include <stdio.h>
-
 #include "Atari-TIA.h"
 #include "external/ili9341.h"
 #include "external/platform_util.h"
@@ -349,7 +346,6 @@ void TIA_init(void)
     for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
         tia_line_buffer[i] = (tia_pixel_t){0};
     }
-    tia.hmove_set = 0;
     tia.missiles[0] = (tia_missile_t){0};
     tia.missiles[1] = (tia_missile_t){0};
     tia.players[0] = (tia_player_t){0};
@@ -420,11 +416,10 @@ void TIA_write_register(uint8_t reg, uint8_t value)
             break;
         case TIA_WRITE_REG_HMOVE:
             if (tia.colour_clock < TIA_COLOUR_CLOCK_HSYNC) {
-                tia.hmove_set = 1;
-                TIA_update_player_buffer(0);
-                TIA_update_player_buffer(1);
-                TIA_update_missile_buffer(0);
-                TIA_update_missile_buffer(1);
+                TIA_update_player_HMOVE(0);
+                TIA_update_player_HMOVE(1);
+                TIA_update_missile_HMOVE(0);
+                TIA_update_missile_HMOVE(1);
             }
             break;
         case TIA_WRITE_REG_ENAM0:
@@ -437,26 +432,25 @@ void TIA_write_register(uint8_t reg, uint8_t value)
             break;
         case TIA_WRITE_REG_HMP0:
             tia.write_regs[reg] = value;
-            //TIA_update_player_buffer(0);
             break;
         case TIA_WRITE_REG_HMP1:
             tia.write_regs[reg] = value;
-            //TIA_update_player_buffer(1);
             break;
         case TIA_WRITE_REG_NUSIZ0:
             tia.write_regs[reg] = value;
             TIA_update_missile_buffer(0);
+            TIA_update_player_buffer(0);
             break;
         case TIA_WRITE_REG_NUSIZ1:
             tia.write_regs[reg] = value;
             TIA_update_missile_buffer(1);
+            TIA_update_player_buffer(1);
             break;
         case TIA_WRITE_REG_HMCLR:
-            tia.hmove_set = 0;
-            TIA_update_player_buffer(0);
-            TIA_update_player_buffer(1);
-            TIA_update_missile_buffer(0);
-            TIA_update_missile_buffer(1);
+            tia.write_regs[TIA_WRITE_REG_HMM0] = 0;
+            tia.write_regs[TIA_WRITE_REG_HMM1] = 0;
+            tia.write_regs[TIA_WRITE_REG_HMP0] = 0;
+            tia.write_regs[TIA_WRITE_REG_HMP0] = 0;
             break;
         case TIA_WRITE_REG_CXCLR:
             /* Reset all collision latches*/
@@ -484,6 +478,28 @@ void TIA_reset_player(uint8_t player)
     TIA_update_player_buffer(player);
 }
 
+void TIA_update_player_HMOVE(uint8_t player)
+{
+    int position;
+    tia_writable_register_t offset_reg;
+
+    offset_reg = (player ? TIA_WRITE_REG_HMP1 : TIA_WRITE_REG_HMP0);
+    position = tia.players[player].position_clock;
+    TIA_apply_HMOVE(offset_reg, &position);
+    tia.players[player].position_clock = position;
+}
+
+void TIA_update_missile_HMOVE(uint8_t missile)
+{
+    int position;
+    tia_writable_register_t offset_reg;
+
+    offset_reg = (missile ? TIA_WRITE_REG_HMM1 : TIA_WRITE_REG_HMM0);
+    position = tia.missiles[missile].position_clock;
+    TIA_apply_HMOVE(offset_reg, &position);
+    tia.missiles[missile].position_clock = position;
+}
+
 void TIA_update_player_buffer(uint8_t player)
 {
     int position, mirror, pattern, i, pixel_clock, size_mask, draw_count;
@@ -493,13 +509,7 @@ void TIA_update_player_buffer(uint8_t player)
     TIA_get_player_registers(player, &reflect_reg, &graphics_reg, &offset_reg, &vertical_reg, &size_reg);
 
     mirror = (tia.write_regs[reflect_reg] & 0x8) ? 1 : 0;
-
     position = tia.players[player].position_clock;
-    if (tia.hmove_set) {
-        TIA_apply_HMOVE(offset_reg, &position);
-    }
-
-    tia.players[player].position_clock = position;
 
     if (mirror) {
         pattern = 0;
@@ -572,9 +582,6 @@ void TIA_update_missile_buffer(uint8_t missile)
 
     position = tia.missiles[missile].position_clock;
     tia.missiles[missile].width = (1 << (tia.write_regs[size_reg] >> 4));
-    if (tia.hmove_set) {
-        TIA_apply_HMOVE(offset_reg, &position);
-    }
 
     for (i=0; i<TIA_COLOUR_CLOCK_VISIBLE; i++) {
         if ((i >= position) && (i <= (position + tia.missiles[missile].width))) {
@@ -746,7 +753,6 @@ int TIA_clock_tick()
         tia.write_regs[TIA_WRITE_REG_WSYNC] = 0;
         tia.missiles[0].scanline_reset = 0;
         tia.missiles[1].scanline_reset = 0;
-        tia.hmove_set = 0;
         tia.write_regs[TIA_WRITE_REG_HMOVE] = 0;
         return 0;
     }

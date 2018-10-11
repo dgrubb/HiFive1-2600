@@ -6,10 +6,6 @@
  * Provides implementations of the 6507 model.
  */
 
-// TODO remove after test
-#include "test/debug.h"
-#include <stdio.h>
-
 #include "atari/Atari-memmap.h"
 #ifdef PRINT_STATE
     #include "test/debug.h"
@@ -43,10 +39,8 @@ int mos6507_clock_tick(void)
     debug_print_execution_step();
 #endif
 
-    // TODO remove after test
-    //printf("%s 0x%X\n\r", debug_lookup_opcode_str(cpu.current_instruction), cpu.current_instruction);
-
     cpu.current_clock = opcode_execute(cpu.current_instruction);
+
     if(!cpu.current_clock) {
         cpu.current_instruction = 0;
     }

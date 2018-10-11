@@ -125,7 +125,6 @@ typedef struct {
     uint8_t write_regs[TIA_WRITE_REG_LEN];
     uint8_t read_regs[TIA_READ_REG_LEN];
     uint32_t colour_clock;
-    uint8_t hmove_set;
     tia_missile_t missiles[2];
     tia_player_t players[2];
     tia_playfield_t playfield;
@@ -181,5 +180,7 @@ void TIA_get_player_registers(uint8_t player, tia_writable_register_t *reflect,
 void TIA_get_missile_registers(uint8_t missile, tia_writable_register_t *enable,
         tia_writable_register_t *size, tia_writable_register_t *offset);
 void TIA_apply_HMOVE(tia_writable_register_t offset_reg, int *position);
+void TIA_update_player_HMOVE(uint8_t player);
+void TIA_update_missile_HMOVE(uint8_t missile);
 
 #endif /* _ATARI_TIA_H */
