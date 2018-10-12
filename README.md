@@ -14,6 +14,8 @@ Adapter (TIA) IC. The end goal is to create an emulator capable of executing Ata
 
 ![HiFive1-2600](./preview/HiFive1-2600-test-kernel.jpg)
 
+![HiFive1-2600](./preview/games-on-hifive1.png)
+
 ## Why?
 
 [Just for fun.](https://www.amazon.com/Just-Fun-Story-Accidental-Revolutionary/dp/0066620732)
