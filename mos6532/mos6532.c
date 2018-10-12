@@ -64,6 +64,11 @@ int mos6532_read(uint16_t address, uint8_t *data)
     }
     if (-1 == mos6532_bounds_check(address)) {
         /* Error, attempting to read outside memory */
+        if (address == 0x282) {
+            // TODO: hack to force enable of colour selection
+            *data = 0x08;
+            return 0;
+        }
         return -1;
     }
     *data = memory[address];

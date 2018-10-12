@@ -360,6 +360,10 @@ void TIA_init(void)
 void TIA_read_register(uint8_t reg, uint8_t *value)
 {
     *value = tia.read_regs[reg];
+    // TODO remove after experiment
+    if (reg == TIA_READ_REG_INPT4) {
+        *value = 0x80;
+    }
 }
 
 /* Writes a value into a register location

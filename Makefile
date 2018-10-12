@@ -69,7 +69,7 @@ C_SRCS += external/platform_util.c
 # Program logic
 C_SRCS += test/debug.c
 C_SRCS += test/test-carts.c
-C_SRCS += carts/halo2600.c
+C_SRCS += carts/kernel_22.c
 C_SRCS += test/tests.c
 C_SRCS += main.c
 

@@ -18,7 +18,13 @@
             return -1; \
         case 2: \
             mos6507_increment_PC(); \
-            addr = mos6507_get_PC() + offset; \
+            if (offset & 0x80) { \
+                compliment = ~(offset & 0x7F); \
+                compliment++; \
+                addr = mos6507_get_PC() - (compliment & 0x7F); \
+            } else { \
+                addr = mos6507_get_PC() + (offset & 0x7F); \
+            } \
             if (NOT_SAME_PAGE(mos6507_get_PC(), addr)) { \
                 return -1; \
             } \
@@ -26,8 +32,7 @@
             mos6507_set_address_bus(addr); \
             return 0; \
         case 3: \
-            addr = 0xFF & (mos6507_get_PC() + offset); \
-            mos6507_set_PC_hl((mos6507_get_PC() >> 8), addr); \
+            mos6507_set_PC(addr); \
         default: \
             break; \
     } \

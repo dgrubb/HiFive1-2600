@@ -479,7 +479,6 @@ void debug_print_execution_step(void)
     debug_print_stack();
 }
 
-#endif /* PRINT_STATE */
 const char * debug_lookup_opcode_str(uint8_t opcode)
 {
     int i;
@@ -491,4 +490,4 @@ const char * debug_lookup_opcode_str(uint8_t opcode)
     return "Unknown";
 }
 
-//#endif /* PRINT_STATE */
+#endif /* PRINT_STATE */

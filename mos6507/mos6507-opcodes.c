@@ -554,6 +554,7 @@ int opcode_BCC(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
+    uint8_t compliment = 0;
 
     condition = !mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY);
 
@@ -567,6 +568,7 @@ int opcode_BCS(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
+    uint8_t compliment = 0;
 
     condition = mos6507_get_status_flag(MOS6507_STATUS_FLAG_CARRY);
 
@@ -580,6 +582,7 @@ int opcode_BEQ(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
+    uint8_t compliment = 0;
 
     condition = mos6507_get_status_flag(MOS6507_STATUS_FLAG_ZERO);
 
@@ -604,6 +607,7 @@ int opcode_BMI(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
+    uint8_t compliment = 0;
 
     condition = mos6507_get_status_flag(MOS6507_STATUS_FLAG_NEGATIVE);
 
@@ -617,6 +621,7 @@ int opcode_BNE(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
+    uint8_t compliment = 0;
 
     condition = !mos6507_get_status_flag(MOS6507_STATUS_FLAG_ZERO);
 
@@ -630,6 +635,7 @@ int opcode_BPL(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
+    uint8_t compliment = 0;
 
     condition = !mos6507_get_status_flag(MOS6507_STATUS_FLAG_NEGATIVE);
 
@@ -685,6 +691,7 @@ int opcode_BVC(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
+    uint8_t compliment = 0;
 
     condition = !mos6507_get_status_flag(MOS6507_STATUS_FLAG_OVERFLOW);
 
@@ -698,6 +705,7 @@ int opcode_BVS(int cycle, addressing_mode_t address_mode)
 {
     static uint8_t condition, offset = 0;
     static uint16_t addr = 0;
+    uint8_t compliment = 0;
 
     condition = mos6507_get_status_flag(MOS6507_STATUS_FLAG_OVERFLOW);
 
