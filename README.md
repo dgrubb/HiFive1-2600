@@ -23,9 +23,10 @@ Adapter (TIA) IC. The end goal is to create an emulator capable of executing Ata
 ## No, really. Why?
 
 Because I'm personally interested in learning about how the Atari 2600 worked, 
-understanding the 6502 processor and wanted to build a project which would use 
-a RISC-V micro-controller. Writing an emulator is a great way to practice programming 
-and doing so in a resource constrained environment presents interesting problems.
+understanding the 6502 processor and wanted to build a project which would make
+extensive use of a RISC-V micro-controller. Writing an emulator is a great way to
+practice programming and doing so in a resource constrained environment presents
+interesting problems.
 
 ## Hardware
 
